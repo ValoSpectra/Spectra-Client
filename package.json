@@ -1,0 +1,19 @@
+{
+  "name": "inhouse-tracker",
+  "version": "0.0.1",
+  "description": "A standalone OW application to display game information from inhouses on the Woohoojin Stream Overlay",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "ow-electron .",
+    "build": "ow-electron-builder --publish=never"
+  },
+  "author": "Jane Doe",
+  "license": "GPL-3.0-only",
+  "devDependencies": {
+    "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@overwolf/ow-electron": "^28.2.5",
+    "@overwolf/ow-electron-builder": "^24.7.0"
+  }
+}
