@@ -51,6 +51,7 @@ function handleTrackSet(event: any, trackId: string) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents);
   win!.setTitle(`Woohoojin Inhouse Tracker | ${trackId}`);
+  gepService.setTrackId(TRACK_ID);
 }
 
 function replay() {

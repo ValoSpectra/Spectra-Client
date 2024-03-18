@@ -3,7 +3,9 @@ import { overwolf } from '@overwolf/ow-electron' // TODO: wil be @overwolf/ow-el
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
-const DATA_PROCESSOR_URL = "localhost:5100/ingest";
+const DATA_PROCESSOR_URL = "http://localhost:5100/ingest";
+let AUTH_ID = "";
+let enabled = false;
 
 /**
  * Service used to register for Game Events,
@@ -57,6 +59,11 @@ export class GameEventsService {
     });
   }
 
+  setTrackId(trackId: string) {
+    AUTH_ID = trackId;
+    enabled = true;
+  }
+
   private async onGameEventsPackageReady() {
     this.gepApi = app.overwolf.packages.gep;
 
@@ -73,28 +80,30 @@ export class GameEventsService {
       }
       e.enable();
       this.activeGame = gameId;
-      console.log("Valorant Detected as running");
+      console.log("Valorant detected as running");
 
       this.setRequiredFeaturesValorant();
     });
 
     // When a new Info Update is fired
     this.gepApi.on('new-info-update', (e, gameId, ...args) => {
-        console.log("new-info-update");
-        console.log(args);
+      if (enabled) {
+        for (const data of args) {
+          this.processGameEvent(data);
+        }
+      }
     });
 
     // When a new Game Event is fired
     this.gepApi.on('new-game-event', (e, gameId, ...args) => {
-      for (const data in args) {
-        this.processGameEvent(data);
-      }
+      console.log("New game event");
     });
 
     // If GEP encounters an error
     this.gepApi.on('error', (e, gameId, error, ...args) => {
-        console.log("error");
+      console.log("error");
       this.activeGame = 0;
+      enabled = false;
     });
   }
 
@@ -102,16 +111,40 @@ export class GameEventsService {
     if (data.gameId !== VALORANT_ID) return;
 
     if (data.key.startsWith("scoreboard")) {
+
       const value = JSON.parse(data.value);
       // Only process teammate events
       if (value.teammate !== true) return;
       const formatted = formatScoreboardData(value);
-    } else if (data.key === "kill_feed") {
-      const value = JSON.parse(data.value);
+      postToProcessor(formatted);
 
+    } else if (data.key === "kill_feed") {
+
+      const value = JSON.parse(data.value);
       // Only process KILLS from teammates
       if (value.is_attacker_teammate === false) return;
       const formatted = formatKillfeedData(value);
+      postToProcessor(formatted);
+
+    } else if (data.key === "match_start") {
+
+      const toSend = { type: "matchStart", data: true };
+      postToProcessor(toSend);
+
+    } else if (data.key === "round_phase") {
+
+      const value = JSON.parse(data);
+      const toSend = { type: "roundPhase", data: value };
+      postToProcessor(toSend);
+
+    } else if (data.key.startsWith("roster")) {
+
+      const value = JSON.parse(data.value);
+      // Only pcoress roster of team
+      if (value.teammate === false) return;
+      const formatted = formatRosterData(value);
+      postToProcessor(formatted);
+
     }
   }
 }
@@ -139,9 +172,9 @@ function formatScoreboardData(value: any) {
 
   formatted.isSubmitter = value.is_local;
 
-  const toReturn: any = { type: "scoreboard" }; 
+  const toReturn: any = { type: "scoreboard" };
   toReturn.data = formatted;
-  
+
   return toReturn;
 }
 
@@ -161,16 +194,45 @@ function formatKillfeedData(value: any) {
 
   formatted.isTeamkill = value.is_victim_teammate;
 
-  const toReturn: any = { type: "killfeed" }; 
+  const toReturn: any = { type: "killfeed" };
   toReturn.data = formatted;
-  
+
+  return toReturn;
+}
+
+function formatRosterData(value: any) {
+  let formatted: any = {};
+
+  const nameSplit = value.name.split(" #");
+  formatted.name = nameSplit[0];
+  formatted.tagline = nameSplit[1];
+
+  formatted.agentInternal = value.character;
+  formatted.locked = value.locked;
+  formatted.rank = value.rank;
+  formatted.isSubmitter = value.local;
+
+  const toReturn: any = { type: "roster" };
+  toReturn.data = formatted;
+
   return toReturn;
 }
 
 function postToProcessor(object: any) {
+  // Simple catch instead because fire and forget is desireable here
   fetch(DATA_PROCESSOR_URL, {
-    method:"POST",
-    headers: { "Content-type": "application/json" },
+    method: "POST",
+    headers: { "Content-type": "application/json", "X-Auth-Token": AUTH_ID },
     body: JSON.stringify(object),
+  }).then((res) => {
+    if (res.status === 200) {
+      console.log(`Posted ${object.type} update`);
+    } else if (res.status === 403) {
+      console.log("Not Authorized!");
+      enabled = false;
+      AUTH_ID = "";
+    }
+  }).catch((e) => {
+    console.log(e);
   });
 }
