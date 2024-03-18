@@ -3,6 +3,7 @@ import { overwolf } from '@overwolf/ow-electron' // TODO: wil be @overwolf/ow-el
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
+const DATA_PROCESSOR_URL = "localhost:5100/ingest";
 
 /**
  * Service used to register for Game Events,
@@ -56,28 +57,23 @@ export class GameEventsService {
     });
   }
 
-  /**
-   * Register listeners for the GEP Package once it is ready
-   *
-   * @param {overwolf.packages.OverwolfGameEventPackage} gep The GEP Package instance
-   */
   private async onGameEventsPackageReady() {
-    // Save package into private variable for later access
     this.gepApi = app.overwolf.packages.gep;
 
     this.gepApi.removeAllListeners();
+    const valoInfo = await this.gepApi.getInfo(VALORANT_ID);
+    if (valoInfo.success === true) {
+      console.log("Valorant is already running - this app should ideally be started BEFORE Valorant to prevent issues with incorrect or no data!");
+    }
 
     this.gepApi.on('game-detected', (e, gameId, name, gameInfo) => {
-      // If the game isn't in our tracking list
-
       if (!this.gepGamesId.includes(gameId)) {
         // Don't connect to non-Valorant games
         return;
       }
       e.enable();
       this.activeGame = gameId;
-      
-      console.log("game-detected");
+      console.log("Valorant Detected as running");
 
       this.setRequiredFeaturesValorant();
     });
@@ -90,8 +86,9 @@ export class GameEventsService {
 
     // When a new Game Event is fired
     this.gepApi.on('new-game-event', (e, gameId, ...args) => {
-        console.log("new-game-event");
-        console.log(args);
+      for (const data in args) {
+        this.processGameEvent(data);
+      }
     });
 
     // If GEP encounters an error
@@ -100,4 +97,80 @@ export class GameEventsService {
       this.activeGame = 0;
     });
   }
+
+  processGameEvent(data: any) {
+    if (data.gameId !== VALORANT_ID) return;
+
+    if (data.key.startsWith("scoreboard")) {
+      const value = JSON.parse(data.value);
+      // Only process teammate events
+      if (value.teammate !== true) return;
+      const formatted = formatScoreboardData(value);
+    } else if (data.key === "kill_feed") {
+      const value = JSON.parse(data.value);
+
+      // Only process KILLS from teammates
+      if (value.is_attacker_teammate === false) return;
+      const formatted = formatKillfeedData(value);
+    }
+  }
+}
+
+function formatScoreboardData(value: any) {
+  let formatted: any = {};
+
+  const nameSplit = value.name.split(" #");
+  formatted.name = nameSplit[0];
+  formatted.tagline = nameSplit[1];
+
+  formatted.agentInternal = value.character;
+  formatted.isAlive = value.alive;
+
+  formatted.initialShield = value.shield * 25;
+  formatted.scoreboardWeaponInternal = value.weapon;
+
+  formatted.currUltPoints = value.ult_points;
+  formatted.maxUltPoints = value.ult_max;
+  formatted.money = value.money;
+
+  formatted.kills = value.kills;
+  formatted.deaths = value.deaths;
+  formatted.assists = value.assists;
+
+  formatted.isSubmitter = value.is_local;
+
+  const toReturn: any = { type: "scoreboard" }; 
+  toReturn.data = formatted;
+  
+  return toReturn;
+}
+
+function formatKillfeedData(value: any) {
+  let formatted: any = {};
+
+  formatted.attacker = value.attacker;
+  formatted.victim = value.victim;
+  formatted.weaponKillfeedInternal = value.weapon;
+  formatted.headshotKill = value.headshot;
+
+  formatted.assists = [];
+  value.assist1 !== "" ? formatted.assists.push(value.assist1) : undefined;
+  value.assist2 !== "" ? formatted.assists.push(value.assist2) : undefined;
+  value.assist3 !== "" ? formatted.assists.push(value.assist3) : undefined;
+  value.assist4 !== "" ? formatted.assists.push(value.assist4) : undefined;
+
+  formatted.isTeamkill = value.is_victim_teammate;
+
+  const toReturn: any = { type: "killfeed" }; 
+  toReturn.data = formatted;
+  
+  return toReturn;
+}
+
+function postToProcessor(object: any) {
+  fetch(DATA_PROCESSOR_URL, {
+    method:"POST",
+    headers: { "Content-type": "application/json" },
+    body: JSON.stringify(object),
+  });
 }

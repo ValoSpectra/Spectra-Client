@@ -19,10 +19,11 @@ const createWindow = () => {
     titleBarOverlay: true
   })
 
-  ipcMain.on('set-track-id', handleTrackSet)
+  ipcMain.on('set-track-id', handleTrackSet);
+  ipcMain.on('replay', replay);
 
   win.menuBarVisible = false;
-  win.loadFile('./src/index.html')
+  win.loadFile('./src/index.html');
 }
 
 app.whenReady().then(() => {
@@ -52,9 +53,20 @@ function handleTrackSet(event: any, trackId: string) {
   win!.setTitle(`Woohoojin Inhouse Tracker | ${trackId}`);
 }
 
+function replay() {
+  gepService.processGameEvent({
+    gameId: 21640,
+    feature: 'match_info',
+    category: 'match_info',
+    key: 'kill_feed',
+    value: '{"attacker":"Quincy","victim":"deftonesenjoyer","is_attacker_teammate":true,"is_victim_teammate":false,"weapon":"TX_Hud_Knife_Standard_S","ult":"","assist1":"","assist2":"","assist3":"","assist4":"","headshot":false}'
+  });
+}
+
 function overwolfSetup() {
   console.log(`Starting Overwolf Setup`);
   gepService.registerGames([
     21640 // VALORANT
   ]);
+  
 }
