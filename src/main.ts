@@ -1,13 +1,16 @@
 import path from "path"
 import { GameEventsService } from "./services/gepService";
+import { ConnectorService } from "./services/connectorService";
+import { dialog } from "electron";
 
 const { app, BrowserWindow, ipcMain } = require('electron/main')
 
-let TRACK_ID = null;
 const gepService = new GameEventsService();
+const connService = ConnectorService.getInstance();
+let win!: Electron.Main.BrowserWindow;
 
 const createWindow = () => {
-  const win = new BrowserWindow({
+  win = new BrowserWindow({
     width: 600,
     height: 500,
     backgroundColor: '#303338',
@@ -19,7 +22,7 @@ const createWindow = () => {
     titleBarOverlay: true
   })
 
-  ipcMain.on('set-track-id', handleTrackSet);
+  ipcMain.on('process-inputs', processInputs);
   ipcMain.on('replay', replay);
 
   win.menuBarVisible = false;
@@ -44,14 +47,22 @@ app.on('window-all-closed', () => {
   }
 })
 
-function handleTrackSet(event: any, trackId: string) {
-  console.log(`Received Track ID ${trackId}`);
-  TRACK_ID = trackId;
-
+function processInputs(event: any, groupId: string, teamName: string, playerName: string) {
   const webContents = event.sender;
-  const win = BrowserWindow.fromWebContents(webContents);
-  win!.setTitle(`Woohoojin Inhouse Tracker | ${trackId}`);
-  gepService.setTrackId(TRACK_ID);
+  const win = BrowserWindow.fromWebContents(webContents)!;
+
+  if (playerName === "" || teamName == "" || groupId == "") {
+    dialog.showMessageBoxSync(win, {
+      title: "Inhouse Tracker - Error",
+      message: "Please input data into all fields!",
+      type: "error"
+    });
+    return;
+  }
+
+  console.log(`Received Name ${playerName}, Team ${teamName} and Group Code ${groupId}`);
+  win!.setTitle(`Woohoojin Inhouse Tracker | Attempting to connect...`);
+  connService.handleAuthProcess(playerName, teamName, groupId, win);
 }
 
 function replay() {
@@ -66,8 +77,9 @@ function replay() {
 
 function overwolfSetup() {
   console.log(`Starting Overwolf Setup`);
-  gepService.registerGames([
-    21640 // VALORANT
-  ]);
-  
+  gepService.registerGame(21640);
+}
+
+export function setPlayerName(name: string) {
+  win.webContents.send("set-player-name", name);
 }

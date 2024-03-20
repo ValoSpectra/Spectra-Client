@@ -1,16 +1,30 @@
 <link rel="stylesheet" href="style.css">
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-    <title class="txt">Woohoojin Inhouse Tracker</title>
-  </head>
-  <body>
-    <h1 class="txt">Please enter your Group Code:</h1>
-    <input type="text" id="GroupCodeInput"></input> <button id="GroupCodeSubmit">Submit</button>
-    <button id="Replay">Replay</button>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
+  <title class="txt">Woohoojin Inhouse Tracker</title>
+</head>
+
+<body>
+  <div>
+    <text class="txt">Please enter your full Valorant name:</text>
+    <input type="text" class="textInput" id="ValorantNameInput" placeholder="Auto-detected on game start" value="TestName"></input>
+  </div>
+  <div>
+    <text class="txt">Please enter your team name:</text>
+    <input type="text" class="textInput" id="TeamNameInput" placeholder="e.g. Hooj, TRX, ... " value="TestTeam"></input>
+  </div>
+  <div>
+    <text class="txt">Please enter your Group Code:</text>
+    <input type="text" class="textInput" id="GroupCodeInput" placeholder="e.g. AHO716" value="A"></input>
+  </div>
+  <p></p><button id="ConnectButton">Connect</button>
+  <p></p><button id="Replay">Replay</button>
+</body>
+
 </html>
 <script src="renderer.js"></script>

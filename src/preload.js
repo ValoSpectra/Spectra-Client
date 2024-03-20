@@ -1,6 +1,8 @@
 const { contextBridge, ipcRenderer } = require('electron/renderer')
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  setTrackId: (trackId) => ipcRenderer.send('set-track-id', trackId),
-  replay: () => ipcRenderer.send('replay')
+  processInputs: (groupId, teamName, playerName) => ipcRenderer.send('process-inputs', groupId, teamName, playerName),
+  replay: () => ipcRenderer.send('replay'),
+
+  setPlayerName: (callback) => ipcRenderer.on('set-player-name', (_event, value) => callback(value))
 })

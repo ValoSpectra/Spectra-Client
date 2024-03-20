@@ -1,91 +1,68 @@
 import { app as electronApp } from 'electron';
-import { overwolf } from '@overwolf/ow-electron' // TODO: wil be @overwolf/ow-electron
+import { overwolf } from '@overwolf/ow-electron'
+import { ConnectorService } from './connectorService';
+import { setPlayerName } from '../main';
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
-const DATA_PROCESSOR_URL = "http://localhost:5100/ingest";
-let AUTH_ID = "";
 let enabled = false;
 
-/**
- * Service used to register for Game Events,
- * receive games events, and then send them to a window for visual feedback
- *
- */
+export interface IFormattedData {
+  type: string,
+  data: string | boolean,
+}
+
+export enum DataTypes {
+  SCOREBOARD = "scoreboard",
+  KILLFEED = "killfeed",
+  ROSTER = "roster"
+}
+
 export class GameEventsService {
   private gepApi!: overwolf.packages.OverwolfGameEventPackage;
-  private activeGame = 0;
-  private gepGamesId: number[] = [];
+  private gepGamesId: number = VALORANT_ID;
+  private connService = ConnectorService.getInstance();
 
   constructor() {
     this.registerOverwolfPackageManager();
   }
 
-  public registerGames(gepGamesId: number[]) {
+  public registerGame(gepGamesId: number) {
     this.gepGamesId = gepGamesId;
   }
 
-  /**
-   *
-   */
   public async setRequiredFeaturesValorant() {
-    await this.gepApi.setRequiredFeatures(VALORANT_ID, ["match_info"]);
+    // https://overwolf.github.io/api/live-game-data/supported-games/valorant
+    await this.gepApi.setRequiredFeatures(VALORANT_ID, ["match_info", "me"]);
   }
 
-  /**
-   *
-   */
-  public async getInfoForActiveGame(): Promise<any> {
-    if (this.activeGame == 0) {
-      return 'getInfo error - no active game';
-    }
-
-    return await this.gepApi.getInfo(this.activeGame);
-  }
-
-  /**
-   * Register the Overwolf Package Manager events
-   */
   private registerOverwolfPackageManager() {
-    // Once a package is loaded
     app.overwolf.packages.on('ready', (e, packageName, version) => {
-      // If this is the GEP package (packageName serves as a UID)
       if (packageName !== 'gep') {
         return;
       }
 
-      // Prepare for Game Event handling
       this.onGameEventsPackageReady();
     });
-  }
-
-  setTrackId(trackId: string) {
-    AUTH_ID = trackId;
-    enabled = true;
   }
 
   private async onGameEventsPackageReady() {
     this.gepApi = app.overwolf.packages.gep;
 
     this.gepApi.removeAllListeners();
-    const valoInfo = await this.gepApi.getInfo(VALORANT_ID);
-    if (valoInfo.success === true) {
-      console.log("Valorant is already running - this app should ideally be started BEFORE Valorant to prevent issues with incorrect or no data!");
-    }
 
     this.gepApi.on('game-detected', (e, gameId, name, gameInfo) => {
-      if (!this.gepGamesId.includes(gameId)) {
+      if (!(this.gepGamesId === gameId)) {
         // Don't connect to non-Valorant games
         return;
       }
       e.enable();
-      this.activeGame = gameId;
       console.log("Valorant detected as running");
+      enabled = true;
 
       this.setRequiredFeaturesValorant();
     });
 
-    // When a new Info Update is fired
     this.gepApi.on('new-info-update', (e, gameId, ...args) => {
       if (enabled) {
         for (const data of args) {
@@ -94,15 +71,13 @@ export class GameEventsService {
       }
     });
 
-    // When a new Game Event is fired
     this.gepApi.on('new-game-event', (e, gameId, ...args) => {
       console.log("New game event");
+      console.log(args);
     });
 
-    // If GEP encounters an error
     this.gepApi.on('error', (e, gameId, error, ...args) => {
       console.log("error");
-      this.activeGame = 0;
       enabled = false;
     });
   }
@@ -115,41 +90,46 @@ export class GameEventsService {
       const value = JSON.parse(data.value);
       // Only process teammate events
       if (value.teammate !== true) return;
-      const formatted = formatScoreboardData(value);
-      postToProcessor(formatted);
+      const formatted: IFormattedData = formatScoreboardData(value);
+      this.connService.sendToIngest(formatted);
 
     } else if (data.key === "kill_feed") {
 
       const value = JSON.parse(data.value);
       // Only process KILLS from teammates
       if (value.is_attacker_teammate === false) return;
-      const formatted = formatKillfeedData(value);
-      postToProcessor(formatted);
+      const formatted: IFormattedData = formatKillfeedData(value);
+      this.connService.sendToIngest(formatted);
 
     } else if (data.key === "match_start") {
 
-      const toSend = { type: "matchStart", data: true };
-      postToProcessor(toSend);
+      const toSend: IFormattedData = { type: "matchStart", data: true };
+      this.connService.sendToIngest(toSend);
 
     } else if (data.key === "round_phase") {
 
       const value = JSON.parse(data);
-      const toSend = { type: "roundPhase", data: value };
-      postToProcessor(toSend);
+      const toSend: IFormattedData = { type: "roundPhase", data: value };
+      this.connService.sendToIngest(toSend);
 
     } else if (data.key.startsWith("roster")) {
 
       const value = JSON.parse(data.value);
       // Only pcoress roster of team
       if (value.teammate === false) return;
-      const formatted = formatRosterData(value);
-      postToProcessor(formatted);
+      const formatted: IFormattedData = formatRosterData(value);
+      this.connService.sendToIngest(formatted);
+
+    } else if (data.key === "player_name") {
+
+      console.log(`Detected player name: ${data.value}`);
+      setPlayerName(data.value);
 
     }
   }
 }
 
-function formatScoreboardData(value: any) {
+function formatScoreboardData(value: any): IFormattedData  {
   let formatted: any = {};
 
   const nameSplit = value.name.split(" #");
@@ -170,15 +150,13 @@ function formatScoreboardData(value: any) {
   formatted.deaths = value.deaths;
   formatted.assists = value.assists;
 
-  formatted.isSubmitter = value.is_local;
-
-  const toReturn: any = { type: "scoreboard" };
+  const toReturn: IFormattedData = { type: DataTypes.SCOREBOARD, data: "" };
   toReturn.data = formatted;
 
   return toReturn;
 }
 
-function formatKillfeedData(value: any) {
+function formatKillfeedData(value: any): IFormattedData {
   let formatted: any = {};
 
   formatted.attacker = value.attacker;
@@ -194,13 +172,13 @@ function formatKillfeedData(value: any) {
 
   formatted.isTeamkill = value.is_victim_teammate;
 
-  const toReturn: any = { type: "killfeed" };
+  const toReturn: IFormattedData = { type: DataTypes.KILLFEED, data: "" };
   toReturn.data = formatted;
 
   return toReturn;
 }
 
-function formatRosterData(value: any) {
+function formatRosterData(value: any): IFormattedData {
   let formatted: any = {};
 
   const nameSplit = value.name.split(" #");
@@ -210,29 +188,9 @@ function formatRosterData(value: any) {
   formatted.agentInternal = value.character;
   formatted.locked = value.locked;
   formatted.rank = value.rank;
-  formatted.isSubmitter = value.local;
 
-  const toReturn: any = { type: "roster" };
+  const toReturn: IFormattedData = { type: DataTypes.ROSTER, data: "" };
   toReturn.data = formatted;
 
   return toReturn;
-}
-
-function postToProcessor(object: any) {
-  // Simple catch instead because fire and forget is desireable here
-  fetch(DATA_PROCESSOR_URL, {
-    method: "POST",
-    headers: { "Content-type": "application/json", "X-Auth-Token": AUTH_ID },
-    body: JSON.stringify(object),
-  }).then((res) => {
-    if (res.status === 200) {
-      console.log(`Posted ${object.type} update`);
-    } else if (res.status === 403) {
-      console.log("Not Authorized!");
-      enabled = false;
-      AUTH_ID = "";
-    }
-  }).catch((e) => {
-    console.log(e);
-  });
 }
