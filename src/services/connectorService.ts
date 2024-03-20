@@ -1,7 +1,8 @@
 import { WebSocket } from 'ws';
 import { IFormattedData } from './formattingService';
+import { dialog } from 'electron';
 
-const DATA_PROCESSOR_URL = "ws://localhost:5100/ingest";
+const INGEST_SERVER_URL = "ws://localhost:5100/ingest";
 
 export class ConnectorService {
     private PLAYER_NAME = "";
@@ -14,7 +15,7 @@ export class ConnectorService {
 
     private static instance: ConnectorService;
 
-    private constructor() { };
+    private constructor() { }
 
     public static getInstance(): ConnectorService {
         if (ConnectorService.instance == null) ConnectorService.instance = new ConnectorService();
@@ -27,7 +28,7 @@ export class ConnectorService {
         this.GROUP_CODE = groupCode;
         this.win = win;
 
-        this.ws = new WebSocket(DATA_PROCESSOR_URL);
+        this.ws = new WebSocket(INGEST_SERVER_URL);
         this.ws.once('open', () => {
             this.ws.send(JSON.stringify({ type: "authenticate", playerName: playerName, teamName: teamName, groupCode: groupCode }))
         });
@@ -45,6 +46,12 @@ export class ConnectorService {
                     this.win.setTitle(`Woohoojin Inhouse Tracker | Connected failed, Group ID invalid`);
                     this.enabled = false;
                     this.ws?.terminate();
+
+                    dialog.showMessageBoxSync(win, {
+                        title: "Inhouse Tracker - Error",
+                        message: "Group ID Invalid!",
+                        type: "error"
+                    });
                 }
             }
         });
@@ -53,6 +60,12 @@ export class ConnectorService {
             console.log('Connection to ingest server closed');
             if (this.unreachable === true) {
                 this.win.setTitle(`Woohoojin Inhouse Tracker | Connection failed, server not reachable`);
+
+                dialog.showMessageBoxSync(win, {
+                    title: "Inhouse Tracker - Error",
+                    message: "Ingest server not reachable!",
+                    type: "error"
+                });
             } else {
                 this.win.setTitle(`Woohoojin Inhouse Tracker | Connection closed`);
             }
@@ -81,7 +94,7 @@ export class ConnectorService {
     }
 
     sendToIngest(formatted: IFormattedData) {
-        const toSend = { playerName: this.PLAYER_NAME,  teamName: this.TEAM_NAME, groupCode: this.GROUP_CODE, ...formatted};
+        const toSend = { playerName: this.PLAYER_NAME, teamName: this.TEAM_NAME, groupCode: this.GROUP_CODE, ...formatted };
         this.ws.send(JSON.stringify(toSend));
     }
 }
