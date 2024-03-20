@@ -26,7 +26,7 @@ const createWindow = () => {
   ipcMain.on('replay', replay);
 
   win.menuBarVisible = false;
-  win.loadFile('./src/index.html');
+  win.loadFile('./src/frontend/index.html');
 }
 
 app.whenReady().then(() => {
