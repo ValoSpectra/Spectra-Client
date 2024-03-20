@@ -70,8 +70,8 @@ function replay() {
     gameId: 21640,
     feature: 'match_info',
     category: 'match_info',
-    key: 'kill_feed',
-    value: '{"attacker":"Quincy","victim":"deftonesenjoyer","is_attacker_teammate":true,"is_victim_teammate":false,"weapon":"TX_Hud_Knife_Standard_S","ult":"","assist1":"","assist2":"","assist3":"","assist4":"","headshot":false}'
+    key: 'scoreboard_0',
+    value: '{"name":"Dunkel #Licht","character":"Gumshoe","teammate":true,"alive":true,"player_id":"afd57152-b535-58d2-a18f-1d530edca8ae","shield":0,"weapon":"TX_Hud_Pistol_Luger","ult_points":0,"ult_max":6,"kills":0,"deaths":0,"assists":0,"money":300,"is_local":true}'
   });
 }
 

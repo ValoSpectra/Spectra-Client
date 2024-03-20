@@ -2,26 +2,17 @@ import { app as electronApp } from 'electron';
 import { overwolf } from '@overwolf/ow-electron'
 import { ConnectorService } from './connectorService';
 import { setPlayerName } from '../main';
+import { FormattingService, IFormattedData } from './formattingService';
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
 let enabled = false;
 
-export interface IFormattedData {
-  type: string,
-  data: string | boolean,
-}
-
-export enum DataTypes {
-  SCOREBOARD = "scoreboard",
-  KILLFEED = "killfeed",
-  ROSTER = "roster"
-}
-
 export class GameEventsService {
   private gepApi!: overwolf.packages.OverwolfGameEventPackage;
   private gepGamesId: number = VALORANT_ID;
   private connService = ConnectorService.getInstance();
+  private formattingService = FormattingService.getInstance();
 
   constructor() {
     this.registerOverwolfPackageManager();
@@ -90,7 +81,7 @@ export class GameEventsService {
       const value = JSON.parse(data.value);
       // Only process teammate events
       if (value.teammate !== true) return;
-      const formatted: IFormattedData = formatScoreboardData(value);
+      const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
       this.connService.sendToIngest(formatted);
 
     } else if (data.key === "kill_feed") {
@@ -98,7 +89,7 @@ export class GameEventsService {
       const value = JSON.parse(data.value);
       // Only process KILLS from teammates
       if (value.is_attacker_teammate === false) return;
-      const formatted: IFormattedData = formatKillfeedData(value);
+      const formatted: IFormattedData = this.formattingService.formatKillfeedData(value);
       this.connService.sendToIngest(formatted);
 
     } else if (data.key === "match_start") {
@@ -117,7 +108,7 @@ export class GameEventsService {
       const value = JSON.parse(data.value);
       // Only pcoress roster of team
       if (value.teammate === false) return;
-      const formatted: IFormattedData = formatRosterData(value);
+      const formatted: IFormattedData = this.formattingService.formatRosterData(value);
       this.connService.sendToIngest(formatted);
 
     } else if (data.key === "player_name") {
@@ -127,70 +118,4 @@ export class GameEventsService {
 
     }
   }
-}
-
-function formatScoreboardData(value: any): IFormattedData  {
-  let formatted: any = {};
-
-  const nameSplit = value.name.split(" #");
-  formatted.name = nameSplit[0];
-  formatted.tagline = nameSplit[1];
-
-  formatted.agentInternal = value.character;
-  formatted.isAlive = value.alive;
-
-  formatted.initialShield = value.shield * 25;
-  formatted.scoreboardWeaponInternal = value.weapon;
-
-  formatted.currUltPoints = value.ult_points;
-  formatted.maxUltPoints = value.ult_max;
-  formatted.money = value.money;
-
-  formatted.kills = value.kills;
-  formatted.deaths = value.deaths;
-  formatted.assists = value.assists;
-
-  const toReturn: IFormattedData = { type: DataTypes.SCOREBOARD, data: "" };
-  toReturn.data = formatted;
-
-  return toReturn;
-}
-
-function formatKillfeedData(value: any): IFormattedData {
-  let formatted: any = {};
-
-  formatted.attacker = value.attacker;
-  formatted.victim = value.victim;
-  formatted.weaponKillfeedInternal = value.weapon;
-  formatted.headshotKill = value.headshot;
-
-  formatted.assists = [];
-  value.assist1 !== "" ? formatted.assists.push(value.assist1) : undefined;
-  value.assist2 !== "" ? formatted.assists.push(value.assist2) : undefined;
-  value.assist3 !== "" ? formatted.assists.push(value.assist3) : undefined;
-  value.assist4 !== "" ? formatted.assists.push(value.assist4) : undefined;
-
-  formatted.isTeamkill = value.is_victim_teammate;
-
-  const toReturn: IFormattedData = { type: DataTypes.KILLFEED, data: "" };
-  toReturn.data = formatted;
-
-  return toReturn;
-}
-
-function formatRosterData(value: any): IFormattedData {
-  let formatted: any = {};
-
-  const nameSplit = value.name.split(" #");
-  formatted.name = nameSplit[0];
-  formatted.tagline = nameSplit[1];
-
-  formatted.agentInternal = value.character;
-  formatted.locked = value.locked;
-  formatted.rank = value.rank;
-
-  const toReturn: IFormattedData = { type: DataTypes.ROSTER, data: "" };
-  toReturn.data = formatted;
-
-  return toReturn;
 }

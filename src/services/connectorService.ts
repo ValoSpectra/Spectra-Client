@@ -1,5 +1,5 @@
 import { WebSocket } from 'ws';
-import { IFormattedData } from './gepService';
+import { IFormattedData } from './formattingService';
 
 const DATA_PROCESSOR_URL = "ws://localhost:5100/ingest";
 
