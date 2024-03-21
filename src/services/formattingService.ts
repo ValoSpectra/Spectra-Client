@@ -107,5 +107,6 @@ export interface IFormattedData {
 export enum DataTypes {
     SCOREBOARD = "scoreboard",
     KILLFEED = "killfeed",
-    ROSTER = "roster"
+    ROSTER = "roster",
+    AUTH = "authenticate"
 }
