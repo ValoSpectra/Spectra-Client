@@ -2,7 +2,7 @@ import { app as electronApp } from 'electron';
 import { overwolf } from '@overwolf/ow-electron'
 import { ConnectorService } from './connectorService';
 import { setPlayerName } from '../main';
-import { FormattingService, IFormattedData } from './formattingService';
+import { DataTypes, FormattingService, IFormattedData, IFormattedScore } from './formattingService';
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
@@ -13,6 +13,7 @@ export class GameEventsService {
   private gepGamesId: number = VALORANT_ID;
   private connService = ConnectorService.getInstance();
   private formattingService = FormattingService.getInstance();
+  private currRoundNumber: number = 0;
 
   constructor() {
     this.registerOverwolfPackageManager();
@@ -64,7 +65,14 @@ export class GameEventsService {
 
     this.gepApi.on('new-game-event', (e, gameId, ...args) => {
       console.log("New game event");
-      console.log(args);
+      for (const data of args) {
+        if (data.key === "match_start") {
+          const toSend: IFormattedData = { type: DataTypes.MATCH_START, data: true };
+          this.connService.sendToIngest(toSend);
+        } else {
+          console.log(args);
+        }
+      }
     });
 
     this.gepApi.on('error', (e, gameId, error, ...args) => {
@@ -92,16 +100,10 @@ export class GameEventsService {
       const formatted: IFormattedData = this.formattingService.formatKillfeedData(value);
       this.connService.sendToIngest(formatted);
 
-    } else if (data.key === "match_start") {
-
-      const toSend: IFormattedData = { type: "matchStart", data: true };
-      this.connService.sendToIngest(toSend);
-
     } else if (data.key === "round_phase") {
 
-      const value = JSON.parse(data);
-      const toSend: IFormattedData = { type: "roundPhase", data: value };
-      this.connService.sendToIngest(toSend);
+      const formatted: IFormattedData = this.formattingService.formatRoundData(data.value, this.currRoundNumber);
+      this.connService.sendToIngest(formatted);
 
     } else if (data.key.startsWith("roster")) {
 
@@ -116,6 +118,34 @@ export class GameEventsService {
       console.log(`Detected player name: ${data.value}`);
       setPlayerName(data.value);
 
+    } else if (data.key === "team") {
+
+      const toSend: IFormattedData = { type: DataTypes.TEAM_IS_ATTACKER, data: true };
+
+      if (data.value === "defense") {
+        toSend.data = false;
+      } else if (data.value === "attack") {
+        toSend.data = true;
+      }
+
+      this.connService.sendToIngest(toSend);
+
+    } else if (data.key === "round_number") {
+
+      this.currRoundNumber = +data.value;
+
+    } else if (data.key === "health") {
+
+      // Nothing yet
+
+    } else if (data.key === "score") {
+
+      const toSend: IFormattedData = { type: DataTypes.SCORE, data: JSON.parse(data.value) as IFormattedScore }
+      this.connService.sendToIngest(toSend);
+
+    } else {
+      console.log(`Unhandled:`);
+      console.log(data);
     }
   }
 }

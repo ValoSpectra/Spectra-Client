@@ -16,7 +16,7 @@ export class FormattingService {
             tagline: nameSplit[1],
             agentInternal: data.character,
             isAlive: data.alive,
-            initialShield: data.shield * 25,
+            initialShield: data.shield,
             scoreboardWeaponInternal: data.weapon,
             currUltPoints: data.ult_points,
             maxUltPoints: data.ult_max,
@@ -65,6 +65,16 @@ export class FormattingService {
         return toReturn;
     }
 
+    public formatRoundData(data: any, roundNum: number): IFormattedData {
+        let formatted: IFormattedRoundInfo = {
+            roundNumber: roundNum,
+            roundPhase: data
+        }
+        const toReturn: IFormattedData = { type: DataTypes.ROUND_INFO, data: formatted }
+
+        return toReturn;
+    }
+
 }
 
 export interface IFormattedScoreboard {
@@ -99,14 +109,28 @@ export interface IFormattedRoster {
     rank: number,
 }
 
+export interface IFormattedRoundInfo {
+    roundPhase: string,
+    roundNumber: number
+}
+
+export interface IFormattedScore {
+    won: number,
+    lost: number
+}
+
 export interface IFormattedData {
     type: string,
-    data: IFormattedScoreboard | IFormattedKillfeed | IFormattedRoster | boolean,
+    data: IFormattedScoreboard | IFormattedKillfeed | IFormattedRoster | IFormattedRoundInfo | IFormattedScore | boolean,
 }
 
 export enum DataTypes {
     SCOREBOARD = "scoreboard",
     KILLFEED = "killfeed",
     ROSTER = "roster",
+    MATCH_START = "match_start",
+    ROUND_INFO = "round_info",
+    TEAM_IS_ATTACKER = "team_is_attacker",
+    SCORE = "score",
     AUTH = "authenticate"
 }

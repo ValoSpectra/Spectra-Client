@@ -24,13 +24,13 @@ export class ConnectorService {
 
     handleAuthProcess(playerName: string, teamName: string, groupCode: string, win: Electron.Main.BrowserWindow) {
         this.PLAYER_NAME = playerName;
-        this.TEAM_NAME = teamName;
+        this.TEAM_NAME = teamName.toUpperCase();
         this.GROUP_CODE = groupCode;
         this.win = win;
 
         this.ws = new WebSocket(INGEST_SERVER_URL);
         this.ws.once('open', () => {
-            this.ws.send(JSON.stringify({ type: DataTypes.AUTH, playerName: playerName, teamName: teamName, groupCode: groupCode }))
+            this.ws.send(JSON.stringify({ type: DataTypes.AUTH, playerName: this.PLAYER_NAME, teamName: this.TEAM_NAME, groupCode: this.GROUP_CODE }))
         });
         this.ws.once('message', (msg) => {
             const json = JSON.parse(msg.toString());
@@ -94,7 +94,9 @@ export class ConnectorService {
     }
 
     sendToIngest(formatted: IFormattedData) {
-        const toSend = { playerName: this.PLAYER_NAME, teamName: this.TEAM_NAME, groupCode: this.GROUP_CODE, ...formatted };
-        this.ws.send(JSON.stringify(toSend));
+        if (this.enabled) {
+            const toSend = { playerName: this.PLAYER_NAME, teamName: this.TEAM_NAME, groupCode: this.GROUP_CODE, ...formatted };
+            this.ws.send(JSON.stringify(toSend));
+        }
     }
 }
