@@ -50,13 +50,16 @@ export class FormattingService {
         return toReturn;
     }
 
-    public formatRosterData(data: any): IFormattedData {
+    public formatRosterData(data: any, rosterTag: string): IFormattedData {
         const nameSplit = data.name.split(" #");
+        const positionStr = rosterTag.split("_")[1];
 
         let formatted: IFormattedRoster = {
             name: nameSplit[0],
-            tagline: nameSplit[1],
+            tagline: nameSplit[1] ? nameSplit[1] : "",
             agentInternal: data.character,
+            playerId: data.player_id,
+            position: +positionStr,
             locked: data.locked,
             rank: data.rank
         };
@@ -105,6 +108,8 @@ export interface IFormattedRoster {
     name: string,
     tagline: string,
     agentInternal: string,
+    playerId: string,
+    position: number,
     locked: boolean,
     rank: number,
 }
@@ -132,5 +137,7 @@ export enum DataTypes {
     ROUND_INFO = "round_info",
     TEAM_IS_ATTACKER = "team_is_attacker",
     SCORE = "score",
+    MAP = "map",
+    SPIKE_PLANTED = "spike_planted",
     AUTH = "authenticate"
 }

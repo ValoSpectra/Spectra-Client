@@ -110,7 +110,7 @@ export class GameEventsService {
       const value = JSON.parse(data.value);
       // Only pcoress roster of team
       if (value.teammate === false) return;
-      const formatted: IFormattedData = this.formattingService.formatRosterData(value);
+      const formatted: IFormattedData = this.formattingService.formatRosterData(value, data.key);
       this.connService.sendToIngest(formatted);
 
     } else if (data.key === "player_name") {
@@ -141,6 +141,17 @@ export class GameEventsService {
     } else if (data.key === "score") {
 
       const toSend: IFormattedData = { type: DataTypes.SCORE, data: JSON.parse(data.value) as IFormattedScore }
+      this.connService.sendToIngest(toSend);
+
+
+    } else if (data.key === "map") {
+
+      const toSend: IFormattedData = { type: DataTypes.MAP, data: data.value }
+      this.connService.sendToIngest(toSend);
+
+    } else if (data.key === "spike_planted") {
+
+      const toSend: IFormattedData = { type: DataTypes.SPIKE_PLANTED, data: true }
       this.connService.sendToIngest(toSend);
 
     } else {
