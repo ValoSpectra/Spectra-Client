@@ -19,7 +19,8 @@ const createWindow = () => {
       preload: path.join(__dirname, "./preload.js")
     },
     fullscreenable: false,
-    titleBarOverlay: true
+    titleBarOverlay: true,
+    icon: path.join(__dirname, './assets/hooj4k.ico')
   })
 
   ipcMain.on('process-inputs', processInputs);
