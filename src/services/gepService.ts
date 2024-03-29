@@ -69,8 +69,20 @@ export class GameEventsService {
         if (data.key === "match_start") {
           const toSend: IFormattedData = { type: DataTypes.MATCH_START, data: true };
           this.connService.sendToIngest(toSend);
+        } else if (data.key === "spike_planted") {
+          console.log(data);
+          const toSend: IFormattedData = { type: DataTypes.SPIKE_PLANTED, data: true }
+          this.connService.sendToIngest(toSend);
+        } else if (data.key === "spike_detonated") {
+          console.log(data);
+          const toSend: IFormattedData = { type: DataTypes.SPIKE_DETONATED, data: true }
+          this.connService.sendToIngest(toSend);
+        } else if (data.key === "spike_defused") {
+          console.log(data);
+          const toSend: IFormattedData = { type: DataTypes.SPIKE_DEFUSED, data: true }
+          this.connService.sendToIngest(toSend);
         } else {
-          console.log(args);
+          console.log(data);
         }
       }
     });
@@ -147,11 +159,6 @@ export class GameEventsService {
     } else if (data.key === "map") {
 
       const toSend: IFormattedData = { type: DataTypes.MAP, data: data.value }
-      this.connService.sendToIngest(toSend);
-
-    } else if (data.key === "spike_planted") {
-
-      const toSend: IFormattedData = { type: DataTypes.SPIKE_PLANTED, data: true }
       this.connService.sendToIngest(toSend);
 
     } else {

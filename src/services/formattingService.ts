@@ -139,5 +139,7 @@ export enum DataTypes {
     SCORE = "score",
     MAP = "map",
     SPIKE_PLANTED = "spike_planted",
+    SPIKE_DETONATED = "spike_detonated",
+    SPIKE_DEFUSED = "spike_defused",
     AUTH = "authenticate"
 }
