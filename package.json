@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
-    "build": "ow-electron-builder --publish=never"
+    "build": "ow-electron-builder --publish=never --win=portable"
   },
   "author": "DarkView",
   "license": "GPL-3.0-only",
@@ -21,13 +21,13 @@
     "@types/node": "^20.11.27",
     "@types/ws": "^8.5.10",
     "electron": "^28.2.5",
-    "ts-node": "^10.9.2",
     "typescript": "^5.4.2"
   },
   "dependencies": {
     "@overwolf/ow-electron": "^28.2.5",
     "@overwolf/ow-electron-builder": "^24.7.0",
     "bufferutil": "^4.0.8",
+    "ts-node": "^10.9.2",
     "ws": "^8.16.0"
   }
 }
