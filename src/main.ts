@@ -12,7 +12,7 @@ let win!: Electron.Main.BrowserWindow;
 const createWindow = () => {
   win = new BrowserWindow({
     width: 600,
-    height: 500,
+    height: 600,
     backgroundColor: '#303338',
     resizable: false,
     webPreferences: {
@@ -24,7 +24,6 @@ const createWindow = () => {
   })
 
   ipcMain.on('process-inputs', processInputs);
-  ipcMain.on('replay', replay);
 
   win.menuBarVisible = false;
   win.loadFile('./src/frontend/index.html');
@@ -48,32 +47,32 @@ app.on('window-all-closed', () => {
   }
 })
 
-function processInputs(event: any, groupId: string, teamName: string, playerName: string) {
+interface Team {
+  name: string,
+  tricode: string,
+  url: string
+}
+
+function processInputs(event: any, groupCode: string, obsName: string, leftTeam: Team, rightTeam: Team) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
 
-  if (playerName === "" || teamName == "" || groupId == "") {
-    dialog.showMessageBoxSync(win, {
-      title: "Inhouse Tracker - Error",
-      message: "Please input data into all fields!",
-      type: "error"
-    });
-    return;
+  if (obsName === "" || groupCode == "") {
+    if (leftTeam.name === "" || leftTeam.tricode === "" || leftTeam.url === "") {
+      if (rightTeam.name === "" || rightTeam.tricode === "" || rightTeam.url === "") {
+        dialog.showMessageBoxSync(win, {
+          title: "Spectra Client - Error",
+          message: "Please input data into all fields!",
+          type: "error"
+        });
+        return;
+      }
+    }
   }
 
-  console.log(`Received Name ${playerName}, Team ${teamName} and Group Code ${groupId}`);
-  win!.setTitle(`Woohoojin Inhouse Tracker | Attempting to connect...`);
-  connService.handleAuthProcess(playerName, teamName, groupId, win);
-}
-
-function replay() {
-  gepService.processGameEvent({
-    gameId: 21640,
-    feature: 'match_info',
-    category: 'match_info',
-    key: 'scoreboard_0',
-    value: '{"name":"Dunkel #Licht","character":"Gumshoe","teammate":true,"alive":true,"player_id":"afd57152-b535-58d2-a18f-1d530edca8ae","shield":0,"weapon":"TX_Hud_Pistol_Luger","ult_points":0,"ult_max":6,"kills":0,"deaths":0,"assists":0,"money":300,"is_local":true}'
-  });
+  console.log(`Received Observer Name ${obsName}, Group Code ${groupCode}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`);
+  win!.setTitle(`Spectra Client | Attempting to connect...`);
+  connService.handleAuthProcess(obsName, groupCode, leftTeam, rightTeam, win);
 }
 
 function overwolfSetup() {

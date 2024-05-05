@@ -6,24 +6,44 @@
   <meta charset="UTF-8" />
   <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'">
-  <title class="txt">Woohoojin Inhouse Tracker</title>
+  <title class="txt">Spectra Client</title>
 </head>
 
 <body>
   <div>
     <text class="txt">Please double-check your Valorant name:</text>
-    <input type="text" class="textInput" id="ValorantNameInput" placeholder="Auto-detected on game start" disabled="true"></input>
+    <input type="text" class="textInput" id="ValorantNameInput" placeholder="Auto-detected on game start"
+      disabled="true"></input>
   </div>
   <div>
-    <text class="txt">Please enter your team tricode:</text>
-    <input type="text" class="textInput" id="TeamNameInput" maxlength="5" placeholder="e.g. Hooj, TRX, ... " value="TestTeam"></input>
-  </div>
-  <div>
-    <text class="txt">Please enter your Group Code:</text>
+    <text class="txt">Enter your Group Code:</text>
     <input type="text" class="textInput" id="GroupCodeInput" placeholder="e.g. AHO716" value="A"></input>
   </div>
+  <div>
+    <h1 class="txt">Left Team</h3>
+      <text class="txt">Enter left team name:</text>
+      <input type="text" class="textInput" id="TeamLeftNameInput" maxlength="30"
+        placeholder="e.g. Tinfoil Rex, 100 Bees, ... " value="TestTeam Full Name"></input>
+      <text class="txt">Enter left team tricode:</text>
+      <input type="text" class="textInput" id="TeamLeftTricodeInput" maxlength="5" placeholder="e.g. TRX, 100B, ... "
+        value="TestTeam"></input>
+      <text class="txt">Enter left team logo URL:</text>
+      <input type="text" class="textInput" id="TeamLeftLogoInput" maxlength="50"
+        placeholder="e.g. https://imgur.com/... " value="https://i.bfz.moe/underpeel/logos/ABP.png"></input>
+  </div>
+  <div>
+    <h1 class="txt">Right Team</h3>
+      <text class="txt">Enter right team name:</text>
+      <input type="text" class="textInput" id="TeamRightNameInput" maxlength="30"
+        placeholder="e.g. Tinfoil Rex, 100 Bees, ... " value="Hooj Team Full Name"></input>
+      <text class="txt">Enter right team tricode:</text>
+      <input type="text" class="textInput" id="TeamRightTricodeInput" maxlength="5" placeholder="e.g. TRX, 100B, ... "
+        value="Hooj"></input>
+      <text class="txt">Enter right team logo URL:</text>
+      <input type="text" class="textInput" id="TeamRightLogoInput" maxlength="50"
+        placeholder="e.g. https://imgur.com/... " value="https://i.bfz.moe/underpeel/logos/RAZE.png"></input>
+  </div>
   <p></p><button id="ConnectButton">Connect</button>
-  <p></p><button id="Replay">Replay</button>
 </body>
 
 </html>

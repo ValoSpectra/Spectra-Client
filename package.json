@@ -1,7 +1,7 @@
 {
   "name": "inhouse-tracker-client",
   "version": "0.0.1",
-  "description": "A standalone OW application to display game information from inhouses on the Woohoojin Stream Overlay",
+  "description": "A standalone OW application to display game information from inhouses on the Stream Overlay",
   "private": true,
   "main": "entry.js",
   "overwolf": {

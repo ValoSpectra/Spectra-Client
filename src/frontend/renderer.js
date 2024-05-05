@@ -1,11 +1,10 @@
 document.querySelector("#ConnectButton").addEventListener("click", () => {
-  const playerName = document.getElementById("ValorantNameInput").value;
-  const teamName = document.getElementById("TeamNameInput").value;
-  const groupId = document.getElementById("GroupCodeInput").value;
-  window.electronAPI.processInputs(groupId, teamName, playerName);
-});
-document.querySelector("#Replay").addEventListener("click", () => {
-  window.electronAPI.replay();
+  const obsName = document.getElementById("ValorantNameInput").value;
+  const groupCode = document.getElementById("GroupCodeInput").value;
+
+  const leftTeam = {name: document.getElementById("TeamLeftNameInput").value, tricode: document.getElementById("TeamLeftTricodeInput").value, url: document.getElementById("TeamLeftLogoInput").value};
+  const rightTeam = {name: document.getElementById("TeamRightNameInput").value, tricode: document.getElementById("TeamRightTricodeInput").value, url: document.getElementById("TeamRightLogoInput").value};
+  window.electronAPI.processInputs(groupCode, obsName, leftTeam, rightTeam);
 });
 
 window.electronAPI.setPlayerName((value) => {
