@@ -77,6 +77,7 @@ function processInputs(event: any, groupCode: string, obsName: string, leftTeam:
 
 function overwolfSetup() {
   console.log(`Starting Overwolf Setup`);
+  gepService.registerWindow(win);
   gepService.registerGame(21640);
 }
 

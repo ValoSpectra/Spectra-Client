@@ -1,4 +1,4 @@
-import { app as electronApp } from 'electron';
+import { dialog, app as electronApp } from 'electron';
 import { overwolf } from '@overwolf/ow-electron'
 import { ConnectorService } from './connectorService';
 import { setPlayerName } from '../main';
@@ -14,6 +14,7 @@ export class GameEventsService {
   private connService = ConnectorService.getInstance();
   private formattingService = FormattingService.getInstance();
   private currRoundNumber: number = 0;
+  private win: any;
 
   constructor() {
     this.registerOverwolfPackageManager();
@@ -21,6 +22,10 @@ export class GameEventsService {
 
   public registerGame(gepGamesId: number) {
     this.gepGamesId = gepGamesId;
+  }
+
+  public registerWindow(win: any) {
+    this.win = win;
   }
 
   public async setRequiredFeaturesValorant() {
@@ -33,6 +38,12 @@ export class GameEventsService {
       if (packageName !== 'gep') {
         return;
       }
+      console.log(`GEP version ${version} ready!`);
+      dialog.showMessageBoxSync(this.win!, {
+        title: "Spectra Client - Info",
+        message: "Ready to process game data.",
+        type: "info",
+      });
 
       this.onGameEventsPackageReady();
     });

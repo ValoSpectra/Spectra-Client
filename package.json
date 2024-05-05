@@ -1,5 +1,5 @@
 {
-  "name": "inhouse-tracker-client",
+  "name": "spectra-client",
   "version": "0.0.1",
   "description": "A standalone OW application to display game information from inhouses on the Stream Overlay",
   "private": true,
@@ -10,7 +10,8 @@
     ]
   },
   "scripts": {
-    "start": "ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
+    "start": "ow-electron .",
+    "start-qa": "ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
     "build": "ow-electron-builder --publish=never --win=portable"
   },
   "author": "DarkView",
