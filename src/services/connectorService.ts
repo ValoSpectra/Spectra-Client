@@ -40,7 +40,7 @@ export class ConnectorService {
 
     handleAuthProcess(obsName: string, groupCode: string, leftTeam: Team, rightTeam: Team, win: Electron.Main.BrowserWindow) {
         this.OBS_NAME = obsName;
-        this.GROUP_CODE = groupCode;
+        this.GROUP_CODE = groupCode.toUpperCase();
         this.LEFT_TEAM = leftTeam;
         this.RIGHT_TEAM = rightTeam;
         this.win = win;
@@ -112,7 +112,7 @@ export class ConnectorService {
 
     sendToIngest(formatted: IFormattedData) {
         if (this.enabled) {
-            const toSend = { playerName: this.OBS_NAME, groupCode: this.GROUP_CODE, ...formatted };
+            const toSend = { playerName: this.OBS_NAME, groupCode: this.GROUP_CODE, teamTricode: this.LEFT_TEAM.tricode, ...formatted };
             this.ws.send(JSON.stringify(toSend));
         }
     }
