@@ -3,18 +3,27 @@
   "version": "0.0.1",
   "description": "A standalone OW application to display game information from inhouses on the Stream Overlay",
   "private": true,
-  "main": "entry.js",
+  "main": "./app/main.js",
   "overwolf": {
     "packages": [
       "gep"
     ]
   },
   "scripts": {
-    "start": "ow-electron .",
-    "start-qa": "ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
-    "build": "ow-electron-builder --publish=never --win=portable"
+    "start": "npx tsc && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
+    "build": "npx tsc && ow-electron-builder --publish=never",
+    "postinstall": "ow-electron-builder install-app-deps"
   },
-  "author": "DarkView",
+  "build": {
+    "productName": "Spectra Client",
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "include": "build/installer.nsh"
+    }
+  },
+  "author": "ValoSpectra Team",
   "license": "GPL-3.0-only",
   "devDependencies": {
     "@overwolf/ow-electron-packages-types": "^0.0.9",
@@ -28,7 +37,7 @@
     "@overwolf/ow-electron": "^28.2.5",
     "@overwolf/ow-electron-builder": "^24.7.0",
     "bufferutil": "^4.0.8",
-    "ts-node": "^10.9.2",
+    "electron-log": "^5.1.2",
     "ws": "^8.16.0"
   }
 }

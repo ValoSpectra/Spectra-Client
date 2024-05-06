@@ -3,6 +3,7 @@ import { overwolf } from '@overwolf/ow-electron'
 import { ConnectorService } from './connectorService';
 import { setPlayerName } from '../main';
 import { DataTypes, FormattingService, IFormattedData, IFormattedScore } from './formattingService';
+import log from 'electron-log';
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
@@ -10,7 +11,7 @@ let enabled = false;
 
 export class GameEventsService {
   private gepApi!: overwolf.packages.OverwolfGameEventPackage;
-  private gepGamesId: number = VALORANT_ID;
+  private valorantId: number = VALORANT_ID;
   private connService = ConnectorService.getInstance();
   private formattingService = FormattingService.getInstance();
   private currRoundNumber: number = 0;
@@ -21,7 +22,7 @@ export class GameEventsService {
   }
 
   public registerGame(gepGamesId: number) {
-    this.gepGamesId = gepGamesId;
+    this.valorantId = gepGamesId;
   }
 
   public registerWindow(win: any) {
@@ -38,12 +39,8 @@ export class GameEventsService {
       if (packageName !== 'gep') {
         return;
       }
-      console.log(`GEP version ${version} ready!`);
-      dialog.showMessageBoxSync(this.win!, {
-        title: "Spectra Client - Info",
-        message: "Ready to process game data.",
-        type: "info",
-      });
+      log.info(`GEP version ${version} ready!`);
+      this.win!.setTitle(`Spectra Client | Ready (GEP: ${version})`);
 
       this.onGameEventsPackageReady();
     });
@@ -54,16 +51,17 @@ export class GameEventsService {
 
     this.gepApi.removeAllListeners();
 
-    this.gepApi.on('game-detected', (e, gameId, name, gameInfo) => {
-      if (!(this.gepGamesId === gameId)) {
-        // Don't connect to non-Valorant games
+    this.gepApi.on('game-detected', async (e, gameId, name, gameInfo) => {
+      log.info(`Game detected: ${gameId} - ${name}`);
+      if (!(this.valorantId === gameId)) {
+        log.info("Game not Valorant - ignoring");
         return;
       }
+      log.info("Game IS Valorant - enabling");
+      
       e.enable();
-      console.log("Valorant detected as running");
-      enabled = true;
-
       this.setRequiredFeaturesValorant();
+      enabled = true;
     });
 
     this.gepApi.on('new-info-update', (e, gameId, ...args) => {
@@ -75,31 +73,27 @@ export class GameEventsService {
     });
 
     this.gepApi.on('new-game-event', (e, gameId, ...args) => {
-      console.log("New game event");
       for (const data of args) {
         if (data.key === "match_start") {
           const toSend: IFormattedData = { type: DataTypes.MATCH_START, data: true };
           this.connService.sendToIngest(toSend);
         } else if (data.key === "spike_planted") {
-          console.log(data);
           const toSend: IFormattedData = { type: DataTypes.SPIKE_PLANTED, data: true }
           this.connService.sendToIngest(toSend);
         } else if (data.key === "spike_detonated") {
-          console.log(data);
           const toSend: IFormattedData = { type: DataTypes.SPIKE_DETONATED, data: true }
           this.connService.sendToIngest(toSend);
         } else if (data.key === "spike_defused") {
-          console.log(data);
           const toSend: IFormattedData = { type: DataTypes.SPIKE_DEFUSED, data: true }
           this.connService.sendToIngest(toSend);
         } else {
-          console.log(data);
+          log.info(data);
         }
       }
     });
 
     this.gepApi.on('error', (e, gameId, error, ...args) => {
-      console.log("error");
+      log.info("error");
       enabled = false;
     });
   }
@@ -138,7 +132,7 @@ export class GameEventsService {
 
     } else if (data.key === "player_name") {
 
-      console.log(`Detected player name: ${data.value}`);
+      log.info(`Detected player name: ${data.value}`);
       setPlayerName(data.value);
 
     } else if (data.key === "team") {
@@ -173,8 +167,7 @@ export class GameEventsService {
       this.connService.sendToIngest(toSend);
 
     } else {
-      console.log(`Unhandled:`);
-      console.log(data);
+      log.info("Unhandled: ", data);
     }
   }
 }

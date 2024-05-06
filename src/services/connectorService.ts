@@ -1,6 +1,7 @@
 import { WebSocket } from 'ws';
 import { DataTypes, IFormattedData } from './formattingService';
 import { dialog } from 'electron';
+import log from 'electron-log';
 
 const INGEST_SERVER_URL = "ws://localhost:5100/ingest";
 
@@ -54,12 +55,12 @@ export class ConnectorService {
 
             if (json.type === DataTypes.AUTH) {
                 if (json.value === true) {
-                    console.log('Authentication successful!');
+                    log.info('Authentication successful!');
                     this.win.setTitle(`Spectra Client | Connected with Group ID: ${this.GROUP_CODE}`);
                     this.enabled = true;
                     this.websocketSetup();
                 } else {
-                    console.log('Authentication failed!');
+                    log.info('Authentication failed!');
                     this.win.setTitle(`Spectra Client | Connection failed, invalid data`);
                     this.enabled = false;
                     this.ws?.terminate();
@@ -74,7 +75,7 @@ export class ConnectorService {
         });
 
         this.ws.on('close', () => {
-            console.log('Connection to spectra server closed');
+            log.info('Connection to spectra server closed');
             if (this.unreachable === true) {
                 this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
 
@@ -91,14 +92,14 @@ export class ConnectorService {
         });
 
         this.ws.on('error', (e: any) => {
-            console.log('Failed connection to spectra server - is it up?');
+            log.info('Failed connection to spectra server - is it up?');
             if (e.code === "ECONNREFUSED") {
                 this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
                 this.unreachable = true;
             } else {
                 this.win.setTitle(`Spectra Client | Connection failed`);
             }
-            console.log(e);
+            log.info(e);
         });
     }
 
@@ -106,7 +107,7 @@ export class ConnectorService {
     private websocketSetup() {
         this.ws.on('message', (msg) => {
             const json = JSON.parse(msg.toString());
-            console.log(json);
+            log.info(json);
         });
     }
 

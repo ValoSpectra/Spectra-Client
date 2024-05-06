@@ -2,12 +2,15 @@ import path from "path"
 import { GameEventsService } from "./services/gepService";
 import { ConnectorService } from "./services/connectorService";
 import { dialog } from "electron";
+import log from 'electron-log';
 
 const { app, BrowserWindow, ipcMain } = require('electron/main')
 
 const gepService = new GameEventsService();
 const connService = ConnectorService.getInstance();
 let win!: Electron.Main.BrowserWindow;
+
+const VALORANT_ID = 21640;
 
 const createWindow = () => {
   win = new BrowserWindow({
@@ -70,15 +73,15 @@ function processInputs(event: any, groupCode: string, obsName: string, leftTeam:
     }
   }
 
-  console.log(`Received Observer Name ${obsName}, Group Code ${groupCode}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`);
+  log.info(`Received Observer Name ${obsName}, Group Code ${groupCode}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`);
   win!.setTitle(`Spectra Client | Attempting to connect...`);
   connService.handleAuthProcess(obsName, groupCode, leftTeam, rightTeam, win);
 }
 
 function overwolfSetup() {
-  console.log(`Starting Overwolf Setup`);
+  log.info(`Starting Overwolf Setup`);
   gepService.registerWindow(win);
-  gepService.registerGame(21640);
+  gepService.registerGame(VALORANT_ID);
 }
 
 export function setPlayerName(name: string) {
