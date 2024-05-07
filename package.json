@@ -20,7 +20,9 @@
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
-      "include": "build/installer.nsh"
+      "include": "build/installer.nsh",
+      "deleteAppDataOnUninstall": true,
+      "runAfterFinish": false
     }
   },
   "author": "ValoSpectra Team",

@@ -33,6 +33,10 @@ const createWindow = () => {
 }
 
 app.whenReady().then(() => {
+  app.setLoginItemSettings({
+    openAtLogin: false,
+    enabled: false
+  });
   createWindow();
   overwolfSetup();
 
