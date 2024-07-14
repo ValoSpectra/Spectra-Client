@@ -1,6 +1,7 @@
 export class FormattingService {
     private static instance: FormattingService;
 
+
     private constructor() { };
 
     public static getInstance(): FormattingService {
@@ -14,12 +15,14 @@ export class FormattingService {
         let formatted: IFormattedScoreboard = {
             name: nameSplit[0],
             tagline: nameSplit[1],
+            startTeam: data.team,
             agentInternal: data.character,
             isAlive: data.alive,
             initialShield: data.shield,
             scoreboardWeaponInternal: data.weapon,
             currUltPoints: data.ult_points,
             maxUltPoints: data.ult_max,
+            hasSpike: data.spike,
             money: data.money,
             kills: data.kills,
             deaths: data.deaths,
@@ -57,6 +60,7 @@ export class FormattingService {
         let formatted: IFormattedRoster = {
             name: nameSplit[0],
             tagline: nameSplit[1] ? nameSplit[1] : "",
+            startTeam: data.team,
             agentInternal: data.character,
             playerId: data.player_id,
             position: +positionStr,
@@ -83,12 +87,14 @@ export class FormattingService {
 export interface IFormattedScoreboard {
     name: string,
     tagline: string,
+    startTeam: number,
     agentInternal:string,
     isAlive: boolean,
     initialShield: number,
     scoreboardWeaponInternal: string,
     currUltPoints: number,
     maxUltPoints: number,
+    hasSpike: boolean,
     money: number,
     kills: number,
     deaths: number,
@@ -107,6 +113,7 @@ export interface IFormattedKillfeed {
 export interface IFormattedRoster {
     name: string,
     tagline: string,
+    startTeam: number,
     agentInternal: string,
     playerId: string,
     position: number,

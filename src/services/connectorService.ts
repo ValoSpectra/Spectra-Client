@@ -113,7 +113,7 @@ export class ConnectorService {
 
     sendToIngest(formatted: IFormattedData) {
         if (this.enabled) {
-            const toSend = { playerName: this.OBS_NAME, groupCode: this.GROUP_CODE, teamTricode: this.LEFT_TEAM.tricode, ...formatted };
+            const toSend = { playerName: this.OBS_NAME, groupCode: this.GROUP_CODE, ...formatted };
             this.ws.send(JSON.stringify(toSend));
         }
     }
