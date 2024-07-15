@@ -104,16 +104,12 @@ export class GameEventsService {
     if (data.key.startsWith("scoreboard")) {
 
       const value = JSON.parse(data.value);
-      // Only process teammate events
-      if (value.teammate !== true) return;
       const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
       this.connService.sendToIngest(formatted);
 
     } else if (data.key === "kill_feed") {
 
       const value = JSON.parse(data.value);
-      // Only process KILLS from teammates
-      if (value.is_attacker_teammate === false) return;
       const formatted: IFormattedData = this.formattingService.formatKillfeedData(value);
       this.connService.sendToIngest(formatted);
 
@@ -125,8 +121,6 @@ export class GameEventsService {
     } else if (data.key.startsWith("roster")) {
 
       const value = JSON.parse(data.value);
-      // Only pcoress roster of team
-      if (value.teammate === false) return;
       const formatted: IFormattedData = this.formattingService.formatRosterData(value, data.key);
       this.connService.sendToIngest(formatted);
 
