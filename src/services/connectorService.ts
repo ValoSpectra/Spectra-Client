@@ -48,7 +48,7 @@ export class ConnectorService {
 
         this.ws = new WebSocket(this.INGEST_SERVER_URL);
         this.ws.once('open', () => {
-            this.ws.send(JSON.stringify({ type: DataTypes.AUTH, playerName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM}))
+            this.ws.send(JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM}))
         });
         this.ws.once('message', (msg) => {
             const json = JSON.parse(msg.toString());
@@ -113,7 +113,7 @@ export class ConnectorService {
 
     sendToIngest(formatted: IFormattedData) {
         if (this.enabled) {
-            const toSend = { playerName: this.OBS_NAME, groupCode: this.GROUP_CODE, ...formatted };
+            const toSend = { obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, ...formatted };
             this.ws.send(JSON.stringify(toSend));
         }
     }
