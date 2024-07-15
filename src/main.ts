@@ -60,9 +60,10 @@ interface Team {
   url: string
 }
 
-function processInputs(event: any, groupCode: string, obsName: string, leftTeam: Team, rightTeam: Team) {
+function processInputs(event: any, ingestIp: string, groupCode: string, obsName: string, leftTeam: Team, rightTeam: Team) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
+  log.info(`Received Inputs: ${ingestIp}, ${groupCode}, ${obsName}, ${leftTeam}, ${rightTeam}`);
 
   if (obsName === "" || groupCode == "") {
     if (leftTeam.name === "" || leftTeam.tricode === "" || leftTeam.url === "") {
@@ -79,7 +80,7 @@ function processInputs(event: any, groupCode: string, obsName: string, leftTeam:
 
   log.info(`Received Observer Name ${obsName}, Group Code ${groupCode}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`);
   win!.setTitle(`Spectra Client | Attempting to connect...`);
-  connService.handleAuthProcess(obsName, groupCode, leftTeam, rightTeam, win);
+  connService.handleAuthProcess(ingestIp, obsName, groupCode, leftTeam, rightTeam, win);
 }
 
 function overwolfSetup() {

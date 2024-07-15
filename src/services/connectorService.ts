@@ -3,8 +3,6 @@ import { DataTypes, IFormattedData } from './formattingService';
 import { dialog } from 'electron';
 import log from 'electron-log';
 
-const INGEST_SERVER_URL = "ws://localhost:5100/ingest";
-
 interface Team {
   name: string,
   tricode: string,
@@ -12,6 +10,7 @@ interface Team {
 }
 
 export class ConnectorService {
+    private INGEST_SERVER_URL = "ws://localhost:5100/ingest"
     private OBS_NAME = "";
     private GROUP_CODE = "";
     private LEFT_TEAM: Team = {
@@ -39,14 +38,15 @@ export class ConnectorService {
         return ConnectorService.instance;
     }
 
-    handleAuthProcess(obsName: string, groupCode: string, leftTeam: Team, rightTeam: Team, win: Electron.Main.BrowserWindow) {
+    handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: Team, rightTeam: Team, win: Electron.Main.BrowserWindow) {
+        this.INGEST_SERVER_URL = `ws://${ingestIp}:5100/ingest`;
         this.OBS_NAME = obsName;
         this.GROUP_CODE = groupCode.toUpperCase();
         this.LEFT_TEAM = leftTeam;
         this.RIGHT_TEAM = rightTeam;
         this.win = win;
 
-        this.ws = new WebSocket(INGEST_SERVER_URL);
+        this.ws = new WebSocket(this.INGEST_SERVER_URL);
         this.ws.once('open', () => {
             this.ws.send(JSON.stringify({ type: DataTypes.AUTH, playerName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM}))
         });
