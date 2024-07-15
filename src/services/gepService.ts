@@ -163,6 +163,12 @@ export class GameEventsService {
 
     } else if (data.key === "map") {
 
+      // Why do we do this? The TS enum on the server side does not like "Infinity"
+      // as one of its members because it counts as a numeric name :)
+      if (data.value === "Infinity") {
+        data.value = "Infinityy";
+      }
+
       const toSend: IFormattedData = { type: DataTypes.MAP, data: data.value }
       this.connService.sendToIngest(toSend);
 
