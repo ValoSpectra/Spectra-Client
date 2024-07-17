@@ -47,7 +47,8 @@ export class ConnectorService {
         this.win = win;
 
         this.ws = io.connect(this.INGEST_SERVER_URL, { reconnection: true, reconnectionDelay: 1000, reconnectionDelayMax: 5000 });
-        this.ws.once('message', (msg) => {
+
+        this.ws.once('obs_logon_ack', (msg) => {
             const json = JSON.parse(msg.toString());
 
             if (json.type === DataTypes.AUTH) {
@@ -99,9 +100,7 @@ export class ConnectorService {
             log.info(e);
         });
 
-        this.ws.once('open', () => {
-            this.ws.send(JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM}))
-        });
+        this.ws.emit('obs_logon', JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM}));
     }
 
 

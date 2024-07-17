@@ -10,18 +10,18 @@
     ]
   },
   "scripts": {
-    "start": "npx tsc && copy-files-from-to && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
-    "build": "npx tsc && ow-electron-builder --publish=never",
+    "start": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
+    "build": "rimraf app && npx tsc && copy-files-from-to && ow-electron-builder --publish=never",
     "postinstall": "ow-electron-builder install-app-deps"
   },
   "copyFiles": [
     {
-      "from": "src/frontend",
-      "to": "app"
+      "from": "src/frontend/*",
+      "to": "app/frontend/"
     },
     {
-      "from": "src/assets",
-      "to": "app"
+      "from": "src/assets/*",
+      "to": "app/assets/"
     },
     {
       "from": "src/preload.js",
@@ -48,6 +48,7 @@
     "@types/ws": "^8.5.10",
     "copy-files-from-to": "^3.11.0",
     "electron": "^28.2.5",
+    "rimraf": "^6.0.1",
     "typescript": "^5.4.2"
   },
   "dependencies": {
