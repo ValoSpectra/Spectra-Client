@@ -10,10 +10,24 @@
     ]
   },
   "scripts": {
-    "start": "npx tsc && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
+    "start": "npx tsc && copy-files-from-to && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
     "build": "npx tsc && ow-electron-builder --publish=never",
     "postinstall": "ow-electron-builder install-app-deps"
   },
+  "copyFiles": [
+    {
+      "from": "src/frontend",
+      "to": "app"
+    },
+    {
+      "from": "src/assets",
+      "to": "app"
+    },
+    {
+      "from": "src/preload.js",
+      "to": "app/preload.js"
+    }
+  ],
   "build": {
     "productName": "Spectra Client",
     "nsis": {
@@ -32,6 +46,7 @@
     "@overwolf/types": "^3.24.7",
     "@types/node": "^20.11.27",
     "@types/ws": "^8.5.10",
+    "copy-files-from-to": "^3.11.0",
     "electron": "^28.2.5",
     "typescript": "^5.4.2"
   },
@@ -40,6 +55,6 @@
     "@overwolf/ow-electron-builder": "^24.7.0",
     "bufferutil": "^4.0.8",
     "electron-log": "^5.1.2",
-    "ws": "^8.16.0"
+    "socket.io-client": "^4.7.5"
   }
 }

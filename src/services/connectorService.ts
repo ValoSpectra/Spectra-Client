@@ -1,7 +1,7 @@
-import { WebSocket } from 'ws';
 import { DataTypes, IFormattedData } from './formattingService';
 import { dialog } from 'electron';
 import log from 'electron-log';
+import * as io from "socket.io-client";
 
 interface Team {
   name: string,
@@ -10,7 +10,7 @@ interface Team {
 }
 
 export class ConnectorService {
-    private INGEST_SERVER_URL = "ws://localhost:5100/ingest"
+    private INGEST_SERVER_URL = "http://localhost:5100"
     private OBS_NAME = "";
     private GROUP_CODE = "";
     private LEFT_TEAM: Team = {
@@ -26,7 +26,7 @@ export class ConnectorService {
 
     private enabled = false;
     private unreachable = false;
-    private ws!: WebSocket;
+    private ws!: io.Socket;
     private win!: Electron.Main.BrowserWindow;
 
     private static instance: ConnectorService;
@@ -39,17 +39,14 @@ export class ConnectorService {
     }
 
     handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: Team, rightTeam: Team, win: Electron.Main.BrowserWindow) {
-        this.INGEST_SERVER_URL = `ws://${ingestIp}:5100/ingest`;
+        this.INGEST_SERVER_URL = `http://${ingestIp}:5100`;
         this.OBS_NAME = obsName;
         this.GROUP_CODE = groupCode.toUpperCase();
         this.LEFT_TEAM = leftTeam;
         this.RIGHT_TEAM = rightTeam;
         this.win = win;
 
-        this.ws = new WebSocket(this.INGEST_SERVER_URL);
-        this.ws.once('open', () => {
-            this.ws.send(JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM}))
-        });
+        this.ws = io.connect(this.INGEST_SERVER_URL, { reconnection: true, reconnectionDelay: 1000, reconnectionDelayMax: 5000 });
         this.ws.once('message', (msg) => {
             const json = JSON.parse(msg.toString());
 
@@ -63,7 +60,7 @@ export class ConnectorService {
                     log.info('Authentication failed!');
                     this.win.setTitle(`Spectra Client | Connection failed, invalid data`);
                     this.enabled = false;
-                    this.ws?.terminate();
+                    this.ws.disconnect();
 
                     dialog.showMessageBoxSync(win, {
                         title: "Spectra Client - Error",
@@ -88,7 +85,7 @@ export class ConnectorService {
                 this.win.setTitle(`Spectra Client | Connection closed`);
             }
             this.enabled = false;
-            this.ws?.terminate();
+            this.ws?.disconnect();
         });
 
         this.ws.on('error', (e: any) => {
@@ -100,6 +97,10 @@ export class ConnectorService {
                 this.win.setTitle(`Spectra Client | Connection failed`);
             }
             log.info(e);
+        });
+
+        this.ws.once('open', () => {
+            this.ws.send(JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM}))
         });
     }
 
@@ -114,7 +115,7 @@ export class ConnectorService {
     sendToIngest(formatted: IFormattedData) {
         if (this.enabled) {
             const toSend = { obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, ...formatted };
-            this.ws.send(JSON.stringify(toSend));
+            this.ws.emit("obs_data", JSON.stringify(toSend));
         }
     }
 }
