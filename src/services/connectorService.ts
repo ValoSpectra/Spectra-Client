@@ -26,7 +26,7 @@ export class ConnectorService {
 
     private enabled = false;
     private unreachable = false;
-    private ws!: io.Socket;
+    private ws?: io.Socket;
     private win!: Electron.Main.BrowserWindow;
 
     private static instance: ConnectorService;
@@ -46,6 +46,11 @@ export class ConnectorService {
         this.RIGHT_TEAM = rightTeam;
         this.win = win;
 
+        if (this.ws?.connected) {
+            this.enabled = false;
+            this.ws.disconnect();
+            this.ws = undefined;
+        }
         this.ws = io.connect(this.INGEST_SERVER_URL, { reconnection: true, reconnectionDelay: 1000, reconnectionDelayMax: 5000 });
 
         this.ws.once('obs_logon_ack', (msg) => {
@@ -61,7 +66,7 @@ export class ConnectorService {
                     log.info('Authentication failed!');
                     this.win.setTitle(`Spectra Client | Connection failed, invalid data`);
                     this.enabled = false;
-                    this.ws.disconnect();
+                    this.ws?.disconnect();
 
                     dialog.showMessageBoxSync(win, {
                         title: "Spectra Client - Error",
@@ -105,7 +110,7 @@ export class ConnectorService {
 
 
     private websocketSetup() {
-        this.ws.on('message', (msg) => {
+        this.ws?.on('message', (msg) => {
             const json = JSON.parse(msg.toString());
             log.info(json);
         });
@@ -114,7 +119,7 @@ export class ConnectorService {
     sendToIngest(formatted: IFormattedData) {
         if (this.enabled) {
             const toSend = { obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, ...formatted };
-            this.ws.emit("obs_data", JSON.stringify(toSend));
+            this.ws!.emit("obs_data", JSON.stringify(toSend));
         }
     }
 }
