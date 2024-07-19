@@ -113,7 +113,7 @@ export class GameEventsService {
         this.connService.sendToIngest(formatted);
       }
 
-    } else if (data.key.startsWith("roster")) {
+    } else if (data.key.includes("roster")) {
 
       const value = JSON.parse(data.value);
       const formatted: IFormattedData = this.formattingService.formatRosterData(value, data.key);
