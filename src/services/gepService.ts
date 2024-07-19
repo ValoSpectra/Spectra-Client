@@ -207,7 +207,10 @@ export class GameEventsService {
 
   waitForPostEndInfo() {
     this.isWaitingForPostEndInfo = true;
-    this.roundEndSendTimer = setTimeout(this.sendDelayedEndData, this.maxRoundEndDelay);
+    this.roundEndSendTimer = setTimeout(() => {
+      this.isWaitingForPostEndInfo = false; 
+      this.sendDelayedEndData(this.connService, this.formattingService)
+    }, this.maxRoundEndDelay);
   }
 
   postEndSpikeInfo(spikeData: IFormattedData) {
@@ -217,13 +220,13 @@ export class GameEventsService {
 
   sendDelayedEndDataEarly() {
     clearTimeout(this.roundEndSendTimer);
-    this.sendDelayedEndData();
+    this.sendDelayedEndData(this.connService, this.formattingService);
   }
 
-  sendDelayedEndData() {
+  sendDelayedEndData(connService: ConnectorService, formattingService: FormattingService) {
     delete this.roundEndSendTimer;
     this.isWaitingForPostEndInfo = false;
-    this.connService.sendToIngest(this.formattingService.formatRoundData("end", this.currRoundNumber));
+    connService.sendToIngest(formattingService.formatRoundData("end", this.currRoundNumber));
   }
 
   checkPostEndGameInfo(data: any) {
