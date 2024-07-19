@@ -23,7 +23,7 @@ const createWindow = () => {
     },
     fullscreenable: false,
     titleBarOverlay: true,
-    icon: path.join(__dirname, './assets/hooj4k.ico')
+    icon: path.join(__dirname, './assets/icon.ico')
   })
 
   ipcMain.on('process-inputs', processInputs);
