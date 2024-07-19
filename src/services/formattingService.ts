@@ -23,6 +23,7 @@ export class FormattingService {
         let formatted: IFormattedScoreboard = {
             name: nameSplit[0],
             tagline: nameSplit[1],
+            playerId: data.player_id,
             startTeam: data.team,
             agentInternal: data.character,
             isAlive: data.alive,
@@ -95,6 +96,7 @@ export class FormattingService {
 export interface IFormattedScoreboard {
     name: string,
     tagline: string,
+    playerId: string,
     startTeam: number,
     agentInternal: string,
     isAlive: boolean,
