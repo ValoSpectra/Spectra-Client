@@ -3,25 +3,28 @@ import { dialog } from 'electron';
 import log from 'electron-log';
 import * as io from "socket.io-client";
 
-interface Team {
+export interface AuthTeam {
   name: string,
   tricode: string,
-  url: string
+  url: string,
+  attackStart: boolean
 }
 
 export class ConnectorService {
     private INGEST_SERVER_URL = "http://localhost:5100"
     private OBS_NAME = "";
     private GROUP_CODE = "";
-    private LEFT_TEAM: Team = {
+    private LEFT_TEAM: AuthTeam = {
         name: '',
         tricode: '',
-        url: ''
+        url: '',
+        attackStart: false
     };
-    private RIGHT_TEAM: Team = {
+    private RIGHT_TEAM: AuthTeam = {
         name: '',
         tricode: '',
-        url: ''
+        url: '',
+        attackStart: false
     };
 
     private enabled = false;
@@ -38,7 +41,7 @@ export class ConnectorService {
         return ConnectorService.instance;
     }
 
-    handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: Team, rightTeam: Team, win: Electron.Main.BrowserWindow) {
+    handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: AuthTeam, rightTeam: AuthTeam, win: Electron.Main.BrowserWindow) {
         this.INGEST_SERVER_URL = `http://${ingestIp}:5100`;
         this.OBS_NAME = obsName;
         this.GROUP_CODE = groupCode.toUpperCase();
