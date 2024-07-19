@@ -9,6 +9,13 @@
     width: 300px;
 }
 
+.checkBox {
+    position: flex;
+    vertical-align: middle;
+    height: 18px;
+    width: 18px;
+}
+
 div {
     padding-top: 10px;
 }

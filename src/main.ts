@@ -2,6 +2,7 @@ import path from "path"
 import { GameEventsService } from "./services/gepService";
 import { ConnectorService } from "./services/connectorService";
 import { dialog } from "electron";
+import { AuthTeam } from "./services/connectorService";
 import log from 'electron-log';
 
 const { app, BrowserWindow, ipcMain } = require('electron/main')
@@ -15,7 +16,7 @@ const VALORANT_ID = 21640;
 const createWindow = () => {
   win = new BrowserWindow({
     width: 600,
-    height: 600,
+    height: 625,
     backgroundColor: '#303338',
     resizable: false,
     webPreferences: {
@@ -54,13 +55,7 @@ app.on('window-all-closed', () => {
   }
 })
 
-interface Team {
-  name: string,
-  tricode: string,
-  url: string
-}
-
-function processInputs(event: any, ingestIp: string, groupCode: string, obsName: string, leftTeam: Team, rightTeam: Team) {
+function processInputs(event: any, ingestIp: string, groupCode: string, obsName: string, leftTeam: AuthTeam, rightTeam: AuthTeam) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
   log.info(`Received Inputs: ${ingestIp}, ${groupCode}, ${obsName}, ${leftTeam}, ${rightTeam}`);
