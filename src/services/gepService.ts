@@ -89,7 +89,7 @@ export class GameEventsService {
   processInfoUpdate(data: any) {
     if (data.gameId !== VALORANT_ID) return;
 
-    if (data.key.startsWith("scoreboard")) {
+    if (data.key.includes("scoreboard")) {
 
       const value = JSON.parse(data.value);
       const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
