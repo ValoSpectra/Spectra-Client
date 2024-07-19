@@ -107,7 +107,7 @@ export class GameEventsService {
 
       const formatted: IFormattedData = this.formattingService.formatRoundData(data.value, this.currRoundNumber);
       if ((formatted.data as IFormattedRoundInfo).roundPhase == "end") {
-        this.waitForPostEndInfo(formatted);
+        this.waitForPostEndInfo();
       }
       else {
         this.connService.sendToIngest(formatted);
@@ -201,13 +201,11 @@ export class GameEventsService {
     }
   }
 
-  private roundEndData?: IFormattedData;
   private maxRoundEndDelay: number = 25; //in ms
   private roundEndSendTimer?: NodeJS.Timeout; //timeout index in case we need to cancel
   private isWaitingForPostEndInfo: boolean = false;
 
-  waitForPostEndInfo(roundData: IFormattedData) {
-    this.roundEndData = roundData;
+  waitForPostEndInfo() {
     this.isWaitingForPostEndInfo = true;
     this.roundEndSendTimer = setTimeout(this.sendDelayedEndData, this.maxRoundEndDelay);
   }
@@ -225,8 +223,7 @@ export class GameEventsService {
   sendDelayedEndData() {
     delete this.roundEndSendTimer;
     this.isWaitingForPostEndInfo = false;
-    this.connService.sendToIngest(this.roundEndData!);
-    delete this.roundEndData;
+    this.connService.sendToIngest(this.formattingService.formatRoundData("end", this.currRoundNumber));
   }
 
   checkPostEndGameInfo(data: any) {
