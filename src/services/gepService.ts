@@ -2,7 +2,7 @@ import { dialog, app as electronApp } from 'electron';
 import { overwolf } from '@overwolf/ow-electron'
 import { ConnectorService } from './connectorService';
 import { setPlayerName } from '../main';
-import { DataTypes, FormattingService, IFormattedData, IFormattedScore } from './formattingService';
+import { DataTypes, FormattingService, IFormattedData, IFormattedRoundInfo, IFormattedScore } from './formattingService';
 import log from 'electron-log';
 
 const app = electronApp as overwolf.OverwolfApp;
@@ -89,6 +89,8 @@ export class GameEventsService {
   processInfoUpdate(data: any) {
     if (data.gameId !== VALORANT_ID) return;
 
+    this.checkPostEndGameInfo(data);
+
     if (data.key.includes("scoreboard")) {
 
       const value = JSON.parse(data.value);
@@ -104,7 +106,12 @@ export class GameEventsService {
     } else if (data.key === "round_phase") {
 
       const formatted: IFormattedData = this.formattingService.formatRoundData(data.value, this.currRoundNumber);
-      this.connService.sendToIngest(formatted);
+      if ((formatted.data as IFormattedRoundInfo).roundPhase == "end") {
+        this.waitForPostEndInfo(formatted);
+      }
+      else {
+        this.connService.sendToIngest(formatted);
+      }
 
     } else if (data.key.startsWith("roster")) {
 
@@ -166,20 +173,72 @@ export class GameEventsService {
   }
 
   processGameUpdate(data: any) {
+    this.checkPostEndGameInfo(data);
     if (data.key === "match_start") {
       const toSend: IFormattedData = { type: DataTypes.MATCH_START, data: true };
       this.connService.sendToIngest(toSend);
     } else if (data.key === "spike_planted") {
-      const toSend: IFormattedData = { type: DataTypes.SPIKE_PLANTED, data: true }
+      const toSend: IFormattedData = { type: DataTypes.SPIKE_PLANTED, data: true };
       this.connService.sendToIngest(toSend);
     } else if (data.key === "spike_detonated") {
-      const toSend: IFormattedData = { type: DataTypes.SPIKE_DETONATED, data: true }
-      this.connService.sendToIngest(toSend);
+      const toSend: IFormattedData = { type: DataTypes.SPIKE_DETONATED, data: true };
+      if (this.isWaitingForPostEndInfo) {
+        this.postEndSpikeInfo(toSend);
+      }
+      else {
+        this.connService.sendToIngest(toSend);
+      }
     } else if (data.key === "spike_defused") {
-      const toSend: IFormattedData = { type: DataTypes.SPIKE_DEFUSED, data: true }
-      this.connService.sendToIngest(toSend);
+      const toSend: IFormattedData = { type: DataTypes.SPIKE_DEFUSED, data: true };
+      if (this.isWaitingForPostEndInfo) {
+        this.postEndSpikeInfo(toSend);
+      }
+      else {
+        this.connService.sendToIngest(toSend);
+      }
     } else {
       log.info(data);
     }
   }
+
+  private roundEndData?: IFormattedData;
+  private maxRoundEndDelay: number = 25; //in ms
+  private roundEndSendTimer?: NodeJS.Timeout; //timeout index in case we need to cancel
+  private isWaitingForPostEndInfo: boolean = false;
+
+  waitForPostEndInfo(roundData: IFormattedData) {
+    this.roundEndData = roundData;
+    this.isWaitingForPostEndInfo = true;
+    this.roundEndSendTimer = setTimeout(this.sendDelayedEndData, this.maxRoundEndDelay);
+  }
+
+  postEndSpikeInfo(spikeData: IFormattedData) {
+    this.connService.sendToIngest(spikeData);
+    this.sendDelayedEndDataEarly();
+  }
+
+  sendDelayedEndDataEarly() {
+    clearTimeout(this.roundEndSendTimer);
+    this.sendDelayedEndData();
+  }
+
+  sendDelayedEndData() {
+    delete this.roundEndSendTimer;
+    this.isWaitingForPostEndInfo = false;
+    this.connService.sendToIngest(this.roundEndData!);
+    delete this.roundEndData;
+  }
+
+  checkPostEndGameInfo(data: any) {
+    //checks if we are waiting for post end spike info
+    //if we are, then checks if the event type is any that we are waiting for
+    //if an event we do not want comes, then we send the end round data early, since spike detonation/defusal wasnt the round win condition
+    if (this.isWaitingForPostEndInfo) {
+      if (data.key != "score" && data.key != "spike_detonated" && data.key != "spike_defused") {
+        this.sendDelayedEndDataEarly();
+      }
+    }
+  }
+
+
 }
