@@ -14,7 +14,7 @@ export class FormattingService {
 
         // temporary workaround, electron GEP still has string for spike instead of bool
         let hasSpike = false;
-        if (data.spike === "TX_Hud_Bomb_S" || data.spike == true) {
+        if ((typeof data.spike === "string" && data.spike == "TX_Hud_Bomb_S") || (typeof data.spike === "boolean" && data.spike === true)) {
             hasSpike = true;
         } else {
             hasSpike = false;

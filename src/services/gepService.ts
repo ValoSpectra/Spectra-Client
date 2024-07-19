@@ -156,6 +156,7 @@ export class GameEventsService {
 
     } else if (data.key === "observing") {
 
+      log.info(`Observing events now accessible (${data.value})`);
       const toSend: IFormattedData = { type: DataTypes.OBSERVING, data: data.value }
       this.connService.sendToIngest(toSend);
 
