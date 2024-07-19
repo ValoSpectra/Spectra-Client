@@ -10,7 +10,8 @@
     ]
   },
   "scripts": {
-    "start": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
+    "start": "rimraf app && npx tsc && copy-files-from-to && ow-electron .",
+    "start:beta": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
     "build": "rimraf app && npx tsc && copy-files-from-to && rimraff dist && ow-electron-builder --publish=never",
     "postinstall": "ow-electron-builder install-app-deps"
   },

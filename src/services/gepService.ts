@@ -154,6 +154,11 @@ export class GameEventsService {
       const toSend: IFormattedData = { type: DataTypes.MAP, data: data.value }
       this.connService.sendToIngest(toSend);
 
+    } else if (data.key === "observing") {
+
+      const toSend: IFormattedData = { type: DataTypes.OBSERVING, data: data.value }
+      this.connService.sendToIngest(toSend);
+
     } else {
       log.info("Unhandled: ", data);
     }
