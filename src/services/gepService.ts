@@ -58,7 +58,7 @@ export class GameEventsService {
         return;
       }
       log.info("Game IS Valorant - enabling");
-      
+
       e.enable();
       this.setRequiredFeaturesValorant();
       enabled = true;
@@ -67,27 +67,15 @@ export class GameEventsService {
     this.gepApi.on('new-info-update', (e, gameId, ...args) => {
       if (enabled) {
         for (const data of args) {
-          this.processGameEvent(data);
+          this.processInfoUpdate(data);
         }
       }
     });
 
     this.gepApi.on('new-game-event', (e, gameId, ...args) => {
-      for (const data of args) {
-        if (data.key === "match_start") {
-          const toSend: IFormattedData = { type: DataTypes.MATCH_START, data: true };
-          this.connService.sendToIngest(toSend);
-        } else if (data.key === "spike_planted") {
-          const toSend: IFormattedData = { type: DataTypes.SPIKE_PLANTED, data: true }
-          this.connService.sendToIngest(toSend);
-        } else if (data.key === "spike_detonated") {
-          const toSend: IFormattedData = { type: DataTypes.SPIKE_DETONATED, data: true }
-          this.connService.sendToIngest(toSend);
-        } else if (data.key === "spike_defused") {
-          const toSend: IFormattedData = { type: DataTypes.SPIKE_DEFUSED, data: true }
-          this.connService.sendToIngest(toSend);
-        } else {
-          log.info(data);
+      if (enabled) {
+        for (const data of args) {
+          this.processGameUpdate(data);
         }
       }
     });
@@ -98,7 +86,7 @@ export class GameEventsService {
     });
   }
 
-  processGameEvent(data: any) {
+  processInfoUpdate(data: any) {
     if (data.gameId !== VALORANT_ID) return;
 
     if (data.key.startsWith("scoreboard")) {
@@ -168,6 +156,24 @@ export class GameEventsService {
 
     } else {
       log.info("Unhandled: ", data);
+    }
+  }
+
+  processGameUpdate(data: any) {
+    if (data.key === "match_start") {
+      const toSend: IFormattedData = { type: DataTypes.MATCH_START, data: true };
+      this.connService.sendToIngest(toSend);
+    } else if (data.key === "spike_planted") {
+      const toSend: IFormattedData = { type: DataTypes.SPIKE_PLANTED, data: true }
+      this.connService.sendToIngest(toSend);
+    } else if (data.key === "spike_detonated") {
+      const toSend: IFormattedData = { type: DataTypes.SPIKE_DETONATED, data: true }
+      this.connService.sendToIngest(toSend);
+    } else if (data.key === "spike_defused") {
+      const toSend: IFormattedData = { type: DataTypes.SPIKE_DEFUSED, data: true }
+      this.connService.sendToIngest(toSend);
+    } else {
+      log.info(data);
     }
   }
 }

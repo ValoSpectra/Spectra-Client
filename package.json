@@ -1,6 +1,6 @@
 {
   "name": "spectra-client",
-  "version": "0.0.1",
+  "version": "0.1.0-alpha.1",
   "description": "A standalone OW application to display game information from inhouses on the Stream Overlay",
   "private": true,
   "main": "./app/main.js",
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
-    "build": "rimraf app && npx tsc && copy-files-from-to && ow-electron-builder --publish=never",
+    "build": "rimraf app && npx tsc && copy-files-from-to && rimraff dist && ow-electron-builder --publish=never",
     "postinstall": "ow-electron-builder install-app-deps"
   },
   "copyFiles": [
@@ -52,10 +52,10 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
-    "@overwolf/ow-electron": "^28.2.5",
-    "@overwolf/ow-electron-builder": "^24.7.0",
+    "@overwolf/ow-electron": "^28.3.2",
+    "@overwolf/ow-electron-builder": "^24.13.5",
     "bufferutil": "^4.0.8",
-    "electron-log": "^5.1.2",
+    "electron-log": "^5.1.6",
     "socket.io-client": "^4.7.5"
   }
 }
