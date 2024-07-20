@@ -27,7 +27,7 @@ export class ConnectorService {
         attackStart: false
     };
 
-    private enabled = false;
+    private connected = false;
     private unreachable = false;
     private ws?: io.Socket;
     private win!: Electron.Main.BrowserWindow;
@@ -50,7 +50,7 @@ export class ConnectorService {
         this.win = win;
 
         if (this.ws?.connected) {
-            this.enabled = false;
+            this.connected = false;
             this.ws.disconnect();
             this.ws = undefined;
         }
@@ -63,12 +63,12 @@ export class ConnectorService {
                 if (json.value === true) {
                     log.info('Authentication successful!');
                     this.win.setTitle(`Spectra Client | Connected with Group ID: ${this.GROUP_CODE}`);
-                    this.enabled = true;
+                    this.connected = true;
                     this.websocketSetup();
                 } else {
                     log.info('Authentication failed!');
                     this.win.setTitle(`Spectra Client | Connection failed, invalid data`);
-                    this.enabled = false;
+                    this.connected = false;
                     this.ws?.disconnect();
 
                     dialog.showMessageBoxSync(win, {
@@ -93,7 +93,7 @@ export class ConnectorService {
             } else {
                 this.win.setTitle(`Spectra Client | Connection closed`);
             }
-            this.enabled = false;
+            this.connected = false;
             this.ws?.disconnect();
         });
 
@@ -105,7 +105,7 @@ export class ConnectorService {
             } else {
                 this.win.setTitle(`Spectra Client | Connection failed`);
             }
-            log.info(e);
+            log.error(e);
         });
 
         this.ws.emit('obs_logon', JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM}));
@@ -120,9 +120,17 @@ export class ConnectorService {
     }
 
     sendToIngest(formatted: IFormattedData) {
-        if (this.enabled) {
+        if (this.connected) {
             const toSend = { obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, ...formatted };
             this.ws!.emit("obs_data", JSON.stringify(toSend));
+        }
+    }
+
+    handleMatchEnd() {
+        if (this.connected) {
+            this.ws?.disconnect();
+            this.win.setTitle(`Spectra Client | Game ended, connection closed. Ready for next game`);
+            this.connected = false;
         }
     }
 }

@@ -59,6 +59,7 @@ export class GameEventsService {
       }
       log.info("Game IS Valorant - enabling");
 
+      this.gepApi.removeAllListeners();
       e.enable();
       this.setRequiredFeaturesValorant();
       enabled = true;
@@ -67,7 +68,11 @@ export class GameEventsService {
     this.gepApi.on('new-info-update', (e, gameId, ...args) => {
       if (enabled) {
         for (const data of args) {
-          this.processInfoUpdate(data);
+          try {
+            this.processInfoUpdate(data);
+          } catch (e) {
+            log.error("Info update error: ", e);
+          }
         }
       }
     });
@@ -75,13 +80,17 @@ export class GameEventsService {
     this.gepApi.on('new-game-event', (e, gameId, ...args) => {
       if (enabled) {
         for (const data of args) {
-          this.processGameUpdate(data);
+          try {
+            this.processGameUpdate(data);
+          } catch (e) {
+            log.error("Game update error: ", e);
+          }
         }
       }
     });
 
     this.gepApi.on('error', (e, gameId, error, ...args) => {
-      log.info("error");
+      log.error("GEP Error: ", error);
       enabled = false;
     });
   }
@@ -94,6 +103,7 @@ export class GameEventsService {
     if (data.key.includes("scoreboard")) {
 
       const value = JSON.parse(data.value);
+      if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
       this.connService.sendToIngest(formatted);
 
@@ -116,6 +126,7 @@ export class GameEventsService {
     } else if (data.key.includes("roster")) {
 
       const value = JSON.parse(data.value);
+      if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatRosterData(value, data.key);
       this.connService.sendToIngest(formatted);
 
@@ -167,6 +178,11 @@ export class GameEventsService {
       const toSend: IFormattedData = { type: DataTypes.OBSERVING, data: data.value }
       this.connService.sendToIngest(toSend);
 
+    } else if (data.key === "match_outcome") {
+
+      log.info("Match outcome: ", data.value);
+      this.connService.handleMatchEnd();
+
     } else {
       log.info("Unhandled: ", data);
     }
@@ -174,6 +190,7 @@ export class GameEventsService {
 
   processGameUpdate(data: any) {
     this.checkPostEndGameInfo(data);
+    
     if (data.key === "match_start") {
       const toSend: IFormattedData = { type: DataTypes.MATCH_START, data: true };
       this.connService.sendToIngest(toSend);
@@ -197,7 +214,7 @@ export class GameEventsService {
         this.connService.sendToIngest(toSend);
       }
     } else {
-      log.info(data);
+      log.info("Unhandled game update:", data);
     }
   }
 
@@ -208,7 +225,7 @@ export class GameEventsService {
   waitForPostEndInfo() {
     this.isWaitingForPostEndInfo = true;
     this.roundEndSendTimer = setTimeout(() => {
-      this.isWaitingForPostEndInfo = false; 
+      this.isWaitingForPostEndInfo = false;
       this.sendDelayedEndData(this.connService, this.formattingService)
     }, this.maxRoundEndDelay);
   }
