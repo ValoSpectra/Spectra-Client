@@ -64,8 +64,7 @@ export class GameEventsService {
       } else {
         this.win!.setTitle(`Spectra Client | Valorant re-detected - Ready`);
       }
-
-      this.gepApi.removeAllListeners();
+      
       e.enable();
       this.setRequiredFeaturesValorant();
       enabled = true;
@@ -224,7 +223,7 @@ export class GameEventsService {
     }
   }
 
-  private maxRoundEndDelay: number = 25; //in ms
+  private maxRoundEndDelay: number = 50; //in ms
   private roundEndSendTimer?: NodeJS.Timeout; //timeout index in case we need to cancel
   private isWaitingForPostEndInfo: boolean = false;
 
@@ -257,7 +256,7 @@ export class GameEventsService {
     //if we are, then checks if the event type is any that we are waiting for
     //if an event we do not want comes, then we send the end round data early, since spike detonation/defusal wasnt the round win condition
     if (this.isWaitingForPostEndInfo) {
-      if (data.key != "score" && data.key != "spike_detonated" && data.key != "spike_defused") {
+      if (data.key != "score" && data.key != "spike_detonated" && data.key != "spike_defused" && !data.key.includes("scoreboard")) {
         this.sendDelayedEndDataEarly();
       }
     }
