@@ -1,4 +1,4 @@
-import { dialog, app as electronApp } from 'electron';
+import { app as electronApp } from 'electron';
 import { overwolf } from '@overwolf/ow-electron'
 import { ConnectorService } from './connectorService';
 import { setPlayerName } from '../main';
@@ -12,6 +12,7 @@ let enabled = false;
 export class GameEventsService {
   private gepApi!: overwolf.packages.OverwolfGameEventPackage;
   private valorantId: number = VALORANT_ID;
+  private isFirstDetection: boolean = true;
   private connService = ConnectorService.getInstance();
   private formattingService = FormattingService.getInstance();
   private currRoundNumber: number = 0;
@@ -58,6 +59,11 @@ export class GameEventsService {
         return;
       }
       log.info("Game IS Valorant - enabling");
+      if (this.isFirstDetection) {
+        this.isFirstDetection = false;
+      } else {
+        this.win!.setTitle(`Spectra Client | Valorant re-detected - Ready`);
+      }
 
       this.gepApi.removeAllListeners();
       e.enable();

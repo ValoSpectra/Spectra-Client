@@ -129,7 +129,7 @@ export class ConnectorService {
     handleMatchEnd() {
         if (this.connected) {
             this.ws?.disconnect();
-            this.win.setTitle(`Spectra Client | Game ended, connection closed. Ready for next game`);
+            this.win.setTitle(`Spectra Client | Game ended, connection closed.`);
             this.connected = false;
         }
     }
