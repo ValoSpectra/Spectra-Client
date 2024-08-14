@@ -49,6 +49,7 @@ export class ConnectorService {
         this.RIGHT_TEAM = rightTeam;
         this.win = win;
 
+        this.unreachable = false;
         if (this.ws?.connected) {
             this.connected = false;
             this.ws.disconnect();
@@ -129,8 +130,8 @@ export class ConnectorService {
     handleMatchEnd() {
         if (this.connected) {
             this.ws?.disconnect();
-            this.win.setTitle(`Spectra Client | Game ended, connection closed.`);
             this.connected = false;
         }
+        this.win.setTitle(`Spectra Client | Game ended, connection closed.`);
     }
 }

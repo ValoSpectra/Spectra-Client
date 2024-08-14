@@ -1,7 +1,11 @@
 {
   "name": "spectra-client",
-  "version": "0.1.0-beta.5",
-  "description": "A standalone OW application to display game information from inhouses on the Stream Overlay",
+  "author": {
+    "name": "Valo Spectra",
+    "url": "https://www.valospectra.com"
+  },
+  "version": "0.2.0-rc_1",
+  "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
   "overwolf": {
@@ -40,12 +44,12 @@
       "runAfterFinish": false
     }
   },
-  "author": "ValoSpectra Team",
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "@overwolf/ow-electron-packages-types": "^0.0.9",
+    "@overwolf/ow-electron-builder": "^24.13.6",
+    "@overwolf/ow-electron-packages-types": "^0.0.11",
     "@overwolf/types": "^3.24.7",
-    "@types/node": "^20.11.27",
+    "@types/node": "^22.3.0",
     "@types/ws": "^8.5.10",
     "copy-files-from-to": "^3.11.0",
     "electron": "^28.2.5",
@@ -53,8 +57,7 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
-    "@overwolf/ow-electron": "^28.3.2",
-    "@overwolf/ow-electron-builder": "^24.13.5",
+    "@overwolf/ow-electron": "^28.3.3",
     "bufferutil": "^4.0.8",
     "electron-log": "^5.1.6",
     "socket.io-client": "^4.7.5"

@@ -9,11 +9,11 @@
     width: 300px;
 }
 
-.checkBox {
+.customRadio {
     position: flex;
     vertical-align: middle;
-    height: 18px;
-    width: 18px;
+    height: 16px;
+    width: 16px;
 }
 
 div {

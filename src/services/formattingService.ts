@@ -12,14 +12,6 @@ export class FormattingService {
     public formatScoreboardData(data: any): IFormattedData {
         const nameSplit = data.name.split(" #");
 
-        // temporary workaround, electron GEP still has string for spike instead of bool
-        let hasSpike = false;
-        if ((typeof data.spike === "string" && data.spike == "TX_Hud_Bomb_S") || (typeof data.spike === "boolean" && data.spike === true)) {
-            hasSpike = true;
-        } else {
-            hasSpike = false;
-        }
-
         let formatted: IFormattedScoreboard = {
             name: nameSplit[0],
             tagline: nameSplit[1],
@@ -31,7 +23,7 @@ export class FormattingService {
             scoreboardWeaponInternal: data.weapon,
             currUltPoints: data.ult_points,
             maxUltPoints: data.ult_max,
-            hasSpike: hasSpike,
+            hasSpike: data.spike,
             money: data.money,
             kills: data.kills,
             deaths: data.deaths,
@@ -137,8 +129,8 @@ export interface IFormattedRoundInfo {
 }
 
 export interface IFormattedScore {
-    won: number,
-    lost: number
+    team_0: number,
+    team_1: number
 }
 
 export interface IFormattedData {

@@ -15,8 +15,8 @@ const VALORANT_ID = 21640;
 
 const createWindow = () => {
   win = new BrowserWindow({
-    width: 600,
-    height: 625,
+    width: 450,
+    height: 650,
     backgroundColor: '#303338',
     resizable: false,
     webPreferences: {
@@ -58,7 +58,6 @@ app.on('window-all-closed', () => {
 function processInputs(event: any, ingestIp: string, groupCode: string, obsName: string, leftTeam: AuthTeam, rightTeam: AuthTeam) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
-  log.info(`Received Inputs: ${ingestIp}, ${groupCode}, ${obsName}, ${leftTeam}, ${rightTeam}`);
 
   if (obsName === "" || groupCode == "") {
     if (leftTeam.name === "" || leftTeam.tricode === "" || leftTeam.url === "") {
