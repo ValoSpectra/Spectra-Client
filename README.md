@@ -1,6 +1,8 @@
 # ValoSpectra - Client
 
 Spectra is your all-in-one solution for an amazing looking Valorant Tournament Overlay, enabling all Organizers to display information like held gun, available credits etc. with just a single spectator running software.
+To learn more and see a live demo, visit [valospectra.com](https://www.valospectra.com/).
+
 It is comprised of three parts:
  - [The Spectra Client](https://github.com/ValoSpectra/Spectra-Client)
    - Running this software on a single in-game observer provides the Spectra Server with all data currently provided by Overwolf.
