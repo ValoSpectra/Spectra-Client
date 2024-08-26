@@ -109,6 +109,7 @@ export class GameEventsService {
       if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
       this.connService.sendToIngest(formatted);
+      return;
 
     } else if (data.key.includes("roster")) {
 
@@ -116,6 +117,7 @@ export class GameEventsService {
       if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatRosterData(value, data.key);
       this.connService.sendToIngest(formatted);
+      return;
 
     }
 
@@ -145,6 +147,11 @@ export class GameEventsService {
       case "round_phase":
         formatted = this.formattingService.formatRoundData(data.value, this.currRoundNumber);
         this.connService.sendToIngest(formatted);
+
+        if ((formatted.data as IFormattedRoundInfo).roundPhase === "game_end") {
+          this.connService.handleMatchEnd();
+        }
+
         break;
 
       case "match_score":

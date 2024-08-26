@@ -4,7 +4,7 @@
     "name": "Valo Spectra",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.0-rc_1",
+  "version": "0.2.0--rc-1",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
@@ -59,7 +59,8 @@
   "dependencies": {
     "@overwolf/ow-electron": "^28.3.3",
     "bufferutil": "^4.0.8",
-    "electron-log": "^5.1.6",
+    "dotenv": "^16.4.5",
+    "electron-log": "^5.1.7",
     "socket.io-client": "^4.7.5"
   }
 }

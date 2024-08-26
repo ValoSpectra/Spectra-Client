@@ -2,6 +2,7 @@ import { DataTypes, IFormattedData } from './formattingService';
 import { dialog } from 'electron';
 import log from 'electron-log';
 import * as io from "socket.io-client";
+import { setInputAllowed } from '../main';
 
 export interface AuthTeam {
   name: string,
@@ -11,7 +12,7 @@ export interface AuthTeam {
 }
 
 export class ConnectorService {
-    private INGEST_SERVER_URL = "http://localhost:5100"
+    private INGEST_SERVER_URL = "https://localhost:5100"
     private OBS_NAME = "";
     private GROUP_CODE = "";
     private LEFT_TEAM: AuthTeam = {
@@ -27,7 +28,7 @@ export class ConnectorService {
         attackStart: false
     };
 
-    private connected = false;
+    public connected = false;
     private unreachable = false;
     private ws?: io.Socket;
     private win!: Electron.Main.BrowserWindow;
@@ -42,7 +43,7 @@ export class ConnectorService {
     }
 
     handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: AuthTeam, rightTeam: AuthTeam, win: Electron.Main.BrowserWindow) {
-        this.INGEST_SERVER_URL = `http://${ingestIp}:5100`;
+        this.INGEST_SERVER_URL = `https://${ingestIp}:5100`;
         this.OBS_NAME = obsName;
         this.GROUP_CODE = groupCode.toUpperCase();
         this.LEFT_TEAM = leftTeam;
@@ -51,11 +52,11 @@ export class ConnectorService {
 
         this.unreachable = false;
         if (this.ws?.connected) {
-            this.connected = false;
+            this.setDisconnected();
             this.ws.disconnect();
             this.ws = undefined;
         }
-        this.ws = io.connect(this.INGEST_SERVER_URL, { reconnection: true, reconnectionDelay: 1000, reconnectionDelayMax: 5000 });
+        this.ws = io.connect(this.INGEST_SERVER_URL, { reconnection: true, reconnectionDelay: 1000, reconnectionDelayMax: 5000, rejectUnauthorized: false });
 
         this.ws.once('obs_logon_ack', (msg) => {
             const json = JSON.parse(msg.toString());
@@ -65,11 +66,12 @@ export class ConnectorService {
                     log.info('Authentication successful!');
                     this.win.setTitle(`Spectra Client | Connected with Group ID: ${this.GROUP_CODE}`);
                     this.connected = true;
+                    setInputAllowed(false);
                     this.websocketSetup();
                 } else {
                     log.info('Authentication failed!');
                     this.win.setTitle(`Spectra Client | Connection failed, invalid data`);
-                    this.connected = false;
+                    this.setDisconnected();
                     this.ws?.disconnect();
 
                     dialog.showMessageBoxSync(win, {
@@ -94,7 +96,7 @@ export class ConnectorService {
             } else {
                 this.win.setTitle(`Spectra Client | Connection closed`);
             }
-            this.connected = false;
+            this.setDisconnected();
             this.ws?.disconnect();
         });
 
@@ -130,8 +132,13 @@ export class ConnectorService {
     handleMatchEnd() {
         if (this.connected) {
             this.ws?.disconnect();
-            this.connected = false;
+            this.setDisconnected();
         }
         this.win.setTitle(`Spectra Client | Game ended, connection closed.`);
+    }
+
+    setDisconnected() {
+        this.connected = false;
+        setInputAllowed(true);
     }
 }
