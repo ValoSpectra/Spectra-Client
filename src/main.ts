@@ -12,11 +12,13 @@ import log from 'electron-log/main';
 import { readFileSync } from "fs";
 import axios from "axios";
 import * as semver from "semver";
+import { FormattingService } from "./services/formattingService";
 
 const { app, BrowserWindow, ipcMain } = require('electron/main')
 
 const gepService = new GameEventsService();
 const connService = ConnectorService.getInstance();
+const formattingService = FormattingService.getInstance();
 let win!: Electron.Main.BrowserWindow;
 
 const VALORANT_ID = 21640;
@@ -79,6 +81,11 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 })
+
+app.on('before-quit', () => {
+  const formatted = formattingService.formatRoundData("game_end", gepService.currRoundNumber);
+  connService.sendToIngest(formatted);
+});
 
 function processInputs(event: any, ingestIp: string, groupCode: string, obsName: string, leftTeam: AuthTeam, rightTeam: AuthTeam, key: string) {
   const webContents = event.sender;
@@ -183,7 +190,7 @@ async function versionCheck(): Promise<string | "good" | "ignore" | "unknown"> {
 
     if (semver.gt(latestRelease, currentRelease)) {
       log.info(`New client version available: ${latestRelease} (current: ${currentRelease})`);
-      
+
       // If the build has ALLOW_UPDATE_IGNORE set to true, show an "Ignore" button in the message box
       const buttons = ALLOW_UPDATE_IGNORE ? ["Update", "Ignore"] : ["Update"];
       const button = messageBox('Spectra Client - Update Available', `A new version of the Spectra Client is available. Please update to the latest version.`, messageBoxType.WARNING, buttons);

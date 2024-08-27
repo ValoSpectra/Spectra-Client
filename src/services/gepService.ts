@@ -15,7 +15,7 @@ export class GameEventsService {
   private isFirstDetection: boolean = true;
   private connService = ConnectorService.getInstance();
   private formattingService = FormattingService.getInstance();
-  private currRoundNumber: number = 0;
+  public currRoundNumber: number = 0;
   private win: any;
 
   constructor() {

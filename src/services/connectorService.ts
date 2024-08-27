@@ -1,5 +1,4 @@
 import { DataTypes, IFormattedData } from './formattingService';
-import { dialog } from 'electron';
 import log from 'electron-log';
 import * as io from "socket.io-client";
 import { messageBox, messageBoxType, setInputAllowed } from '../main';
