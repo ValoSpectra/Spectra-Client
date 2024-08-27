@@ -1,6 +1,6 @@
 
 require('dotenv').config()
-const VERSION = "v0.2.0-rc1";
+const VERSION = "v0.2.0-rc2";
 const ALLOW_UPDATE_IGNORE = process.env.ALLOW_UPDATE_IGNORE ? process.env.ALLOW_UPDATE_IGNORE : false;
 
 import path from "path"
@@ -26,7 +26,7 @@ log.initialize();
 const createWindow = () => {
   win = new BrowserWindow({
     width: 450,
-    height: 650,
+    height: 700,
     backgroundColor: '#303338',
     resizable: false,
     webPreferences: {
@@ -80,7 +80,7 @@ app.on('window-all-closed', () => {
   }
 })
 
-function processInputs(event: any, ingestIp: string, groupCode: string, obsName: string, leftTeam: AuthTeam, rightTeam: AuthTeam) {
+function processInputs(event: any, ingestIp: string, groupCode: string, obsName: string, leftTeam: AuthTeam, rightTeam: AuthTeam, key: string) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
 
@@ -93,9 +93,9 @@ function processInputs(event: any, ingestIp: string, groupCode: string, obsName:
     }
   }
 
-  log.info(`Received Observer Name ${obsName}, Group Code ${groupCode}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`);
+  log.info(`Received Observer Name ${obsName}, Group Code ${groupCode}, Key ${key}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`);
   win!.setTitle(`Spectra Client | Attempting to connect...`);
-  connService.handleAuthProcess(ingestIp, obsName, groupCode, leftTeam, rightTeam, win);
+  connService.handleAuthProcess(ingestIp, obsName, groupCode, leftTeam, rightTeam, key, win);
 }
 
 function processConfigDrop(event: any, filePath: string) {
@@ -152,7 +152,7 @@ export function setInputAllowed(allowed: boolean) {
   win.webContents.send("set-input-allowed", allowed);
 }
 
-enum messageBoxType {
+export enum messageBoxType {
   ERROR = "error",
   NONE = "none",
   INFO = "info",
@@ -160,7 +160,7 @@ enum messageBoxType {
   WARNING = "warning"
 }
 
-function messageBox(title: string, message: string, type: messageBoxType, buttons: string[] = ["OK"]): number {
+export function messageBox(title: string, message: string, type: messageBoxType, buttons: string[] = ["OK"]): number {
   return dialog.showMessageBoxSync(win, {
     title: title,
     message: message,

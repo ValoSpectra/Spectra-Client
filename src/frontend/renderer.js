@@ -1,5 +1,6 @@
 document.querySelector("#ConnectButton").addEventListener("click", () => {
   const obsName = document.getElementById("ValorantNameInput").value;
+  const key = document.getElementById("KeyInput").value ? document.getElementById("KeyInput").value : "NONE";
   const groupCode = document.getElementById("GroupCodeInput").value;
   const ingestIp = document.getElementById("IngestIpInput").value;
   const teamLeftAttackerStart = document.getElementById(
@@ -24,7 +25,8 @@ document.querySelector("#ConnectButton").addEventListener("click", () => {
     groupCode,
     obsName,
     leftTeam,
-    rightTeam
+    rightTeam,
+    key
   );
 });
 
@@ -36,6 +38,7 @@ window.electronAPI.setPlayerName((value) => {
 window.electronAPI.setInputAllowed((value) => {
   const disableInput = !value;
 
+  document.getElementById("KeyInput").disabled = disableInput;
   document.getElementById("GroupCodeInput").disabled = disableInput;
   document.getElementById("IngestIpInput").disabled = disableInput;
 
@@ -52,7 +55,11 @@ window.electronAPI.setInputAllowed((value) => {
 });
 
 window.electronAPI.loadConfig((config) => {
-  const { groupCode, ingestIp, leftTeam, rightTeam } = config;
+  const { key, groupCode, ingestIp, leftTeam, rightTeam } = config;
+
+  if (key != "skip") {
+    document.getElementById("KeyInput").value = key;
+  }
 
   if (groupCode != "skip") {
     document.getElementById("GroupCodeInput").value = groupCode;

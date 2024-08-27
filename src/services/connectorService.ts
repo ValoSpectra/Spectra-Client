@@ -2,7 +2,7 @@ import { DataTypes, IFormattedData } from './formattingService';
 import { dialog } from 'electron';
 import log from 'electron-log';
 import * as io from "socket.io-client";
-import { setInputAllowed } from '../main';
+import { messageBox, messageBoxType, setInputAllowed } from '../main';
 
 export interface AuthTeam {
   name: string,
@@ -42,7 +42,7 @@ export class ConnectorService {
         return ConnectorService.instance;
     }
 
-    handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: AuthTeam, rightTeam: AuthTeam, win: Electron.Main.BrowserWindow) {
+    handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: AuthTeam, rightTeam: AuthTeam, key: string, win: Electron.Main.BrowserWindow) {
         this.INGEST_SERVER_URL = `https://${ingestIp}:5100`;
         this.OBS_NAME = obsName;
         this.GROUP_CODE = groupCode.toUpperCase();
@@ -70,15 +70,10 @@ export class ConnectorService {
                     this.websocketSetup();
                 } else {
                     log.info('Authentication failed!');
-                    this.win.setTitle(`Spectra Client | Connection failed, invalid data`);
+                    messageBox("Spectra Client - Error", `Connection failed, reason: ${json.reason}`, messageBoxType.ERROR);
+                    this.win.setTitle(`Spectra Client | Connection failed`);
                     this.setDisconnected();
                     this.ws?.disconnect();
-
-                    dialog.showMessageBoxSync(win, {
-                        title: "Spectra Client - Error",
-                        message: "Inputted data was invalid!",
-                        type: "error"
-                    });
                 }
             }
         });
@@ -88,11 +83,7 @@ export class ConnectorService {
             if (this.unreachable === true) {
                 this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
 
-                dialog.showMessageBoxSync(win, {
-                    title: "Spectra Client - Error",
-                    message: "Spectra server not reachable!",
-                    type: "error"
-                });
+                messageBox("Spectra Client - Error", "Spectra server not reachable!", messageBoxType.ERROR);
             } else {
                 this.win.setTitle(`Spectra Client | Connection closed`);
             }
@@ -111,7 +102,7 @@ export class ConnectorService {
             log.error(e);
         });
 
-        this.ws.emit('obs_logon', JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM}));
+        this.ws.emit('obs_logon', JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM, key: key}));
     }
 
 
