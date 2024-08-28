@@ -14,6 +14,7 @@ export class ConnectorService {
     private INGEST_SERVER_URL = "https://localhost:5100"
     private OBS_NAME = "";
     private GROUP_CODE = "";
+    private MAP : string[] = [];
     private LEFT_TEAM: AuthTeam = {
         name: '',
         tricode: '',
@@ -41,12 +42,13 @@ export class ConnectorService {
         return ConnectorService.instance;
     }
 
-    handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: AuthTeam, rightTeam: AuthTeam, key: string, win: Electron.Main.BrowserWindow) {
+    handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: AuthTeam, rightTeam: AuthTeam, key: string, map: string[], win: Electron.Main.BrowserWindow) {
         this.INGEST_SERVER_URL = `https://${ingestIp}:5100`;
         this.OBS_NAME = obsName;
         this.GROUP_CODE = groupCode.toUpperCase();
         this.LEFT_TEAM = leftTeam;
         this.RIGHT_TEAM = rightTeam;
+        this.MAP = map;
         this.win = win;
 
         this.unreachable = false;
@@ -101,7 +103,7 @@ export class ConnectorService {
             log.error(e);
         });
 
-        this.ws.emit('obs_logon', JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM, key: key}));
+        this.ws.emit('obs_logon', JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM, key: key, map: this.MAP}));
     }
 
 
