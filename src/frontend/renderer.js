@@ -20,13 +20,19 @@ document.querySelector("#ConnectButton").addEventListener("click", () => {
     attackStart: !teamLeftAttackerStart,
   };
 
+  const map1 = document.getElementById("map1").value;
+  const map2 = document.getElementById("map2").value;
+  const map3 = document.getElementById("map3").value;
+
+  const map = [ map1, map2, map3 ]; 
   window.electronAPI.processInputs(
     ingestIp,
     groupCode,
     obsName,
     leftTeam,
     rightTeam,
-    key
+    key,
+    map
   );
 });
 
@@ -50,6 +56,11 @@ window.electronAPI.setInputAllowed((value) => {
   document.getElementById("TeamRightNameInput").disabled = disableInput;
   document.getElementById("TeamRightTricodeInput").disabled = disableInput;
   document.getElementById("TeamRightLogoInput").disabled = disableInput;
+
+  document.getElementById("map1").disabled = disableInput;
+  document.getElementById("map2").disabled = disableInput;
+  document.getElementById("map3").disabled = disableInput;
+
 
   document.getElementById("ConnectButton").disabled = disableInput;
 });
