@@ -12,6 +12,11 @@ export class FormattingService {
     public formatScoreboardData(data: any): IFormattedData {
         const nameSplit = data.name.split(" #");
 
+        let hasSpike = data.spike;
+        if (typeof hasSpike !== "boolean") {
+            hasSpike = data.spike === "TX_Hud_Bomb_S" ? true : false;
+        }
+
         let formatted: IFormattedScoreboard = {
             name: nameSplit[0],
             tagline: nameSplit[1],
@@ -23,7 +28,7 @@ export class FormattingService {
             scoreboardWeaponInternal: data.weapon,
             currUltPoints: data.ult_points,
             maxUltPoints: data.ult_max,
-            hasSpike: data.spike,
+            hasSpike: hasSpike,
             money: data.money,
             kills: data.kills,
             deaths: data.deaths,
