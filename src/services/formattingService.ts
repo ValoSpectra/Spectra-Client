@@ -151,6 +151,7 @@ export enum DataTypes {
     ROUND_INFO = "round_info",
     TEAM_IS_ATTACKER = "team_is_attacker",
     SCORE = "score",
+    GAME_MODE = "GAME_MODE",
     MAP = "map",
     OBSERVING = "observing",
     SPIKE_PLANTED = "spike_planted",

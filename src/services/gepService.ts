@@ -159,6 +159,11 @@ export class GameEventsService {
         this.connService.sendToIngest(toSend);
         break;
 
+      case "game_mode":
+        toSend = { type: DataTypes.GAME_MODE, data: JSON.parse(data.value).mode }
+        this.connService.sendToIngest(toSend);
+        break;
+
       case "map":
         // Why do we do this? The TS enum on the server side does not like "Infinity"
         // as one of its members because it counts as a numeric name :)
@@ -177,7 +182,6 @@ export class GameEventsService {
 
       case "team":
       case "match_outcome":
-      case "game_mode":
       case "pseudo_match_id":
       case "player_id":
       case "region":
