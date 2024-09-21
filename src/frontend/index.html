@@ -10,50 +10,61 @@
 </head>
 
 <body>
-  <div>
-    <text class="txt">Please double-check your Valorant name:</text>
-    <input type="text" class="textInput" id="ValorantNameInput" placeholder="Auto-detected on game start"
-      disabled="true"></input>
+  <div class="container">
+    <div class="section">
+      <label class="txt" for="ValorantNameInput">Please double-check your Valorant name</label>
+      <input type="text" class="textInput" id="ValorantNameInput" placeholder="Auto-detected on game start"
+        disabled="true"></input>
+      <label class="txt">Enter your Key</label>
+      <input type="text" for="KeyInput" class="textInput" id="KeyInput" placeholder="e.g. IJTP"></input>
+      <label class="txt" for="GroupCodeInput">Enter your Group Code</label>
+      <input type="text" class="textInput" id="GroupCodeInput" placeholder="e.g. AHO716"></input>
+      <label class="txt" for="IngestIpInput">Enter the ingest server IP</label>
+      <input type="text" class="textInput" id="IngestIpInput" placeholder="e.g. 162.512.238.54"></input>
+    </div>
+    <div class="section">
+      <img class="logo" src="../assets/logo.png" />
+      <label class="txt" for="statusInput">Status</label>
+      <input type="text" class="textInput" id="statusInput" disabled="true"></input>
+      <button class="button" id="ConnectButton">Connect</button>
+    </div>
+    <div class="section">
+      <h1 class="txt">Left Team</h3>
+        <label class="txt" for="TeamLeftNameInput">Enter team name</label>
+        <input type="text" class="textInput" id="TeamLeftNameInput" maxlength="30"
+          placeholder="e.g. Tinfoil Rex, 100 Bees, ... "></input>
+        <label class="txt" for="TeamLeftTricodeInput">Enter team tricode</label>
+        <input type="text" class="textInput" id="TeamLeftTricodeInput" maxlength="5"
+          placeholder="e.g. TRX, 100B, ... "></input>
+        <label class="txt" for="TeamLeftLogoInput">Enter team logo URL</label>
+        <input type="text" class="textInput" id="TeamLeftLogoInput" maxlength="50"
+          placeholder="e.g. https://imgur.com/... "></input>
+        <div>
+          <input type="radio" class="customRadio" id="TeamLeftAttackerStart" name="attackStart" checked=true></input>
+          <label class="txt" for="TeamLeftAttackerStart">Starts as attacker</label>
+        </div>
+    </div>
+    <div class="section">
+      <h1 class="txt">Right Team</h3>
+        <label class="txt" for="TeamRightNameInput">Enter team name</label>
+        <input type="text" class="textInput" id="TeamRightNameInput" maxlength="30"
+          placeholder="e.g. Tinfoil Rex, 100 Bees, ... "></input>
+        <label class="txt" for="TeamRightTricodeInput">Enter team tricode</label>
+        <input type="text" class="textInput" id="TeamRightTricodeInput" maxlength="5"
+          placeholder="e.g. TRX, 100B, ... "></input>
+        <label class="txt" for="TeamRightLogoInput">Enter team logo URL</label>
+        <input type="text" class="textInput" id="TeamRightLogoInput" maxlength="50"
+          placeholder="e.g. https://imgur.com/... "></input>
+        <div>
+          <input type="radio" class="customRadio" id="TeamRightAttackerStart" name="attackStart"></input>
+          <label class="txt" for="TeamRightAttackerStart">Starts as attacker</label>
+        </div>
+    </div>
   </div>
-  <div>
-    <text class="txt">Enter your Key:</text>
-    <input type="text" class="textInput" id="KeyInput" placeholder="e.g. IJTP"></input>
+  <div class="debug-section invisible" id="debugSection">
+    <textarea class="debug-console" id="debugConsole" disabled="true"></textarea>
   </div>
-  <div>
-    <text class="txt">Enter your Group Code:</text>
-    <input type="text" class="textInput" id="GroupCodeInput" placeholder="e.g. AHO716"></input>
-  </div>
-  <div>
-    <text class="txt">Enter the ingest server IP:</text>
-    <input type="text" class="textInput" id="IngestIpInput" placeholder="e.g. 162.512.238.54"></input>
-  </div>
-  <div>
-    <h1 class="txt">Left Team</h3>
-      <text class="txt">Enter team name:</text>
-      <input type="text" class="textInput" id="TeamLeftNameInput" maxlength="30"
-        placeholder="e.g. Tinfoil Rex, 100 Bees, ... "></input>
-      <text class="txt">Enter team tricode:</text>
-      <input type="text" class="textInput" id="TeamLeftTricodeInput" maxlength="5" placeholder="e.g. TRX, 100B, ... "></input>
-      <text class="txt">Enter team logo URL:</text>
-      <input type="text" class="textInput" id="TeamLeftLogoInput" maxlength="50"
-        placeholder="e.g. https://imgur.com/... "></input>
-      <text class="txt">Starts as attacker:</text>
-      <input type="radio" class="customRadio" id="TeamLeftAttackerStart" name="attackStart" checked=true></input>
-  </div>
-  <div>
-    <h1 class="txt">Right Team</h3>
-      <text class="txt">Enter team name:</text>
-      <input type="text" class="textInput" id="TeamRightNameInput" maxlength="30"
-        placeholder="e.g. Tinfoil Rex, 100 Bees, ... "></input>
-      <text class="txt">Enter team tricode:</text>
-      <input type="text" class="textInput" id="TeamRightTricodeInput" maxlength="5" placeholder="e.g. TRX, 100B, ... "></input>
-      <text class="txt">Enter team logo URL:</text>
-      <input type="text" class="textInput" id="TeamRightLogoInput" maxlength="50"
-        placeholder="e.g. https://imgur.com/... "></input>
-      <text class="txt">Starts as attacker:</text>
-      <input type="radio" class="customRadio" id="TeamRightAttackerStart" name="attackStart"></input>
-  </div>
-  <p></p><button id="ConnectButton">Connect</button>
+
 </body>
 
 </html>
