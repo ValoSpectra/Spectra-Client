@@ -1,6 +1,6 @@
 
 require('dotenv').config()
-const VERSION = "v0.2.0-rc3";
+const VERSION = "v0.2.0";
 const ALLOW_UPDATE_IGNORE = process.env.ALLOW_UPDATE_IGNORE ? process.env.ALLOW_UPDATE_IGNORE : false;
 
 import path from "path"

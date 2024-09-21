@@ -4,7 +4,7 @@
     "name": "Valo Spectra",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.0-rc3",
+  "version": "0.2.0",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
