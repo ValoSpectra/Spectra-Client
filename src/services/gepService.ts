@@ -1,7 +1,7 @@
 import { app as electronApp } from 'electron';
 import { overwolf } from '@overwolf/ow-electron'
 import { ConnectorService } from './connectorService';
-import { setPlayerName } from '../main';
+import { setPlayerName, setStatus } from '../main';
 import { DataTypes, FormattingService, IFormattedData, IFormattedRoundInfo, IFormattedScore } from './formattingService';
 import log from 'electron-log';
 
@@ -152,6 +152,8 @@ export class GameEventsService {
           this.connService.handleMatchEnd();
         }
 
+        setStatus(`Game Running - Round ${this.currRoundNumber}`);
+
         break;
 
       case "match_score":
@@ -205,6 +207,7 @@ export class GameEventsService {
       case "match_start":
         toSend = { type: DataTypes.MATCH_START, data: true };
         this.connService.sendToIngest(toSend);
+        setStatus("Game Started");
         break;
 
       case "spike_planted":

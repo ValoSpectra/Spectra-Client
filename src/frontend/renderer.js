@@ -103,6 +103,18 @@ window.electronAPI.loadConfig((config) => {
   }
 });
 
+let logText = "Debug Log:";
+let debugConsole = document.getElementById("debugConsole");
+
+window.electronAPI.addLogLine((value) => {
+  logText += `\n[${value.level}] ${value.data.join(" ")}`;
+  debugConsole.value = logText;
+});
+
+window.electronAPI.setStatus((value) => {
+  document.getElementById("statusInput").value = value;
+});
+
 document.addEventListener("drop", (event) => {
   event.preventDefault();
   event.stopPropagation();

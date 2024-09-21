@@ -27,8 +27,8 @@ log.initialize();
 
 const createWindow = () => {
   win = new BrowserWindow({
-    width: 450,
-    height: 700,
+    width: 730, // 1300 for debug console
+    height: 650,
     backgroundColor: '#303338',
     resizable: false,
     webPreferences: {
@@ -73,6 +73,7 @@ app.whenReady().then(async () => {
       }
     })
 
+    setStatus("Idle");
   }
 })
 
@@ -159,6 +160,15 @@ export function setInputAllowed(allowed: boolean) {
   win.webContents.send("set-input-allowed", allowed);
 }
 
+export function setStatus(newStatus: string) {
+  win.webContents.send("set-status", newStatus);
+}
+
+log.hooks.push((message, transport) => {
+  win.webContents.send("set-input-allowed", message);
+  return message;
+});
+
 export enum messageBoxType {
   ERROR = "error",
   NONE = "none",
@@ -184,7 +194,7 @@ async function versionCheck(): Promise<string | "good" | "ignore" | "unknown"> {
 
     if (!latestRelease || !currentRelease) {
       messageBox('Spectra Client - Update Check Failed', 'The automatic update check failed - please manually check if a new version of the client is available!', messageBoxType.WARNING);
-      console.error('Error checking for latest release, invalid version:', latestRelease, currentRelease);
+      log.error('Error checking for latest release, invalid version:', latestRelease, currentRelease);
       return "unknown";
     }
 
@@ -205,7 +215,7 @@ async function versionCheck(): Promise<string | "good" | "ignore" | "unknown"> {
 
   } catch (error) {
     messageBox('Spectra Client - Update Check Failed', 'The automatic update check failed - please manually check if a new version of the client is available!', messageBoxType.WARNING);
-    console.error('Error checking for latest release:', error);
+    log.error('Error checking for latest release:', error);
     return "unknown";
   }
 }

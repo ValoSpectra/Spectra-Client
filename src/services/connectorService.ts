@@ -1,7 +1,7 @@
 import { DataTypes, IFormattedData } from './formattingService';
 import log from 'electron-log';
 import * as io from "socket.io-client";
-import { messageBox, messageBoxType, setInputAllowed } from '../main';
+import { messageBox, messageBoxType, setInputAllowed, setStatus } from '../main';
 
 export interface AuthTeam {
   name: string,
@@ -65,6 +65,7 @@ export class ConnectorService {
                     log.info('Authentication successful!');
                     this.win.setTitle(`Spectra Client | Connected with Group ID: ${this.GROUP_CODE}`);
                     this.connected = true;
+                    setStatus("Connected");
                     setInputAllowed(false);
                     this.websocketSetup();
                 } else {
@@ -73,6 +74,7 @@ export class ConnectorService {
                     this.win.setTitle(`Spectra Client | Connection failed`);
                     this.setDisconnected();
                     this.ws?.disconnect();
+                    setStatus(`Connection failed - ${json.reason}`);
                 }
             }
         });
@@ -130,5 +132,6 @@ export class ConnectorService {
     setDisconnected() {
         this.connected = false;
         setInputAllowed(true);
+        setStatus("Disconnected");
     }
 }
