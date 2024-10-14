@@ -1,7 +1,7 @@
 import { app as electronApp } from 'electron';
 import { overwolf } from '@overwolf/ow-electron'
 import { ConnectorService } from './connectorService';
-import { setPlayerName, setStatus } from '../main';
+import { fireConnect, setPlayerName, setStatus } from '../main';
 import { DataTypes, FormattingService, IFormattedData, IFormattedRoundInfo, IFormattedScore } from './formattingService';
 import log from 'electron-log';
 
@@ -16,6 +16,8 @@ export class GameEventsService {
   private connService = ConnectorService.getInstance();
   private formattingService = FormattingService.getInstance();
   public currRoundNumber: number = 0;
+  private currScene: string = "";
+  private currMatchId: string = "";
   private win: any;
 
   constructor() {
@@ -32,7 +34,7 @@ export class GameEventsService {
 
   public async setRequiredFeaturesValorant() {
     // https://overwolf.github.io/api/live-game-data/supported-games/valorant
-    await this.gepApi.setRequiredFeatures(VALORANT_ID, ["match_info", "me"]);
+    await this.gepApi.setRequiredFeatures(VALORANT_ID, ["match_info", "me", "game_info"]);
   }
 
   private registerOverwolfPackageManager() {
@@ -161,6 +163,14 @@ export class GameEventsService {
         this.connService.sendToIngest(toSend);
         break;
 
+      case "scene":
+        this.currScene = data.value;
+        if (this.currScene === "CharacterSelectPersistentLevel") {
+          fireConnect();
+          setStatus("Character Select");
+        }
+        break;
+
       case "game_mode":
         toSend = { type: DataTypes.GAME_MODE, data: JSON.parse(data.value).mode }
         this.connService.sendToIngest(toSend);
@@ -177,6 +187,10 @@ export class GameEventsService {
         this.connService.sendToIngest(toSend);
         break;
 
+      case "match_id":
+        this.currMatchId = data.value;
+        break;
+
       case "player_name":
         log.info(`Detected player name: ${data.value}`);
         setPlayerName(data.value);
@@ -187,6 +201,8 @@ export class GameEventsService {
       case "pseudo_match_id":
       case "player_id":
       case "region":
+      case "state":
+      case "is_pbe":
         // Irrelevant, ignore
         break;
 
@@ -205,7 +221,7 @@ export class GameEventsService {
         break;
 
       case "match_start":
-        toSend = { type: DataTypes.MATCH_START, data: true };
+        toSend = { type: DataTypes.MATCH_START, data: this.currMatchId };
         this.connService.sendToIngest(toSend);
         setStatus("Game Started");
         break;

@@ -140,7 +140,7 @@ export interface IFormattedScore {
 
 export interface IFormattedData {
     type: string,
-    data: IFormattedScoreboard | IFormattedKillfeed | IFormattedRoster | IFormattedRoundInfo | IFormattedScore | boolean,
+    data: IFormattedScoreboard | IFormattedKillfeed | IFormattedRoster | IFormattedRoundInfo | IFormattedScore | boolean | string,
 }
 
 export enum DataTypes {

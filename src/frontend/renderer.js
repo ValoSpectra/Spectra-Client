@@ -1,6 +1,12 @@
 document.querySelector("#ConnectButton").addEventListener("click", () => {
+  connect();
+});
+
+function connect() {
   const obsName = document.getElementById("ValorantNameInput").value;
-  const key = document.getElementById("KeyInput").value ? document.getElementById("KeyInput").value : "NONE";
+  const key = document.getElementById("KeyInput").value
+    ? document.getElementById("KeyInput").value
+    : "NONE";
   const groupCode = document.getElementById("GroupCodeInput").value;
   const ingestIp = document.getElementById("IngestIpInput").value;
   const teamLeftAttackerStart = document.getElementById(
@@ -28,11 +34,15 @@ document.querySelector("#ConnectButton").addEventListener("click", () => {
     rightTeam,
     key
   );
-});
+}
 
 window.electronAPI.setPlayerName((value) => {
   const playerName = document.getElementById("ValorantNameInput");
   playerName.value = value;
+});
+
+window.electronAPI.fireConnect(() => {
+  connect();
 });
 
 window.electronAPI.setInputAllowed((value) => {
@@ -79,7 +89,10 @@ window.electronAPI.loadConfig((config) => {
     if (leftTeam.url != "skip") {
       document.getElementById("TeamLeftLogoInput").value = leftTeam.url;
     }
-    if (leftTeam.attackStart != "skip" && typeof leftTeam.attackStart == "boolean") {
+    if (
+      leftTeam.attackStart != "skip" &&
+      typeof leftTeam.attackStart == "boolean"
+    ) {
       document.getElementById("TeamLeftAttackerStart").checked =
         leftTeam.attackStart;
     }
@@ -96,7 +109,10 @@ window.electronAPI.loadConfig((config) => {
     if (rightTeam.url != "skip") {
       document.getElementById("TeamRightLogoInput").value = rightTeam.url;
     }
-    if (leftTeam.attackStart != "skip" && typeof leftTeam.attackStart == "boolean") {
+    if (
+      leftTeam.attackStart != "skip" &&
+      typeof leftTeam.attackStart == "boolean"
+    ) {
       document.getElementById("TeamRightAttackerStart").checked =
         !leftTeam.attackStart;
     }

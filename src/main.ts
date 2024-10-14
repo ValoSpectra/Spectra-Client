@@ -164,6 +164,10 @@ export function setStatus(newStatus: string) {
   win.webContents.send("set-status", newStatus);
 }
 
+export function fireConnect() {
+  win.webContents.send("fire-connect");
+}
+
 log.hooks.push((message, transport) => {
   win.webContents.send("set-input-allowed", message);
   return message;
