@@ -131,3 +131,5 @@ dist
 
 # electron app folder (used for building)
 app
+
+electron-builder.env

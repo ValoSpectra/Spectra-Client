@@ -1,7 +1,5 @@
 
 require('dotenv').config()
-const VERSION = "v0.2.0";
-const ALLOW_UPDATE_IGNORE = process.env.ALLOW_UPDATE_IGNORE ? process.env.ALLOW_UPDATE_IGNORE : false;
 
 import path from "path"
 import { GameEventsService } from "./services/gepService";
@@ -10,11 +8,10 @@ import { dialog, shell } from "electron";
 import { AuthTeam } from "./services/connectorService";
 import log from 'electron-log/main';
 import { readFileSync } from "fs";
-import axios from "axios";
-import * as semver from "semver";
 import { FormattingService } from "./services/formattingService";
 
 const { app, BrowserWindow, ipcMain } = require('electron/main')
+const DeltaUpdater = require("@electron-delta/updater");
 
 const gepService = new GameEventsService();
 const connService = ConnectorService.getInstance();
@@ -53,28 +50,29 @@ app.whenReady().then(async () => {
     enabled: false
   });
 
-  createWindow();
+  const deltaUpdater = new DeltaUpdater({
+    logger: log,
+  });
 
-  const versionCheckResult = await versionCheck();
-  if (versionCheckResult !== "good" && versionCheckResult !== "unknown" && versionCheckResult !== "ignore") {
-
-    // If the user chooses to (or gets forced to) update, open the latest release page in the browser and quit the app
-    shell.openExternal(`https://github.com/ValoSpectra/Spectra-Client/releases/${versionCheckResult}`);
-    app.quit();
-
-  } else {
-
-    overwolfSetup();
-
-    app.on('activate', () => {
-      if (BrowserWindow.getAllWindows().length === 0) {
-        createWindow();
-        overwolfSetup();
-      }
-    })
-
-    setStatus("Idle");
+  try {
+    await deltaUpdater.boot({
+      splashScreen: true
+    });
+  } catch (error) {
+    log.error(error);
   }
+
+  createWindow();
+  overwolfSetup();
+
+  app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+      overwolfSetup();
+    }
+  })
+
+  setStatus("Idle");
 })
 
 app.on('window-all-closed', () => {
@@ -168,11 +166,6 @@ export function fireConnect() {
   win.webContents.send("fire-connect");
 }
 
-log.hooks.push((message, transport) => {
-  win.webContents.send("set-input-allowed", message);
-  return message;
-});
-
 export enum messageBoxType {
   ERROR = "error",
   NONE = "none",
@@ -188,38 +181,4 @@ export function messageBox(title: string, message: string, type: messageBoxType,
     type: type,
     buttons: buttons
   });
-}
-
-async function versionCheck(): Promise<string | "good" | "ignore" | "unknown"> {
-  try {
-    const releaseName = (await axios.get('https://api.github.com/repos/ValoSpectra/Spectra-Client/releases')).data[0].name;
-    const latestRelease = semver.valid(releaseName);
-    const currentRelease = semver.valid(VERSION);
-
-    if (!latestRelease || !currentRelease) {
-      messageBox('Spectra Client - Update Check Failed', 'The automatic update check failed - please manually check if a new version of the client is available!', messageBoxType.WARNING);
-      log.error('Error checking for latest release, invalid version:', latestRelease, currentRelease);
-      return "unknown";
-    }
-
-    if (semver.gt(latestRelease, currentRelease)) {
-      log.info(`New client version available: ${latestRelease} (current: ${currentRelease})`);
-
-      // If the build has ALLOW_UPDATE_IGNORE set to true, show an "Ignore" button in the message box
-      const buttons = ALLOW_UPDATE_IGNORE ? ["Update", "Ignore"] : ["Update"];
-      const button = messageBox('Spectra Client - Update Available', `A new version of the Spectra Client is available. Please update to the latest version.`, messageBoxType.WARNING, buttons);
-      if (button === 0) {
-        return releaseName;
-      } else {
-        return "ignore";
-      }
-    } else {
-      return "good";
-    }
-
-  } catch (error) {
-    messageBox('Spectra Client - Update Check Failed', 'The automatic update check failed - please manually check if a new version of the client is available!', messageBoxType.WARNING);
-    log.error('Error checking for latest release:', error);
-    return "unknown";
-  }
 }
