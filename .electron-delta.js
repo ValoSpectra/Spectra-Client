@@ -9,6 +9,10 @@ const options = {
   getPreviousReleases: async () => {
     return [
       {
+        version: '0.2.1',
+        url: 'https://github.com/ValoSpectra/Spectra-Client/releases/download/v0.2.1/Spectra-Client-Setup-0.2.1.exe'
+      },
+      {
         version: '0.2.0',
         url: 'https://github.com/ValoSpectra/Spectra-Client/releases/download/v0.2.0/Spectra.Client.Setup.0.2.0.exe'
       }

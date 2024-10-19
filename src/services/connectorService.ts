@@ -27,7 +27,7 @@ export class ConnectorService {
         attackStart: false
     };
 
-    public connected = false;
+    private connected = false;
     private unreachable = false;
     private ws?: io.Socket;
     private win!: Electron.Main.BrowserWindow;
@@ -133,5 +133,9 @@ export class ConnectorService {
         this.connected = false;
         setInputAllowed(true);
         setStatus("Disconnected");
+    }
+
+    isConnected() {
+        return this.connected;
     }
 }

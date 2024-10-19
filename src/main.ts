@@ -111,7 +111,7 @@ function processConfigDrop(event: any, filePath: string) {
     log.info(`Aborting config change - invalid file type`);
     return;
   }
-  if (connService.connected) {
+  if (connService.isConnected()) {
     messageBox("Spectra Client - Error", "Cannot change config while connected!", messageBoxType.ERROR);
     log.info(`Aborting config change - connected`);
     return;
@@ -151,6 +151,7 @@ function overwolfSetup() {
 }
 
 export function setPlayerName(name: string) {
+  if (connService.isConnected()) return;
   win.webContents.send("set-player-name", name);
 }
 
