@@ -165,10 +165,26 @@ export class GameEventsService {
 
       case "scene":
         this.currScene = data.value;
-        if (this.currScene === "CharacterSelectPersistentLevel") {
-          fireConnect();
-          setStatus("Character Select");
+
+        switch (this.currScene) {
+
+          case "CharacterSelectPersistentLevel":
+            fireConnect();
+            setStatus("Character Select");
+            break;
+
+          case "MainMenu":
+            setStatus("Main Menu");
+            break;
+
+          case "Range":
+            setStatus("Practice Range");
+            break;
+
+          default:
+            break;
         }
+
         break;
 
       case "game_mode":
