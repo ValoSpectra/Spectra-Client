@@ -151,7 +151,6 @@ function overwolfSetup() {
 }
 
 export function setPlayerName(name: string) {
-  if (connService.isConnected()) return;
   win.webContents.send("set-player-name", name);
 }
 
@@ -164,6 +163,7 @@ export function setStatus(newStatus: string) {
 }
 
 export function fireConnect() {
+  if (connService.isConnected()) return;
   win.webContents.send("fire-connect");
 }
 
