@@ -1,3 +1,5 @@
+import { AuthTeam } from "./connectorService";
+
 export class FormattingService {
     private static instance: FormattingService;
 
@@ -141,6 +143,16 @@ export interface IFormattedScore {
 export interface IFormattedData {
     type: string,
     data: IFormattedScoreboard | IFormattedKillfeed | IFormattedRoster | IFormattedRoundInfo | IFormattedScore | boolean | string,
+}
+
+export interface IAUthenticationData {
+    type: DataTypes.AUTH,
+    clientVersion: string,
+    obsName: string,
+    key: string,
+    groupCode: string,
+    leftTeam: AuthTeam,
+    rightTeam: AuthTeam,
 }
 
 export enum DataTypes {

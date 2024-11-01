@@ -2,21 +2,23 @@
 const DeltaBuilder = require("@electron-delta/builder");
 const path = require("path");
 
+const previousVersions = ["0.2.2", "0.2.1", "0.2.0"];
+
 const options = {
   productIconPath: path.join(__dirname, "/build/icon.ico"),
   productName: "Spectra Client",
 
   getPreviousReleases: async () => {
-    return [
-      {
-        version: '0.2.1',
-        url: 'https://github.com/ValoSpectra/Spectra-Client/releases/download/v0.2.1/Spectra-Client-Setup-0.2.1.exe'
-      },
-      {
-        version: '0.2.0',
-        url: 'https://github.com/ValoSpectra/Spectra-Client/releases/download/v0.2.0/Spectra.Client.Setup.0.2.0.exe'
-      }
-    ];
+    let previous = [];
+
+    for (const version of previousVersions) {
+      previous.push({
+        version,
+        url: `https://github.com/ValoSpectra/Spectra-Client/releases/download/v${version}/Spectra-Client-Setup-${version}.exe`,
+      });
+    }
+
+    return previous;
   },
   sign: async (filePath) => {
     // sign each delta executable

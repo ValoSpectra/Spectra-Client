@@ -13,7 +13,7 @@ import { FormattingService } from "./services/formattingService";
 const { app, BrowserWindow, ipcMain } = require('electron/main')
 const DeltaUpdater = require("@electron-delta/updater");
 
-const gepService = new GameEventsService();
+let gepService: GameEventsService;
 const connService = ConnectorService.getInstance();
 const formattingService = FormattingService.getInstance();
 let win!: Electron.Main.BrowserWindow;
@@ -146,6 +146,7 @@ function validateSpectraConfig(data: any) {
 
 function overwolfSetup() {
   log.info(`Starting Overwolf Setup`);
+  gepService = new GameEventsService();
   gepService.registerWindow(win);
   gepService.registerGame(VALORANT_ID);
 }

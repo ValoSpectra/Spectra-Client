@@ -1,7 +1,8 @@
-import { DataTypes, IFormattedData } from './formattingService';
+import { app } from 'electron';
 import log from 'electron-log';
 import * as io from "socket.io-client";
 import { messageBox, messageBoxType, setInputAllowed, setStatus } from '../main';
+import { DataTypes, IAUthenticationData, IFormattedData } from './formattingService';
 
 export interface AuthTeam {
   name: string,
@@ -103,7 +104,17 @@ export class ConnectorService {
             log.error(e);
         });
 
-        this.ws.emit('obs_logon', JSON.stringify({ type: DataTypes.AUTH, obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, leftTeam: this.LEFT_TEAM, rightTeam: this.RIGHT_TEAM, key: key}));
+        const logonData: IAUthenticationData = {
+            type: DataTypes.AUTH,
+            clientVersion: app.getVersion(),
+            obsName: this.OBS_NAME,
+            key: key,
+            groupCode: this.GROUP_CODE,
+            leftTeam: this.LEFT_TEAM,
+            rightTeam: this.RIGHT_TEAM,
+        }
+
+        this.ws.emit('obs_logon', JSON.stringify(logonData));
     }
 
 
