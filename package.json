@@ -1,10 +1,10 @@
 {
   "name": "spectra-client",
   "author": {
-    "name": "Valo Spectra",
+    "name": "Spectra Team",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
@@ -81,5 +81,5 @@
     "electron-log": "^5.2.0",
     "socket.io-client": "^4.8.0"
   },
-  "packageManager": "yarn@4.5.0"
+  "packageManager": "yarn@4.5.1"
 }

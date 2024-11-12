@@ -61,6 +61,8 @@ app.whenReady().then(async () => {
   } catch (error) {
     log.error(error);
   }
+  
+  gepService = new GameEventsService();
 
   createWindow();
   overwolfSetup();
@@ -146,7 +148,6 @@ function validateSpectraConfig(data: any) {
 
 function overwolfSetup() {
   log.info(`Starting Overwolf Setup`);
-  gepService = new GameEventsService();
   gepService.registerWindow(win);
   gepService.registerGame(VALORANT_ID);
 }
