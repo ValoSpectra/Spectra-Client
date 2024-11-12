@@ -104,6 +104,15 @@ export class ConnectorService {
             log.error(e);
         });
 
+        this.ws.io.on('reconnect_attempt', (attempt: number) => {
+            log.info(`Reconnecting to spectra server, attempt ${attempt}`);
+            this.win.setTitle(`Spectra Client | Connection lost, attempting reconnect...`);
+        });
+        
+        this.ws.io.on('reconnect', () => {
+            log.info(`Spectra Client | Reconnected`);
+        });
+
         const logonData: IAUthenticationData = {
             type: DataTypes.AUTH,
             clientVersion: app.getVersion(),

@@ -84,7 +84,7 @@ app.on('window-all-closed', () => {
 })
 
 app.on('before-quit', () => {
-  const formatted = formattingService.formatRoundData("game_end", gepService.currRoundNumber);
+  const formatted = formattingService.formatRoundData("game_end", -1);
   connService.sendToIngest(formatted);
 });
 
