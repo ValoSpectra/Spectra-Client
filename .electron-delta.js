@@ -2,7 +2,14 @@
 const DeltaBuilder = require("@electron-delta/builder");
 const path = require("path");
 
-const previousVersions = ["0.2.3", "0.2.2", "0.2.1", "0.2.0"];
+// Last 5 versions
+const previousVersions = [
+  "0.2.5",
+  "0.2.4",
+  "0.2.3",
+  "0.2.2",
+  "0.2.1"
+];
 
 const options = {
   productIconPath: path.join(__dirname, "/build/icon.ico"),
