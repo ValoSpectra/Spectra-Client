@@ -14,9 +14,18 @@ export class FormattingService {
     public formatScoreboardData(data: any): IFormattedData {
         const nameSplit = data.name.split(" #");
 
+        // In some GEPs, the spike is a boolean, in others it's a string
         let hasSpike = data.spike;
         if (typeof hasSpike !== "boolean") {
             hasSpike = data.spike === "TX_Hud_Bomb_S" ? true : false;
+        }
+
+        // Check for the potential rename from shield to armor
+        let armorNum = 0;
+        if (data.armor != undefined) {
+            armorNum = data.armor;
+        } else {
+            armorNum = data.shield;
         }
 
         let formatted: IFormattedScoreboard = {
@@ -26,7 +35,7 @@ export class FormattingService {
             startTeam: data.team,
             agentInternal: data.character,
             isAlive: data.alive,
-            initialShield: data.shield,
+            initialArmor: armorNum,
             scoreboardWeaponInternal: data.weapon,
             currUltPoints: data.ult_points,
             maxUltPoints: data.ult_max,
@@ -99,7 +108,7 @@ export interface IFormattedScoreboard {
     startTeam: number,
     agentInternal: string,
     isAlive: boolean,
-    initialShield: number,
+    initialArmor: number,
     scoreboardWeaponInternal: string,
     currUltPoints: number,
     maxUltPoints: number,
