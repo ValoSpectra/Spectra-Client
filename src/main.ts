@@ -24,8 +24,8 @@ log.initialize();
 
 const createWindow = () => {
   win = new BrowserWindow({
-    width: 730, // 1300 for debug console
-    height: 650,
+    width: 700, // 1300 for debug console
+    height: 675,
     backgroundColor: '#303338',
     resizable: false,
     webPreferences: {
