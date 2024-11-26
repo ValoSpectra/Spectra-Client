@@ -28,18 +28,8 @@ jobs:
         uses: borales/actions-yarn@v4
         with:
           cmd: build # will run `yarn build` command
-    #   - name: Create GitHub Release
-    #     uses: actions/create-release@v1
-    #     env:
-    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #     with:
-    #       tag_name: v${{ github.sha }}
-    #       release_name: Release ${{ github.sha }}
-    #       draft: false
-    #       prerelease: false
-  
       - name: Upload Release Asset
         uses: actions/upload-artifact@v3
         with:
-          path: dist/*.exe
+          path: dist/*
           name: Release Artifacts
