@@ -9,6 +9,10 @@ function connect() {
     : "NONE";
   const groupCode = document.getElementById("GroupCodeInput").value;
   const ingestIp = document.getElementById("IngestIpInput").value;
+  const useInsecure = document.getElementById("useInsecure").checked;
+  let ingestURL;
+  if (useInsecure == true) {ingestURL = `http://${ingestIp}:5200`} 
+  else {ingestURL = `https://${ingestIp}:5200`}
   const teamLeftAttackerStart = document.getElementById(
     "TeamLeftAttackerStart"
   ).checked;
@@ -27,7 +31,7 @@ function connect() {
   };
 
   window.electronAPI.processInputs(
-    ingestIp,
+    ingestURL,
     groupCode,
     obsName,
     leftTeam,

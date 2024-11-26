@@ -23,6 +23,14 @@
     transform: translateY(-0.26em)
 }
 
+.customCheckbox {
+    position: flex;
+    vertical-align: middle;
+    height: 16px;
+    width: 16px;
+    transform: translateY(-0.26em)
+}
+
 div {
     padding-top: 10px;
 }

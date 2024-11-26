@@ -88,7 +88,7 @@ app.on('before-quit', () => {
   connService.sendToIngest(formatted);
 });
 
-function processInputs(event: any, ingestIp: string, groupCode: string, obsName: string, leftTeam: AuthTeam, rightTeam: AuthTeam, key: string) {
+function processInputs(event: any, ingestURL: string, groupCode: string, obsName: string, leftTeam: AuthTeam, rightTeam: AuthTeam, key: string) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
 
@@ -101,9 +101,9 @@ function processInputs(event: any, ingestIp: string, groupCode: string, obsName:
     }
   }
 
-  log.info(`Received Observer Name ${obsName}, Group Code ${groupCode}, Key ${key}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`);
+  log.info(`Received Observer Name ${obsName}, Group Code ${groupCode}, Key ${key}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode},Ingest URL ${ingestURL}`);
   win!.setTitle(`Spectra Client | Attempting to connect...`);
-  connService.handleAuthProcess(ingestIp, obsName, groupCode, leftTeam, rightTeam, key, win);
+  connService.handleAuthProcess(ingestURL, obsName, groupCode, leftTeam, rightTeam, key, win);
 }
 
 function processConfigDrop(event: any, filePath: string) {
