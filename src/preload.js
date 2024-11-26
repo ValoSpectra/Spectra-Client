@@ -1,7 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron/renderer')
 
 contextBridge.exposeInMainWorld('electronAPI', {
-  processInputs: (ingestIp, groupId, obsName, leftTeam, rightTeam, key) => ipcRenderer.send('process-inputs', ingestIp, groupId, obsName, leftTeam, rightTeam, key),
+  processInputs: (ingestURL, groupId, obsName, leftTeam, rightTeam, key) => ipcRenderer.send('process-inputs', ingestURL, groupId, obsName, leftTeam, rightTeam, key),
   processConfigDrop: (filePath) => ipcRenderer.send('config-drop', filePath),
 
   setPlayerName: (callback) => ipcRenderer.on('set-player-name', (_event, value) => callback(value)),
