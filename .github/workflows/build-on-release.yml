@@ -1,0 +1,43 @@
+name: Build/release
+
+on:
+    release:
+        types: [published]
+
+jobs:
+  release:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest]
+
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v1
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 22.x
+      - name: Enable corepack
+        run: corepack enable
+      - name: Run install
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: install # will run `yarn install` command
+      - name: Build production bundle
+        uses: borales/actions-yarn@v4
+        with:
+          cmd: build # will run `yarn build` command
+  
+      - name: Upload Release Asset
+        uses: actions/upload-artifact@v3
+        with:
+          path: dist/*.exe
+          name: Release Artifacts
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: dist/*.exe
