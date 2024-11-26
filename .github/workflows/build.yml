@@ -18,7 +18,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 16
-
+        
+      - name: Enable corepack
+        run: corepack enable
+        
       - name: Build/release Electron app
         uses: Yan-Jobs/action-electron-builder@v1.7.0
         with:
