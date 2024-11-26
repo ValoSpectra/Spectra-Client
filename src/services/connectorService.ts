@@ -43,7 +43,8 @@ export class ConnectorService {
     }
 
     handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: AuthTeam, rightTeam: AuthTeam, key: string, win: Electron.Main.BrowserWindow) {
-        this.INGEST_SERVER_URL = `https://${ingestIp}:5100`;
+        if (ingestIp.startsWith("http://")) {this.INGEST_SERVER_URL = `${ingestIp}:5100`;}
+        else {this.INGEST_SERVER_URL = `https://${ingestIp}:5100`;}
         this.OBS_NAME = obsName;
         this.GROUP_CODE = groupCode.toUpperCase();
         this.LEFT_TEAM = leftTeam;
