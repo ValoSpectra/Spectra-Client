@@ -50,7 +50,6 @@ export class ConnectorService {
         } else {
             this.INGEST_SERVER_URL = ingestIp.startsWith('http') ? `${ingestIp}:5100` : `https://${ingestIp}:5100`
         }
-        log.info(this.INGEST_SERVER_URL)
         this.OBS_NAME = obsName;
         this.GROUP_CODE = groupCode.toUpperCase();
         this.LEFT_TEAM = leftTeam;
