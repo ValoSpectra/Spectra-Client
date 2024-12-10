@@ -43,7 +43,7 @@ export class ConnectorService {
     }
 
     handleAuthProcess(ingestIp: string, obsName: string, groupCode: string, leftTeam: AuthTeam, rightTeam: AuthTeam, key: string, win: Electron.Main.BrowserWindow) {
-        if (RegExp('(http|https)://[^/]+:[0-9]+').test(ingestIp)) {
+        if (RegExp('(http|https):\/\/[^\/]+:[0-9]+').test(ingestIp)) {
             this.INGEST_SERVER_URL = `${ingestIp}`
         } else if (ingestIp.includes(':') && !(ingestIp.startsWith('http'))) {
             this.INGEST_SERVER_URL = `https://${ingestIp}`
