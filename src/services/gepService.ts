@@ -138,7 +138,7 @@ export class GameEventsService {
         break;
 
       case "observing":
-        toSend = { type: DataTypes.OBSERVING, data: data.value }
+        toSend = { type: DataTypes.OBSERVING, data: data.value };
         this.connService.sendToIngest(toSend);
         break;
 
@@ -159,7 +159,7 @@ export class GameEventsService {
         break;
 
       case "match_score":
-        toSend = { type: DataTypes.SCORE, data: JSON.parse(data.value) as IFormattedScore }
+        toSend = { type: DataTypes.SCORE, data: JSON.parse(data.value) as IFormattedScore };
         this.connService.sendToIngest(toSend);
         break;
 
@@ -188,7 +188,7 @@ export class GameEventsService {
         break;
 
       case "game_mode":
-        toSend = { type: DataTypes.GAME_MODE, data: JSON.parse(data.value).mode }
+        toSend = { type: DataTypes.GAME_MODE, data: JSON.parse(data.value).mode };
         this.connService.sendToIngest(toSend);
         break;
 
@@ -199,7 +199,7 @@ export class GameEventsService {
           data.value = "Infinityy";
         }
 
-        toSend = { type: DataTypes.MAP, data: data.value }
+        toSend = { type: DataTypes.MAP, data: data.value };
         this.connService.sendToIngest(toSend);
         break;
 
@@ -232,9 +232,6 @@ export class GameEventsService {
 
     let toSend: IFormattedData;
     switch (data.key) {
-      // I do not know why we are getting a duplicate of kill feeds here now
-      case "kill_feed":
-        break;
 
       case "match_start":
         toSend = { type: DataTypes.MATCH_START, data: this.currMatchId };
@@ -260,6 +257,12 @@ export class GameEventsService {
       case "match_end":
         // Kill connection
         this.connService.handleMatchEnd();
+        break;
+
+      // Useless events
+      case "scoreboard_screen":
+      // I do not know why we are getting a duplicate of kill feeds here now
+      case "kill_feed":
         break;
 
       default:
