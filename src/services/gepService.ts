@@ -11,6 +11,7 @@ let enabled = false;
 
 export class GameEventsService {
   private gepApi!: overwolf.packages.OverwolfGameEventPackage;
+  private overwolfPackageListenerRegistered: boolean = false;
   private valorantId: number = VALORANT_ID;
   private isFirstDetection: boolean = true;
   private connService = ConnectorService.getInstance();
@@ -21,7 +22,6 @@ export class GameEventsService {
   private win: any;
 
   constructor() {
-    this.registerOverwolfPackageManager();
   }
 
   public registerGame(gepGamesId: number) {
@@ -37,7 +37,11 @@ export class GameEventsService {
     await this.gepApi.setRequiredFeatures(VALORANT_ID, ["match_info", "me", "game_info"]);
   }
 
-  private registerOverwolfPackageManager() {
+  public registerOverwolfPackageManager() {
+    if (this.overwolfPackageListenerRegistered) {
+      return;
+    }
+
     app.overwolf.packages.on('ready', (e, packageName, version) => {
       if (packageName !== 'gep') {
         return;

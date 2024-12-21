@@ -150,6 +150,7 @@ function overwolfSetup() {
   log.info(`Starting Overwolf Setup`);
   gepService.registerWindow(win);
   gepService.registerGame(VALORANT_ID);
+  gepService.registerOverwolfPackageManager();
 }
 
 export function setPlayerName(name: string) {
