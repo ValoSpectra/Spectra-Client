@@ -1,3 +1,7 @@
+::-webkit-scrollbar {
+    display: none;
+}
+
 .txt {
     color: #e9ecf0;
     font-size: large;
@@ -80,6 +84,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
+    justify-content: center;
     max-width: 700px;
     row-gap: 30px;
     max-height: 650px;
