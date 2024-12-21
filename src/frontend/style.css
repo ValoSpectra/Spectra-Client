@@ -1,103 +1,103 @@
 ::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .txt {
-    color: #e9ecf0;
-    font-size: large;
+  color: #e9ecf0;
+  font-size: large;
 }
 
 .textInput {
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    background-color: #0f1923d9;
-    color: #e9ecf0;
+  display: flex;
+  flex-direction: column;
+  width: 300px;
+  background-color: #0f1923d9;
+  color: #e9ecf0;
 }
 
 :disabled {
-    background-color: inherit;
+  background-color: inherit;
 }
 
 .customRadio {
-    position: flex;
-    vertical-align: middle;
-    height: 16px;
-    width: 16px;
-    transform: translateY(-0.26em)
+  position: flex;
+  vertical-align: middle;
+  height: 16px;
+  width: 16px;
+  transform: translateY(-0.26em);
 }
 
 div {
-    padding-top: 10px;
+  padding-top: 10px;
 }
 
 body {
-    background-color: #303338;
-    display: flex;
-    flex-direction: row;
+  background-color: #303338;
+  display: flex;
+  flex-direction: row;
 }
 
 .section {
-    border: 1px solid white;
-    flex: auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 300px;
-    max-width: fit-content;
+  border: 1px solid white;
+  flex: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 300px;
+  max-width: fit-content;
 }
 
 .debug-section {
-    border: 1px solid white;
-    flex: auto;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    min-width: 500px;
-    max-width: fit-content;
+  border: 1px solid white;
+  flex: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 500px;
+  max-width: fit-content;
 }
 
 .debug-console {
-    height: 100%
+  height: 100%;
 }
 
 .label {
-    color: #e9ecf0;
-    font-size: large;
-    font-family: Montserrat, Helvetica;
+  color: #e9ecf0;
+  font-size: large;
+  font-family: Montserrat, Helvetica;
 }
 
 .button {
-    color: white;
-    background-color: #0f1923d9;
-    border: 2px groove gray;
-    padding: 4px;
-    font-family: Montserrat, Helvetica;
-    max-height: 28px;
+  color: white;
+  background-color: #0f1923d9;
+  border: 2px groove gray;
+  padding: 4px;
+  font-family: Montserrat, Helvetica;
+  max-height: 28px;
 }
 
 .container {
-    flex: content;
-    flex-direction: row;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: center;
-    max-width: 700px;
-    row-gap: 30px;
-    max-height: 650px;
-    margin: 0;
-    padding: 0;
+  flex: content;
+  flex-direction: row;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 700px;
+  row-gap: 30px;
+  max-height: 650px;
+  margin: 0;
+  padding: 0;
 }
 
 .logo {
-    max-height: 131px;
-    aspect-ratio: 1;
-    align-self: center;
+  max-height: 131px;
+  aspect-ratio: 1;
+  align-self: center;
 }
 
 .invisible {
-    display: none;
+  display: none;
 }

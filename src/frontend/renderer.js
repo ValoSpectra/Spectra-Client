@@ -9,9 +9,7 @@ function connect() {
     : "NONE";
   const groupCode = document.getElementById("GroupCodeInput").value;
   const ingestIp = document.getElementById("IngestIpInput").value;
-  const teamLeftAttackerStart = document.getElementById(
-    "TeamLeftAttackerStart"
-  ).checked;
+  const teamLeftAttackerStart = document.getElementById("TeamLeftAttackerStart").checked;
 
   const leftTeam = {
     name: document.getElementById("TeamLeftNameInput").value,
@@ -26,14 +24,7 @@ function connect() {
     attackStart: !teamLeftAttackerStart,
   };
 
-  window.electronAPI.processInputs(
-    ingestIp,
-    groupCode,
-    obsName,
-    leftTeam,
-    rightTeam,
-    key
-  );
+  window.electronAPI.processInputs(ingestIp, groupCode, obsName, leftTeam, rightTeam, key);
 }
 
 window.electronAPI.setPlayerName((value) => {
@@ -89,12 +80,8 @@ window.electronAPI.loadConfig((config) => {
     if (leftTeam.url != "skip") {
       document.getElementById("TeamLeftLogoInput").value = leftTeam.url;
     }
-    if (
-      leftTeam.attackStart != "skip" &&
-      typeof leftTeam.attackStart == "boolean"
-    ) {
-      document.getElementById("TeamLeftAttackerStart").checked =
-        leftTeam.attackStart;
+    if (leftTeam.attackStart != "skip" && typeof leftTeam.attackStart == "boolean") {
+      document.getElementById("TeamLeftAttackerStart").checked = leftTeam.attackStart;
     }
   }
 
@@ -103,18 +90,13 @@ window.electronAPI.loadConfig((config) => {
       document.getElementById("TeamRightNameInput").value = rightTeam.name;
     }
     if (rightTeam.tricode != "skip") {
-      document.getElementById("TeamRightTricodeInput").value =
-        rightTeam.tricode;
+      document.getElementById("TeamRightTricodeInput").value = rightTeam.tricode;
     }
     if (rightTeam.url != "skip") {
       document.getElementById("TeamRightLogoInput").value = rightTeam.url;
     }
-    if (
-      leftTeam.attackStart != "skip" &&
-      typeof leftTeam.attackStart == "boolean"
-    ) {
-      document.getElementById("TeamRightAttackerStart").checked =
-        !leftTeam.attackStart;
+    if (leftTeam.attackStart != "skip" && typeof leftTeam.attackStart == "boolean") {
+      document.getElementById("TeamRightAttackerStart").checked = !leftTeam.attackStart;
     }
   }
 });

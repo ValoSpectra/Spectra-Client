@@ -4,7 +4,7 @@
     "name": "Spectra Team",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
@@ -18,7 +18,10 @@
     "start:live": "rimraf app && npx tsc && copy-files-from-to && ow-electron .",
     "build": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=never",
     "publish": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=always",
-    "postinstall": "ow-electron-builder install-app-deps"
+    "postinstall": "ow-electron-builder install-app-deps",
+    "lint": "eslint ./src",
+    "lint-fix": "eslint ./src --fix",
+    "format": "prettier --write ./src"
   },
   "copyFiles": [
     {
@@ -62,24 +65,27 @@
   "license": "GPL-3.0-only",
   "devDependencies": {
     "@electron-delta/builder": "^0.1.17",
+    "@eslint/js": "^9.17.0",
     "@overwolf/ow-electron-builder": "^24.13.8",
-    "@overwolf/ow-electron-packages-types": "^0.0.12",
+    "@overwolf/ow-electron-packages-types": "^0.0.13",
     "@overwolf/types": "^3.24.7",
-    "@types/node": "^22.5.5",
-    "@types/ws": "^8.5.10",
-    "copy-files-from-to": "^3.11.0",
+    "@types/node": "^22.10.2",
+    "copy-files-from-to": "^3.12.0",
     "electron": "^32.1.2",
+    "eslint": "^9.17.0",
+    "eslint-config-prettier": "^9.1.0",
+    "prettier": "^3.4.2",
     "rimraf": "^6.0.1",
-    "typescript": "^5.6.2"
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.18.1"
   },
   "dependencies": {
     "@electron-delta/updater": "^0.1.17",
-    "@overwolf/ow-electron": "^31.4.0",
-    "axios": "^1.7.7",
+    "@overwolf/ow-electron": "^31.7.3",
     "bufferutil": "^4.0.8",
-    "dotenv": "^16.4.5",
-    "electron-log": "^5.2.0",
-    "socket.io-client": "^4.8.0"
+    "dotenv": "^16.4.7",
+    "electron-log": "^5.2.4",
+    "socket.io-client": "^4.8.1"
   },
   "packageManager": "yarn@4.5.1"
 }

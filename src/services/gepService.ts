@@ -1,9 +1,15 @@
-import { overwolf } from '@overwolf/ow-electron';
-import { app as electronApp } from 'electron';
-import log from 'electron-log';
-import { fireConnect, setPlayerName, setStatus } from '../main';
-import { ConnectorService } from './connectorService';
-import { DataTypes, FormattingService, IFormattedData, IFormattedRoundInfo, IFormattedScore } from './formattingService';
+import { overwolf } from "@overwolf/ow-electron";
+import { app as electronApp } from "electron";
+import log from "electron-log";
+import { fireConnect, setPlayerName, setStatus } from "../main";
+import { ConnectorService } from "./connectorService";
+import {
+  DataTypes,
+  FormattingService,
+  IFormattedData,
+  IFormattedRoundInfo,
+  IFormattedScore,
+} from "./formattingService";
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
@@ -21,8 +27,7 @@ export class GameEventsService {
   private currMatchId: string = "";
   private win: any;
 
-  constructor() {
-  }
+  constructor() {}
 
   public registerGame(gepGamesId: number) {
     this.valorantId = gepGamesId;
@@ -42,8 +47,8 @@ export class GameEventsService {
       return;
     }
 
-    app.overwolf.packages.on('ready', (e, packageName, version) => {
-      if (packageName !== 'gep') {
+    app.overwolf.packages.on("ready", (e, packageName, version) => {
+      if (packageName !== "gep") {
         return;
       }
       log.info(`GEP version ${version} ready!`);
@@ -58,7 +63,8 @@ export class GameEventsService {
 
     this.gepApi.removeAllListeners();
 
-    this.gepApi.on('game-detected', async (e, gameId, name, gameInfo) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    this.gepApi.on("game-detected", async (e, gameId, name, gameInfo) => {
       log.info(`Game detected: ${gameId} - ${name}`);
       if (!(this.valorantId === gameId)) {
         log.info("Game not Valorant - ignoring");
@@ -76,7 +82,7 @@ export class GameEventsService {
       enabled = true;
     });
 
-    this.gepApi.on('new-info-update', (e, gameId, ...args) => {
+    this.gepApi.on("new-info-update", (e, gameId, ...args) => {
       if (enabled) {
         for (const data of args) {
           try {
@@ -88,7 +94,7 @@ export class GameEventsService {
       }
     });
 
-    this.gepApi.on('new-game-event', (e, gameId, ...args) => {
+    this.gepApi.on("new-game-event", (e, gameId, ...args) => {
       if (enabled) {
         for (const data of args) {
           try {
@@ -100,7 +106,7 @@ export class GameEventsService {
       }
     });
 
-    this.gepApi.on('error', (e, gameId, error, ...args) => {
+    this.gepApi.on("error", (e, gameId, error) => {
       log.error("GEP Error: ", error);
       enabled = false;
     });
@@ -110,27 +116,22 @@ export class GameEventsService {
     if (data.gameId !== VALORANT_ID) return;
 
     if (data.key.includes("scoreboard")) {
-
       const value = JSON.parse(data.value);
       if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
       this.connService.sendToIngest(formatted);
       return;
-
     } else if (data.key.includes("roster")) {
-
       const value = JSON.parse(data.value);
       if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatRosterData(value, data.key);
       this.connService.sendToIngest(formatted);
       return;
-
     }
 
     let formatted: IFormattedData;
     let toSend: IFormattedData;
     switch (data.key) {
-
       case "health":
         // Nothing yet, sadly
         break;
@@ -163,7 +164,10 @@ export class GameEventsService {
         break;
 
       case "match_score":
-        toSend = { type: DataTypes.SCORE, data: JSON.parse(data.value) as IFormattedScore };
+        toSend = {
+          type: DataTypes.SCORE,
+          data: JSON.parse(data.value) as IFormattedScore,
+        };
         this.connService.sendToIngest(toSend);
         break;
 
@@ -171,7 +175,6 @@ export class GameEventsService {
         this.currScene = data.value;
 
         switch (this.currScene) {
-
           case "CharacterSelectPersistentLevel":
             fireConnect();
             setStatus("Character Select");
@@ -192,7 +195,10 @@ export class GameEventsService {
         break;
 
       case "game_mode":
-        toSend = { type: DataTypes.GAME_MODE, data: JSON.parse(data.value).mode };
+        toSend = {
+          type: DataTypes.GAME_MODE,
+          data: JSON.parse(data.value).mode,
+        };
         this.connService.sendToIngest(toSend);
         break;
 
@@ -233,10 +239,8 @@ export class GameEventsService {
   }
 
   processGameUpdate(data: any) {
-
     let toSend: IFormattedData;
     switch (data.key) {
-
       case "match_start":
         toSend = { type: DataTypes.MATCH_START, data: this.currMatchId };
         this.connService.sendToIngest(toSend);
@@ -274,5 +278,4 @@ export class GameEventsService {
         break;
     }
   }
-
 }
