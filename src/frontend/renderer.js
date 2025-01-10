@@ -23,9 +23,9 @@ function connect() {
     url: document.getElementById("TeamRightLogoInput").value,
     attackStart: !teamLeftAttackerStart,
   };
-  const mapsNeeded = document.getElementById("MapsNeededInput").value || 1;
-  const mapsWonLeft = document.getElementById("MapsWonLeftInput").value || 0;
-  const mapsWonRight = document.getElementById("MapsWonRightInput").value || 0;
+  const mapsNeeded = +document.getElementById("MapsNeededInput").value || 1;
+  const mapsWonLeft = +document.getElementById("MapsWonLeftInput").value || 0;
+  const mapsWonRight = +document.getElementById("MapsWonRightInput").value || 0;
   const mapWinInfo = { mapsNeeded, mapsWonLeft, mapsWonRight };
 
   window.electronAPI.processInputs(
