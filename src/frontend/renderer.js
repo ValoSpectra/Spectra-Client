@@ -23,8 +23,20 @@ function connect() {
     url: document.getElementById("TeamRightLogoInput").value,
     attackStart: !teamLeftAttackerStart,
   };
+  const mapsNeeded = document.getElementById("MapsNeededInput").value || 1;
+  const mapsWonLeft = document.getElementById("MapsWonLeftInput").value || 0;
+  const mapsWonRight = document.getElementById("MapsWonRightInput").value || 0;
+  const mapWinInfo = { mapsNeeded, mapsWonLeft, mapsWonRight };
 
-  window.electronAPI.processInputs(ingestIp, groupCode, obsName, leftTeam, rightTeam, key);
+  window.electronAPI.processInputs(
+    ingestIp,
+    groupCode,
+    obsName,
+    leftTeam,
+    rightTeam,
+    key,
+    mapWinInfo,
+  );
 }
 
 window.electronAPI.setPlayerName((value) => {
@@ -53,6 +65,10 @@ window.electronAPI.setInputAllowed((value) => {
   document.getElementById("TeamRightLogoInput").disabled = disableInput;
 
   document.getElementById("ConnectButton").disabled = disableInput;
+
+  document.getElementById("MapsNeededInput").disabled = disableInput;
+  document.getElementById("MapsWonLeftInput").disabled = disableInput;
+  document.getElementById("MapsWonRightInput").disabled = disableInput;
 });
 
 window.electronAPI.loadConfig((config) => {

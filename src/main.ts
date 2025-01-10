@@ -7,7 +7,7 @@ import { dialog } from "electron";
 import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
-import { FormattingService } from "./services/formattingService";
+import { FormattingService, IMapWinInfo } from "./services/formattingService";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const DeltaUpdater = require("@electron-delta/updater");
@@ -95,6 +95,7 @@ function processInputs(
   leftTeam: AuthTeam,
   rightTeam: AuthTeam,
   key: string,
+  mapWinInfo: IMapWinInfo,
 ) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
@@ -116,7 +117,16 @@ function processInputs(
     `Received Observer Name ${obsName}, Group Code ${groupCode}, Key ${key}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`,
   );
   win!.setTitle(`Spectra Client | Attempting to connect...`);
-  connService.handleAuthProcess(ingestIp, obsName, groupCode, leftTeam, rightTeam, key, win);
+  connService.handleAuthProcess(
+    ingestIp,
+    obsName,
+    groupCode,
+    leftTeam,
+    rightTeam,
+    key,
+    mapWinInfo,
+    win,
+  );
 }
 
 function processConfigDrop(event: any, filePath: string) {

@@ -168,6 +168,7 @@ export interface IAUthenticationData {
   groupCode: string;
   leftTeam: AuthTeam;
   rightTeam: AuthTeam;
+  mapWinInfo: IMapWinInfo;
 }
 
 export enum DataTypes {
@@ -185,4 +186,10 @@ export enum DataTypes {
   SPIKE_DETONATED = "spike_detonated",
   SPIKE_DEFUSED = "spike_defused",
   AUTH = "authenticate",
+}
+
+export interface IMapWinInfo {
+  mapsNeeded: number;
+  mapsWonLeft: number;
+  mapsWonRight: number;
 }

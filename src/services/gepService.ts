@@ -27,7 +27,20 @@ export class GameEventsService {
   private currMatchId: string = "";
   private win: any;
 
-  constructor() {}
+  constructor() {
+    app.overwolf.packages.on("failed-to-initialize", (e, info) => {
+      log.info(`Failed to initialize package ${info}`);
+    });
+    app.overwolf.packages.on("package-update-pending", (e, info) => {
+      for (const pkg of info) {
+        if (pkg.name !== "gep") {
+          break;
+        }
+        log.info(`GEP Updating... New version: ${pkg.version}`);
+        this.win?.setTitle("Spectra Client | GEP Updating...");
+      }
+    });
+  }
 
   public registerGame(gepGamesId: number) {
     this.valorantId = gepGamesId;

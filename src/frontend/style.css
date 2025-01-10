@@ -7,6 +7,13 @@
   font-size: large;
 }
 
+.scroll-txt {
+  color: #e9ecf0;
+  font-size: large;
+  min-width: 600px;
+  text-align: center;
+}
+
 .textInput {
   display: flex;
   flex-direction: column;
@@ -40,7 +47,7 @@ body {
 .section {
   border: 1px solid white;
   flex: auto;
-  padding: 20px;
+  padding: 5px 20px;
   display: flex;
   flex-direction: column;
   gap: 8px;

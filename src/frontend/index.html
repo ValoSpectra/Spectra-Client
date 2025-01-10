@@ -56,7 +56,7 @@
           class="textInput"
           id="TeamLeftLogoInput"
           maxlength="300"
-          placeholder="e.g. https://imgur.com/... "
+          placeholder="e.g. https://imgur.com/*.png "
         />
         <div>
           <input
@@ -93,16 +93,32 @@
           class="textInput"
           id="TeamRightLogoInput"
           maxlength="300"
-          placeholder="e.g. https://imgur.com/... "
+          placeholder="e.g. https://imgur.com/*.png "
         />
         <div>
           <input type="radio" class="customRadio" id="TeamRightAttackerStart" name="attackStart" />
           <label class="txt" for="TeamRightAttackerStart">Starts as attacker</label>
         </div>
       </div>
-    </div>
-    <div class="debug-section invisible" id="debugSection">
-      <textarea class="debug-console" id="debugConsole" disabled="true"></textarea>
+      <div class="scroll-txt">Scroll for tournament options</div>
+      <div></div>
+      <div class="section">
+        <label class="txt" for="MapsNeededInput">Enter maps needed to win series</label>
+        <input type="number" class="textInput" id="MapsNeededInput" placeholder="e.g. 2" />
+        <label class="txt" for="MapsWonLeft">Maps won by Left Team</label>
+        <input type="number" class="textInput" id="MapsWonLeftInput" placeholder="e.g. 1" />
+        <label class="txt" for="MapsWonRight">Maps won by Right Team</label>
+        <input type="number" class="textInput" id="MapsWonRightInput" placeholder="e.g. 0" />
+        <!-- <label class="txt" for="TournamentLogoInput">Enter tournament logo URL</label>
+        <input
+          type="text"
+          class="textInput"
+          id="TournamentLogoInput"
+          maxlength="300"
+          placeholder="e.g. https://imgur.com/*.png "
+        /> -->
+      </div>
+      <div class="scroll-txt"></div>
     </div>
   </body>
 </html>
