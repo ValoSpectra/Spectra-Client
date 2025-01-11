@@ -2,7 +2,7 @@
 const { contextBridge, ipcRenderer } = require("electron/renderer");
 
 contextBridge.exposeInMainWorld("electronAPI", {
-  processInputs: (ingestIp, groupId, obsName, leftTeam, rightTeam, key, mapWinInfo) =>
+  processInputs: (ingestIp, groupId, obsName, leftTeam, rightTeam, key, seriesInfo) =>
     ipcRenderer.send(
       "process-inputs",
       ingestIp,
@@ -11,7 +11,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
       leftTeam,
       rightTeam,
       key,
-      mapWinInfo,
+      seriesInfo,
     ),
   processConfigDrop: (filePath) => ipcRenderer.send("config-drop", filePath),
 

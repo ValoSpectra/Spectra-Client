@@ -7,7 +7,7 @@ import { dialog } from "electron";
 import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
-import { FormattingService, IMapWinInfo } from "./services/formattingService";
+import { FormattingService, ISeriesInfo } from "./services/formattingService";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const DeltaUpdater = require("@electron-delta/updater");
@@ -95,7 +95,7 @@ function processInputs(
   leftTeam: AuthTeam,
   rightTeam: AuthTeam,
   key: string,
-  mapWinInfo: IMapWinInfo,
+  seriesInfo: ISeriesInfo,
 ) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
@@ -113,6 +113,37 @@ function processInputs(
     }
   }
 
+  if (seriesInfo.mapInfo!.length > 0) {
+    let allow = true;
+    for (const map of seriesInfo.mapInfo!) {
+      if (map.type === "past") {
+        if (map.map === "" || map.left.score < 0 || map.right.score < 0) {
+          allow = false;
+          break;
+        }
+      } else if (map.type === "present") {
+        // All good
+      } else if (map.type === "future") {
+        if (map.map === "") {
+          allow = false;
+          break;
+        }
+      } else if (map.type === "error") {
+        allow = false;
+        break;
+      }
+    }
+
+    if (!allow) {
+      messageBox(
+        "Spectra Client - Error",
+        "Please input data into all fields!",
+        messageBoxType.ERROR,
+      );
+      return;
+    }
+  }
+
   log.info(
     `Received Observer Name ${obsName}, Group Code ${groupCode}, Key ${key}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`,
   );
@@ -124,7 +155,7 @@ function processInputs(
     leftTeam,
     rightTeam,
     key,
-    mapWinInfo,
+    seriesInfo,
     win,
   );
 }

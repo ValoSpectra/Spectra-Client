@@ -2,6 +2,22 @@ document.querySelector("#ConnectButton").addEventListener("click", () => {
   connect();
 });
 
+document.querySelector("#ShowMappoolInfo").addEventListener("change", () => {
+  showHideMapPool();
+});
+
+document.querySelector("#Map1TimeSelect").addEventListener("change", () => {
+  showHideMapDetails(1);
+});
+
+document.querySelector("#Map2TimeSelect").addEventListener("change", () => {
+  showHideMapDetails(2);
+});
+
+document.querySelector("#Map3TimeSelect").addEventListener("change", () => {
+  showHideMapDetails(3);
+});
+
 function connect() {
   const obsName = document.getElementById("ValorantNameInput").value;
   const key = document.getElementById("KeyInput").value
@@ -26,7 +42,13 @@ function connect() {
   const mapsNeeded = +document.getElementById("MapsNeededInput").value || 1;
   const mapsWonLeft = +document.getElementById("MapsWonLeftInput").value || 0;
   const mapsWonRight = +document.getElementById("MapsWonRightInput").value || 0;
-  const mapWinInfo = { mapsNeeded, mapsWonLeft, mapsWonRight };
+  const mapWinInfo = { needed: mapsNeeded, wonLeft: mapsWonLeft, wonRight: mapsWonRight };
+  const mapPoolInfo = getMappoolInfo();
+
+  const seriesInfo = {
+    ...mapWinInfo,
+    mapInfo: mapPoolInfo,
+  };
 
   window.electronAPI.processInputs(
     ingestIp,
@@ -35,8 +57,96 @@ function connect() {
     leftTeam,
     rightTeam,
     key,
-    mapWinInfo,
+    seriesInfo,
   );
+}
+
+function getMappoolInfo() {
+  const mappool = [];
+
+  if (document.getElementById("ShowMappoolInfo").checked == false) {
+    return mappool;
+  }
+
+  const map1 = {
+    type: document.getElementById("Map1TimeSelect").value,
+  };
+
+  if (map1.type == "past") {
+    map1.map = document.getElementById("Map1NameInput").value;
+    map1.left = {
+      score: document.getElementById("Map1LeftScore").value || -1,
+      logo: document.getElementById("TeamLeftLogoInput").value,
+    };
+    map1.right = {
+      score: document.getElementById("Map1RightScore").value || -1,
+      logo: document.getElementById("TeamRightLogoInput").value,
+    };
+  } else if (map1.type == "present") {
+    const isLeft = document.getElementById("Map1LeftPicker").checked;
+    if (isLeft) {
+      map1.logo = document.getElementById("TeamLeftLogoInput").value;
+    } else {
+      map1.logo = document.getElementById("TeamRightLogoInput").value;
+    }
+  }
+  mappool.push(map1);
+
+  const map2 = {
+    type: document.getElementById("Map2TimeSelect").value,
+  };
+
+  if (map2.type == "past") {
+    map2.map = document.getElementById("Map2NameInput").value;
+    map2.left = {
+      score: document.getElementById("Map2LeftScore").value || -1,
+      logo: document.getElementById("TeamLeftLogoInput").value,
+    };
+    map2.right = {
+      score: document.getElementById("Map2RightScore").value || -1,
+      logo: document.getElementById("TeamRightLogoInput").value,
+    };
+  } else if (map2.type == "present") {
+    const isLeft = document.getElementById("Map2LeftPicker").checked;
+    if (isLeft) {
+      map2.logo = document.getElementById("TeamLeftLogoInput").value;
+    } else {
+      map2.logo = document.getElementById("TeamRightLogoInput").value;
+    }
+  } else if (map2.type == "future") {
+    map2.map = document.getElementById("Map2NameInput").value;
+    const isLeft = document.getElementById("Map2LeftPicker").checked;
+    if (isLeft) {
+      map2.logo = document.getElementById("TeamLeftLogoInput").value;
+    } else {
+      map2.logo = document.getElementById("TeamRightLogoInput").value;
+    }
+  }
+  mappool.push(map2);
+
+  const map3 = {
+    type: document.getElementById("Map3TimeSelect").value,
+  };
+
+  if (map3.type == "present") {
+    const isLeft = document.getElementById("Map3LeftPicker").checked;
+    if (isLeft) {
+      map3.logo = document.getElementById("TeamLeftLogoInput").value;
+    } else {
+      map3.logo = document.getElementById("TeamRightLogoInput").value;
+    }
+  } else if (map3.type == "future") {
+    map3.map = document.getElementById("Map3NameInput").value;
+    const isLeft = document.getElementById("Map3LeftPicker").checked;
+    if (isLeft) {
+      map3.logo = document.getElementById("TeamLeftLogoInput").value;
+    } else {
+      map3.logo = document.getElementById("TeamRightLogoInput").value;
+    }
+  }
+  mappool.push(map3);
+
+  return mappool;
 }
 
 window.electronAPI.setPlayerName((value) => {
@@ -69,6 +179,29 @@ window.electronAPI.setInputAllowed((value) => {
   document.getElementById("MapsNeededInput").disabled = disableInput;
   document.getElementById("MapsWonLeftInput").disabled = disableInput;
   document.getElementById("MapsWonRightInput").disabled = disableInput;
+
+  document.getElementById("ShowMappoolInfo").disabled = disableInput;
+
+  document.getElementById("Map1TimeSelect").disabled = disableInput;
+  document.getElementById("Map1NameInput").disabled = disableInput;
+  document.getElementById("Map1LeftScore").disabled = disableInput;
+  document.getElementById("Map1RightScore").disabled = disableInput;
+  document.getElementById("Map1LeftPicker").disabled = disableInput;
+  document.getElementById("Map1RightPicker").disabled = disableInput;
+
+  document.getElementById("Map2TimeSelect").disabled = disableInput;
+  document.getElementById("Map2NameInput").disabled = disableInput;
+  document.getElementById("Map2LeftScore").disabled = disableInput;
+  document.getElementById("Map2RightScore").disabled = disableInput;
+  document.getElementById("Map2LeftPicker").disabled = disableInput;
+  document.getElementById("Map2RightPicker").disabled = disableInput;
+
+  document.getElementById("Map3TimeSelect").disabled = disableInput;
+  document.getElementById("Map3NameInput").disabled = disableInput;
+  document.getElementById("Map3LeftScore").disabled = disableInput;
+  document.getElementById("Map3RightScore").disabled = disableInput;
+  document.getElementById("Map3LeftPicker").disabled = disableInput;
+  document.getElementById("Map3RightPicker").disabled = disableInput;
 });
 
 window.electronAPI.loadConfig((config) => {
@@ -117,14 +250,6 @@ window.electronAPI.loadConfig((config) => {
   }
 });
 
-let logText = "Debug Log:";
-let debugConsole = document.getElementById("debugConsole");
-
-window.electronAPI.addLogLine((value) => {
-  logText += `\n[${value.level}] ${value.data.join(" ")}`;
-  debugConsole.value = logText;
-});
-
 window.electronAPI.setStatus((value) => {
   document.getElementById("statusInput").value = value;
 });
@@ -142,3 +267,26 @@ document.addEventListener("dragover", (e) => {
   e.preventDefault();
   e.stopPropagation();
 });
+
+function showHideMapPool() {
+  const chkbox = document.getElementById("ShowMappoolInfo");
+  const mappool1 = document.getElementById("Mappool1Info");
+  const mappool2 = document.getElementById("Mappool2Info");
+  const mappool3 = document.getElementById("Mappool3Info");
+
+  mappool1.style.display = chkbox.checked ? "block" : "none";
+  mappool2.style.display = chkbox.checked ? "block" : "none";
+  mappool3.style.display = chkbox.checked ? "block" : "none";
+}
+
+function showHideMapDetails(map) {
+  const down = document.getElementById(`Map${map}TimeSelect`);
+
+  const score = document.getElementById(`Map${map}Scores`);
+  const picker = document.getElementById(`Map${map}Picker`);
+  const name = document.getElementById(`Map${map}Name`);
+
+  score.style.display = down.value == "past" ? "block" : "none";
+  picker.style.display = down.value == "past" ? "none" : "block";
+  name.style.display = down.value == "present" ? "none" : "block";
+}

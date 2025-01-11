@@ -168,7 +168,7 @@ export interface IAUthenticationData {
   groupCode: string;
   leftTeam: AuthTeam;
   rightTeam: AuthTeam;
-  mapWinInfo: IMapWinInfo;
+  toolsData: IToolsData;
 }
 
 export enum DataTypes {
@@ -189,7 +189,56 @@ export enum DataTypes {
 }
 
 export interface IMapWinInfo {
-  mapsNeeded: number;
-  mapsWonLeft: number;
-  mapsWonRight: number;
+  needed: number;
+  wonLeft: number;
+  wonRight: number;
 }
+
+export interface IToolsData {
+  seriesInfo?: ISeriesInfo;
+}
+
+export type ISeriesInfo = {
+  needed?: number;
+  wonLeft?: number;
+  wonRight?: number;
+  mapInfo?: MapPoolInfo[];
+};
+
+type BaseMapPoolInfo = {
+  type: "past" | "present" | "future" | "error";
+};
+
+type PastMapPoolInfo = BaseMapPoolInfo & {
+  type: "past";
+  map: string;
+  left: {
+    logo: string;
+    score: number;
+  };
+  right: {
+    logo: string;
+    score: number;
+  };
+};
+
+type PresentMapPoolInfo = BaseMapPoolInfo & {
+  type: "present";
+  logo: string;
+};
+
+type FutureMapPoolInfo = BaseMapPoolInfo & {
+  type: "future";
+  map: string;
+  logo: string;
+};
+
+type ErrorMapPoolInfo = BaseMapPoolInfo & {
+  type: "error";
+};
+
+export type MapPoolInfo =
+  | PastMapPoolInfo
+  | PresentMapPoolInfo
+  | FutureMapPoolInfo
+  | ErrorMapPoolInfo;

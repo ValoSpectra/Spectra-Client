@@ -2,7 +2,7 @@ import { app } from "electron";
 import log from "electron-log";
 import * as io from "socket.io-client";
 import { messageBox, messageBoxType, setInputAllowed, setStatus } from "../main";
-import { DataTypes, IAUthenticationData, IFormattedData, IMapWinInfo } from "./formattingService";
+import { DataTypes, IAUthenticationData, IFormattedData, ISeriesInfo } from "./formattingService";
 
 export interface AuthTeam {
   name: string;
@@ -49,7 +49,7 @@ export class ConnectorService {
     leftTeam: AuthTeam,
     rightTeam: AuthTeam,
     key: string,
-    mapWinInfo: IMapWinInfo,
+    seriesInfo: ISeriesInfo,
     win: Electron.Main.BrowserWindow,
   ) {
     if (RegExp("(http|https)://[^/]+:[0-9]+").test(ingestIp)) {
@@ -147,7 +147,9 @@ export class ConnectorService {
       groupCode: this.GROUP_CODE,
       leftTeam: this.LEFT_TEAM,
       rightTeam: this.RIGHT_TEAM,
-      mapWinInfo: mapWinInfo,
+      toolsData: {
+        seriesInfo: seriesInfo,
+      },
     };
 
     this.ws.emit("obs_logon", JSON.stringify(logonData));

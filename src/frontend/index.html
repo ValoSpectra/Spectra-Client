@@ -100,8 +100,7 @@
           <label class="txt" for="TeamRightAttackerStart">Starts as attacker</label>
         </div>
       </div>
-      <div class="scroll-txt">Scroll for tournament options</div>
-      <div></div>
+      <div class="scroll-txt">Scroll for optional settings</div>
       <div class="section">
         <label class="txt" for="MapsNeededInput">Enter maps needed to win series</label>
         <input type="number" class="textInput" id="MapsNeededInput" placeholder="e.g. 2" />
@@ -109,14 +108,88 @@
         <input type="number" class="textInput" id="MapsWonLeftInput" placeholder="e.g. 1" />
         <label class="txt" for="MapsWonRight">Maps won by Right Team</label>
         <input type="number" class="textInput" id="MapsWonRightInput" placeholder="e.g. 0" />
-        <!-- <label class="txt" for="TournamentLogoInput">Enter tournament logo URL</label>
-        <input
-          type="text"
-          class="textInput"
-          id="TournamentLogoInput"
-          maxlength="300"
-          placeholder="e.g. https://imgur.com/*.png "
-        /> -->
+        <label class="txt" for="ShowMappoolInfo">
+          Show Mappool Info<input type="checkbox" id="ShowMappoolInfo" />
+        </label>
+      </div>
+      <div id="Mappool1Info" class="section invisible">
+        <h2 class="txt">Map 1</h2>
+        <label class="txt" for="Map1TimeSelect">When is/was the match</label>
+        <select id="Map1TimeSelect" class="textInput" value="">
+          <option disabled selected value="error">-- Select an Option --</option>
+          <option value="past">Past</option>
+          <option value="present">Present</option>
+        </select>
+        <div id="Map1Name" class="invisible">
+          <label class="txt" for="Map1NameInput">Map Name</label>
+          <input type="text" class="textInput" id="Map1NameInput" placeholder="e.g. Bind" />
+        </div>
+        <div id="Map1Scores" class="invisible">
+          <label class="txt" for="Map1LeftScore">Left Score</label>
+          <input type="number" class="textInput" id="Map1LeftScore" placeholder="e.g. 13" />
+          <label class="txt" for="Map1RightScore">Right Score</label>
+          <input type="number" class="textInput" id="Map1RightScore" placeholder="e.g. 11" />
+        </div>
+        <div id="Map1Picker" class="invisible">
+          <div class="txt" for="Map1Picker">Who picked the map</div>
+          <input type="radio" id="Map1LeftPicker" name="Map1Picker" checked />
+          <label class="txt" for="Map1LeftPicker">Left Team</label>
+          <input type="radio" id="Map1RightPicker" name="Map1Picker" />
+          <label class="txt" for="Map1RightPicker">Right Team</label>
+        </div>
+      </div>
+      <div id="Mappool2Info" class="section invisible">
+        <h2 class="txt">Map 2</h2>
+        <label class="txt" for="Map2TimeSelect">When is/was the match</label>
+        <select id="Map2TimeSelect" class="textInput" value="">
+          <option disabled selected value="error">-- Select an Option --</option>
+          <option value="past">Past</option>
+          <option value="present">Present</option>
+          <option value="future">Future</option>
+        </select>
+        <div id="Map2Name" class="invisible">
+          <label class="txt" for="Map2NameInput">Map Name</label>
+          <input type="text" class="textInput" id="Map2NameInput" placeholder="e.g. Bind" />
+        </div>
+        <div id="Map2Scores" class="invisible">
+          <label class="txt" for="Map2LeftScore">Left Score</label>
+          <input type="number" class="textInput" id="Map2LeftScore" placeholder="e.g. 13" />
+          <label class="txt" for="Map2RightScore">Right Score</label>
+          <input type="number" class="textInput" id="Map2RightScore" placeholder="e.g. 11" />
+        </div>
+        <div id="Map2Picker" class="invisible">
+          <div class="txt" for="Map2Picker">Who picked the map</div>
+          <input type="radio" id="Map2LeftPicker" name="Map2Picker" checked />
+          <label class="txt" for="Map2LeftPicker">Left Team</label>
+          <input type="radio" id="Map2RightPicker" name="Map2Picker" />
+          <label class="txt" for="Map2RightPicker">Right Team</label>
+        </div>
+      </div>
+      <div id="Mappool3Info" class="section invisible">
+        <h2 class="txt">Map 3</h2>
+        <label class="txt" for="Map3TimeSelect">When is/was the match</label>
+        <select id="Map3TimeSelect" class="textInput" value="">
+          <option disabled selected value="error">-- Select an Option --</option>
+          <option value="present">Present</option>
+          <option value="future">Future</option>
+        </select>
+        <div id="Map3Name" class="invisible">
+          <label class="txt" for="Map3NameInput">Map Name</label>
+          <input type="text" class="textInput" id="Map3NameInput" placeholder="e.g. Bind" />
+        </div>
+        <div id="Map3Scores" class="invisible">
+          <label class="txt" for="Map3LeftScore">Left Score</label>
+          <input type="number" class="textInput" id="Map3LeftScore" placeholder="e.g. 13" />
+          <label class="txt" for="Map3RightScore">Right Score</label>
+          <input type="number" class="textInput" id="Map3RightScore" placeholder="e.g. 11" />
+        </div>
+        <div id="Map3Picker" class="invisible">
+          <div class="txt" for="Map3Picker">Who picked the map</div>
+          <input type="radio" id="Map3LeftPicker" name="Map3Picker" checked />
+          <label class="txt" for="Map3LeftPicker">Left Team</label>
+          <input type="radio" id="Map3RightPicker" name="Map3Picker" />
+          <label class="txt" for="Map3RightPicker">Right Team</label>
+        </div>
       </div>
       <div class="scroll-txt"></div>
     </div>
