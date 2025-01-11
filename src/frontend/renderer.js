@@ -59,6 +59,14 @@ function connect() {
     key,
     seriesInfo,
   );
+
+  localStorage.setItem("key", key);
+  localStorage.setItem("groupCode", groupCode);
+  localStorage.setItem("ingestIp", ingestIp);
+  localStorage.setItem("leftTeam", JSON.stringify(leftTeam));
+  localStorage.setItem("rightTeam", JSON.stringify(rightTeam));
+  localStorage.setItem("mapPoolChecked", document.getElementById("ShowMappoolInfo").checked);
+  localStorage.setItem("seriesInfo", JSON.stringify(seriesInfo));
 }
 
 function getMappoolInfo() {
@@ -290,3 +298,40 @@ function showHideMapDetails(map) {
   picker.style.display = down.value == "past" ? "none" : "block";
   name.style.display = down.value == "present" ? "none" : "block";
 }
+
+function loadAll() {
+  document.getElementById("KeyInput").value = localStorage.getItem("key") || "";
+  document.getElementById("GroupCodeInput").value = localStorage.getItem("groupCode") || "";
+  document.getElementById("IngestIpInput").value = localStorage.getItem("ingestIp") || "";
+
+  const leftLoadTeam = JSON.parse(localStorage.getItem("leftTeam")) || undefined;
+  if (leftLoadTeam) {
+    document.getElementById("TeamLeftNameInput").value = leftLoadTeam.name || "";
+    document.getElementById("TeamLeftTricodeInput").value = leftLoadTeam.tricode || "";
+    document.getElementById("TeamLeftLogoInput").value = leftLoadTeam.url || "";
+    document.getElementById("TeamLeftAttackerStart").checked = leftLoadTeam.attackStart || false;
+  }
+
+  const rightLoadTeam = JSON.parse(localStorage.getItem("rightTeam")) || undefined;
+  if (rightLoadTeam) {
+    document.getElementById("TeamRightNameInput").value = rightLoadTeam.name || "";
+    document.getElementById("TeamRightTricodeInput").value = rightLoadTeam.tricode || "";
+    document.getElementById("TeamRightLogoInput").value = rightLoadTeam.url || "";
+    document.getElementById("TeamRightAttackerStart").checked = rightLoadTeam.attackStart || false;
+  }
+
+  const seriesInfo = JSON.parse(localStorage.getItem("seriesInfo")) || undefined;
+  if (seriesInfo) {
+    document.getElementById("MapsNeededInput").value = seriesInfo.needed || 1;
+    document.getElementById("MapsWonLeftInput").value = seriesInfo.wonLeft || 0;
+    document.getElementById("MapsWonRightInput").value = seriesInfo.wonRight || 0;
+  }
+
+  const mapPool = localStorage.getItem("mapPoolChecked");
+  if (mapPool) {
+    document.getElementById("ShowMappoolInfo").checked = mapPool;
+    showHideMapPool();
+  }
+}
+
+loadAll();
