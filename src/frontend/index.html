@@ -57,6 +57,9 @@
           id="TeamLeftLogoInput"
           maxlength="300"
           placeholder="e.g. https://imgur.com/*.png "
+          title="Ensure the link ends in .png, .jpg, or .webp to ensure the image is able to be displayed"
+          pattern="https://.*\.(png|jpg|webp)"
+          required
         />
         <div>
           <input
@@ -94,6 +97,9 @@
           id="TeamRightLogoInput"
           maxlength="300"
           placeholder="e.g. https://imgur.com/*.png "
+          title="Ensure the link ends in .png, .jpg, or .webp to ensure the image is able to be displayed"
+          pattern="https://.*\.(png|jpg|webp)"
+          required
         />
         <div>
           <input type="radio" class="customRadio" id="TeamRightAttackerStart" name="attackStart" />
@@ -103,11 +109,32 @@
       <div class="scroll-txt">Scroll for optional settings</div>
       <div class="section">
         <label class="txt" for="MapsNeededInput">Enter maps needed to win series</label>
-        <input type="number" class="textInput" id="MapsNeededInput" placeholder="e.g. 2" />
+        <input
+          type="number"
+          class="textInput"
+          id="MapsNeededInput"
+          placeholder="e.g. 2"
+          min="0"
+          max="10"
+        />
         <label class="txt" for="MapsWonLeft">Maps won by Left Team</label>
-        <input type="number" class="textInput" id="MapsWonLeftInput" placeholder="e.g. 1" />
+        <input
+          type="number"
+          class="textInput"
+          id="MapsWonLeftInput"
+          placeholder="e.g. 1"
+          min="0"
+          max="1"
+        />
         <label class="txt" for="MapsWonRight">Maps won by Right Team</label>
-        <input type="number" class="textInput" id="MapsWonRightInput" placeholder="e.g. 0" />
+        <input
+          type="number"
+          class="textInput"
+          id="MapsWonRightInput"
+          placeholder="e.g. 0"
+          min="0"
+          max="10"
+        />
         <label class="txt" for="SeedingLeft">Seeding for Left Team</label>
         <input
           type="text"
@@ -143,9 +170,23 @@
         </div>
         <div id="Map1Scores" class="invisible">
           <label class="txt" for="Map1LeftScore">Left Score</label>
-          <input type="number" class="textInput" id="Map1LeftScore" placeholder="e.g. 13" />
+          <input
+            type="number"
+            class="textInput"
+            id="Map1LeftScore"
+            placeholder="e.g. 13"
+            min="0"
+            max="99"
+          />
           <label class="txt" for="Map1RightScore">Right Score</label>
-          <input type="number" class="textInput" id="Map1RightScore" placeholder="e.g. 11" />
+          <input
+            type="number"
+            class="textInput"
+            id="Map1RightScore"
+            placeholder="e.g. 11"
+            min="0"
+            max="99"
+          />
         </div>
         <div id="Map1Picker" class="invisible">
           <div class="txt" for="Map1Picker">Who picked the map</div>
@@ -170,9 +211,23 @@
         </div>
         <div id="Map2Scores" class="invisible">
           <label class="txt" for="Map2LeftScore">Left Score</label>
-          <input type="number" class="textInput" id="Map2LeftScore" placeholder="e.g. 13" />
+          <input
+            type="number"
+            class="textInput"
+            id="Map2LeftScore"
+            placeholder="e.g. 13"
+            min="0"
+            max="99"
+          />
           <label class="txt" for="Map2RightScore">Right Score</label>
-          <input type="number" class="textInput" id="Map2RightScore" placeholder="e.g. 11" />
+          <input
+            type="number"
+            class="textInput"
+            id="Map2RightScore"
+            placeholder="e.g. 11"
+            min="0"
+            max="99"
+          />
         </div>
         <div id="Map2Picker" class="invisible">
           <div class="txt" for="Map2Picker">Who picked the map</div>
@@ -196,9 +251,23 @@
         </div>
         <div id="Map3Scores" class="invisible">
           <label class="txt" for="Map3LeftScore">Left Score</label>
-          <input type="number" class="textInput" id="Map3LeftScore" placeholder="e.g. 13" />
+          <input
+            type="number"
+            class="textInput"
+            id="Map3LeftScore"
+            placeholder="e.g. 13"
+            min="0"
+            max="99"
+          />
           <label class="txt" for="Map3RightScore">Right Score</label>
-          <input type="number" class="textInput" id="Map3RightScore" placeholder="e.g. 11" />
+          <input
+            type="number"
+            class="textInput"
+            id="Map3RightScore"
+            placeholder="e.g. 11"
+            min="0"
+            max="99"
+          />
         </div>
         <div id="Map3Picker" class="invisible">
           <div class="txt" for="Map3Picker">Who picked the map</div>

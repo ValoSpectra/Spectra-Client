@@ -108,3 +108,7 @@ body {
 .invisible {
   display: none;
 }
+
+input:invalid {
+  border: 1px dotted yellow;
+}
