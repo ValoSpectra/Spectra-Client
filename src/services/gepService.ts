@@ -212,7 +212,16 @@ export class GameEventsService {
           type: DataTypes.GAME_MODE,
           data: JSON.parse(data.value).mode,
         };
-        this.connService.sendToIngest(toSend);
+
+        if (this.connService.isConnected()) {
+          this.connService.sendToIngest(toSend);
+        } else {
+          log.info("Delaying gamemode event by 5 seconds to wait out auto-connect");
+          setTimeout(() => {
+            this.connService.sendToIngest(toSend);
+          }, 5000);
+        }
+
         break;
 
       case "map":
@@ -223,7 +232,16 @@ export class GameEventsService {
         }
 
         toSend = { type: DataTypes.MAP, data: data.value };
-        this.connService.sendToIngest(toSend);
+
+        if (this.connService.isConnected()) {
+          this.connService.sendToIngest(toSend);
+        } else {
+          log.info("Delaying map event by 5 seconds to wait out auto-connect");
+          setTimeout(() => {
+            this.connService.sendToIngest(toSend);
+          }, 5000);
+        }
+
         break;
 
       case "match_id":

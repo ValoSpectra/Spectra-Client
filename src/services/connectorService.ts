@@ -2,7 +2,13 @@ import { app } from "electron";
 import log from "electron-log";
 import * as io from "socket.io-client";
 import { messageBox, messageBoxType, setInputAllowed, setStatus } from "../main";
-import { DataTypes, IAUthenticationData, IFormattedData, ISeriesInfo } from "./formattingService";
+import {
+  DataTypes,
+  IAUthenticationData,
+  IFormattedData,
+  ISeedingInfo,
+  ISeriesInfo,
+} from "./formattingService";
 
 export interface AuthTeam {
   name: string;
@@ -50,6 +56,7 @@ export class ConnectorService {
     rightTeam: AuthTeam,
     key: string,
     seriesInfo: ISeriesInfo,
+    seedingInfo: ISeedingInfo,
     win: Electron.Main.BrowserWindow,
   ) {
     if (RegExp("(http|https)://[^/]+:[0-9]+").test(ingestIp)) {
@@ -149,6 +156,7 @@ export class ConnectorService {
       rightTeam: this.RIGHT_TEAM,
       toolsData: {
         seriesInfo: seriesInfo,
+        seedingInfo: seedingInfo,
       },
     };
 

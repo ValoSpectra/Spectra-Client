@@ -50,6 +50,14 @@ function connect() {
     mapInfo: mapPoolInfo,
   };
 
+  const seedingLeft = document.getElementById("SeedingLeftInput").value || "";
+  const seedingRight = document.getElementById("SeedingRightInput").value || "";
+
+  const seedingInfo = {
+    left: seedingLeft,
+    right: seedingRight,
+  };
+
   window.electronAPI.processInputs(
     ingestIp,
     groupCode,
@@ -58,6 +66,7 @@ function connect() {
     rightTeam,
     key,
     seriesInfo,
+    seedingInfo,
   );
 
   localStorage.setItem("key", key);
@@ -67,6 +76,7 @@ function connect() {
   localStorage.setItem("rightTeam", JSON.stringify(rightTeam));
   localStorage.setItem("mapPoolChecked", document.getElementById("ShowMappoolInfo").checked);
   localStorage.setItem("seriesInfo", JSON.stringify(seriesInfo));
+  localStorage.setItem("seedingInfo", JSON.stringify(seedingInfo));
 }
 
 function getMappoolInfo() {
@@ -325,6 +335,12 @@ function loadAll() {
     document.getElementById("MapsNeededInput").value = seriesInfo.needed || 1;
     document.getElementById("MapsWonLeftInput").value = seriesInfo.wonLeft || 0;
     document.getElementById("MapsWonRightInput").value = seriesInfo.wonRight || 0;
+  }
+
+  const seedingInfo = JSON.parse(localStorage.getItem("seedingInfo")) || undefined;
+  if (seedingInfo) {
+    document.getElementById("SeedingLeftInput").value = seedingInfo.left || "";
+    document.getElementById("SeedingRightInput").value = seedingInfo.right || "";
   }
 
   const mapPool = localStorage.getItem("mapPoolChecked");

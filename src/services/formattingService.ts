@@ -179,7 +179,7 @@ export enum DataTypes {
   ROUND_INFO = "round_info",
   TEAM_IS_ATTACKER = "team_is_attacker",
   SCORE = "score",
-  GAME_MODE = "GAME_MODE",
+  GAME_MODE = "game_mode",
   MAP = "map",
   OBSERVING = "observing",
   SPIKE_PLANTED = "spike_planted",
@@ -195,14 +195,20 @@ export interface IMapWinInfo {
 }
 
 export interface IToolsData {
-  seriesInfo?: ISeriesInfo;
+  seriesInfo: ISeriesInfo;
+  seedingInfo: ISeedingInfo;
 }
 
 export type ISeriesInfo = {
-  needed?: number;
-  wonLeft?: number;
-  wonRight?: number;
-  mapInfo?: MapPoolInfo[];
+  needed: number;
+  wonLeft: number;
+  wonRight: number;
+  mapInfo: MapPoolInfo[];
+};
+
+export type ISeedingInfo = {
+  left: string;
+  right: string;
 };
 
 type BaseMapPoolInfo = {

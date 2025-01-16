@@ -7,7 +7,7 @@ import { dialog } from "electron";
 import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
-import { FormattingService, ISeriesInfo } from "./services/formattingService";
+import { FormattingService, ISeedingInfo, ISeriesInfo } from "./services/formattingService";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const DeltaUpdater = require("@electron-delta/updater");
@@ -96,6 +96,7 @@ function processInputs(
   rightTeam: AuthTeam,
   key: string,
   seriesInfo: ISeriesInfo,
+  seedingInfo: ISeedingInfo,
 ) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
@@ -156,6 +157,7 @@ function processInputs(
     rightTeam,
     key,
     seriesInfo,
+    seedingInfo,
     win,
   );
 }
