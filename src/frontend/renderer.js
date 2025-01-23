@@ -198,6 +198,9 @@ window.electronAPI.setInputAllowed((value) => {
   document.getElementById("MapsWonLeftInput").disabled = disableInput;
   document.getElementById("MapsWonRightInput").disabled = disableInput;
 
+  document.getElementById("SeedingLeftInput").disabled = disableInput;
+  document.getElementById("SeedingRightInput").disabled = disableInput;
+
   document.getElementById("ShowMappoolInfo").disabled = disableInput;
 
   document.getElementById("Map1TimeSelect").disabled = disableInput;
