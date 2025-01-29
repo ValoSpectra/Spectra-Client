@@ -61,8 +61,8 @@ function connect() {
   const hotkeySpike = document.getElementById("hotkeySpikeInput").value || "";
 
   const hotkeys = {
-    spikePlanted: hotkeySpike
-  }
+    spikePlanted: hotkeySpike,
+  };
 
   window.electronAPI.processInputs(
     ingestIp,
@@ -361,6 +361,9 @@ function loadAll() {
     document.getElementById("ShowMappoolInfo").checked = mapPool;
     showHideMapPool();
   }
+
+  document.getElementById("hotkeySpikeInput").value =
+    JSON.parse(localStorage.getItem("hotkeys"))?.spikePlanted || "F9";
 }
 
 loadAll();
