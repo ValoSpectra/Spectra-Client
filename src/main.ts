@@ -8,6 +8,7 @@ import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
 import { FormattingService, ISeedingInfo, ISeriesInfo } from "./services/formattingService";
+import HotkeyService, { HotkeyType } from "./services/hotkeyService";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const DeltaUpdater = require("@electron-delta/updater");
@@ -97,6 +98,7 @@ function processInputs(
   key: string,
   seriesInfo: ISeriesInfo,
   seedingInfo: ISeedingInfo,
+  hotkeys: any,
 ) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
@@ -143,6 +145,20 @@ function processInputs(
       );
       return;
     }
+  }
+
+  //regex check hotkeys
+  const regex = /^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-2]?|\d)$/g;
+  if (hotkeys.spikePlanted.match(regex)) {
+    HotkeyService.getInstance().setKeyForHotkey(HotkeyType.SPIKE_PLANTED, hotkeys.spikePlanted);
+  }
+  else {
+    messageBox(
+      "Spectra Client - Error",
+      "The hotkey for 'Spike planted' is invalid!",
+      messageBoxType.ERROR,
+    );
+    return;
   }
 
   log.info(

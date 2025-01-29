@@ -9,6 +9,7 @@ import {
   ISeedingInfo,
   ISeriesInfo,
 } from "./formattingService";
+import HotkeyService from "./hotkeyService";
 
 export interface AuthTeam {
   name: string;
@@ -96,6 +97,7 @@ export class ConnectorService {
           this.win.setTitle(`Spectra Client | Connected with Group ID: ${this.GROUP_CODE}`);
           this.connected = true;
           setStatus("Connected");
+          HotkeyService.getInstance().activateAllHotkeys();
           setInputAllowed(false);
           this.websocketSetup();
         } else {
@@ -189,6 +191,7 @@ export class ConnectorService {
     this.connected = false;
     setInputAllowed(true);
     setStatus("Disconnected");
+    HotkeyService.getInstance().deactivateAllHotkeys();
   }
 
   isConnected() {

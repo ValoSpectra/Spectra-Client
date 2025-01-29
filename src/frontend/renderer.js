@@ -58,6 +58,12 @@ function connect() {
     right: seedingRight,
   };
 
+  const hotkeySpike = document.getElementById("hotkeySpikeInput").value || "";
+
+  const hotkeys = {
+    spikePlanted: hotkeySpike
+  }
+
   window.electronAPI.processInputs(
     ingestIp,
     groupCode,
@@ -67,6 +73,7 @@ function connect() {
     key,
     seriesInfo,
     seedingInfo,
+    hotkeys,
   );
 
   localStorage.setItem("key", key);
@@ -77,6 +84,7 @@ function connect() {
   localStorage.setItem("mapPoolChecked", document.getElementById("ShowMappoolInfo").checked);
   localStorage.setItem("seriesInfo", JSON.stringify(seriesInfo));
   localStorage.setItem("seedingInfo", JSON.stringify(seedingInfo));
+  localStorage.setItem("hotkeys", JSON.stringify(hotkeys));
 }
 
 function getMappoolInfo() {
@@ -223,6 +231,8 @@ window.electronAPI.setInputAllowed((value) => {
   document.getElementById("Map3RightScore").disabled = disableInput;
   document.getElementById("Map3LeftPicker").disabled = disableInput;
   document.getElementById("Map3RightPicker").disabled = disableInput;
+
+  document.getElementById("hotkeySpikeInput").disabled = disableInput;
 });
 
 window.electronAPI.loadConfig((config) => {

@@ -10,6 +10,7 @@ import {
   IFormattedRoundInfo,
   IFormattedScore,
 } from "./formattingService";
+import HotkeyService from "./hotkeyService";
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
@@ -167,6 +168,7 @@ export class GameEventsService {
       case "round_phase":
         formatted = this.formattingService.formatRoundData(data.value, this.currRoundNumber);
         this.connService.sendToIngest(formatted);
+        HotkeyService.getInstance().setRoundPhase(data.value);
 
         if ((formatted.data as IFormattedRoundInfo).roundPhase === "game_end") {
           this.connService.handleMatchEnd();

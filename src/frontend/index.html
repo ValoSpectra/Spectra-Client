@@ -106,7 +106,22 @@
           <label class="txt" for="TeamRightAttackerStart">Starts as attacker</label>
         </div>
       </div>
-      <div class="scroll-txt">Scroll for optional settings</div>
+      <div class="scroll-txt">Scroll for hotkeys and optional settings</div>
+      <div class="section">
+        <h1 class="txt">Hotkeys</h1>
+        <label class="txt" for="hotkeySpikeInput">Spike planted</label>
+        <input
+          type="text"
+          class="textInput"
+          id="hotkeySpikeInput"
+          maxlength="30"
+          placeholder="e.g. Ctrl+F9"
+          value="F9"
+          pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-2]?|\d)$"
+          title="Can't resolve key. Try 'Ctrl+F9' for example."
+          required
+        />
+      </div>
       <div class="section">
         <label class="txt" for="MapsNeededInput">Enter maps needed to win series</label>
         <input
