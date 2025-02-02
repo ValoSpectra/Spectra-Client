@@ -2,6 +2,10 @@ document.querySelector("#ConnectButton").addEventListener("click", () => {
   connect();
 });
 
+document.querySelector("#ShowTournamentInfo").addEventListener("change", () => {
+  showHideTournament();
+});
+
 document.querySelector("#ShowMappoolInfo").addEventListener("change", () => {
   showHideMapPool();
 });
@@ -58,6 +62,16 @@ function connect() {
     right: seedingRight,
   };
 
+  const tournamentInfo = getTournamentInfo();
+  const emptyTournamentInfo = {
+    name: "",
+    logoUrl: "",
+    backdropUrl: "",
+  };
+  const tournamentInfoToSend = document.getElementById("ShowTournamentInfo").checked
+    ? tournamentInfo
+    : emptyTournamentInfo;
+
   const hotkeySpike = document.getElementById("hotkeySpikeInput").value || "";
 
   const hotkeys = {
@@ -73,6 +87,7 @@ function connect() {
     key,
     seriesInfo,
     seedingInfo,
+    tournamentInfoToSend,
     hotkeys,
   );
 
@@ -81,10 +96,27 @@ function connect() {
   localStorage.setItem("ingestIp", ingestIp);
   localStorage.setItem("leftTeam", JSON.stringify(leftTeam));
   localStorage.setItem("rightTeam", JSON.stringify(rightTeam));
+  localStorage.setItem(
+    "tournamentInfoChecked",
+    document.getElementById("ShowTournamentInfo").checked,
+  );
+  if (document.getElementById("ShowTournamentInfo").checked) {
+    localStorage.setItem("tournamentInfo", JSON.stringify(tournamentInfo));
+  }
   localStorage.setItem("mapPoolChecked", document.getElementById("ShowMappoolInfo").checked);
   localStorage.setItem("seriesInfo", JSON.stringify(seriesInfo));
   localStorage.setItem("seedingInfo", JSON.stringify(seedingInfo));
   localStorage.setItem("hotkeys", JSON.stringify(hotkeys));
+}
+
+function getTournamentInfo() {
+  const toReturn = {
+    name: document.getElementById("TournamentNameInput").value || "",
+    logoUrl: document.getElementById("TournamentLogoInput").value || "",
+    backdropUrl: document.getElementById("TournamentBackdropInput").value || "",
+  };
+
+  return toReturn;
 }
 
 function getMappoolInfo() {
@@ -209,6 +241,11 @@ window.electronAPI.setInputAllowed((value) => {
   document.getElementById("SeedingLeftInput").disabled = disableInput;
   document.getElementById("SeedingRightInput").disabled = disableInput;
 
+  document.getElementById("ShowTournamentInfo").disabled = disableInput;
+  document.getElementById("TournamentNameInput").disabled = disableInput;
+  document.getElementById("TournamentLogoInput").disabled = disableInput;
+  document.getElementById("TournamentBackdropInput").disabled = disableInput;
+
   document.getElementById("ShowMappoolInfo").disabled = disableInput;
 
   document.getElementById("Map1TimeSelect").disabled = disableInput;
@@ -310,6 +347,23 @@ function showHideMapPool() {
   mappool3.style.display = chkbox.checked ? "block" : "none";
 }
 
+function showHideTournament() {
+  const chkbox = document.getElementById("ShowTournamentInfo");
+  const roundwin1 = document.getElementById("TournamentNameInput");
+  const roundwin2 = document.getElementById("TournamentLogoInput");
+  const roundwin3 = document.getElementById("TournamentBackdropInput");
+  const roundwin4 = document.getElementById("TournamentNameLabel");
+  const roundwin5 = document.getElementById("TournamentLogoLabel");
+  const roundwin6 = document.getElementById("TournamentBackdropLabel");
+
+  roundwin1.style.display = chkbox.checked ? "block" : "none";
+  roundwin2.style.display = chkbox.checked ? "block" : "none";
+  roundwin3.style.display = chkbox.checked ? "block" : "none";
+  roundwin4.style.display = chkbox.checked ? "block" : "none";
+  roundwin5.style.display = chkbox.checked ? "block" : "none";
+  roundwin6.style.display = chkbox.checked ? "block" : "none";
+}
+
 function showHideMapDetails(map) {
   const down = document.getElementById(`Map${map}TimeSelect`);
 
@@ -356,9 +410,28 @@ function loadAll() {
     document.getElementById("SeedingRightInput").value = seedingInfo.right || "";
   }
 
-  const mapPool = localStorage.getItem("mapPoolChecked");
-  if (mapPool) {
-    document.getElementById("ShowMappoolInfo").checked = mapPool;
+  const shouldTournamentInfoChecked = localStorage.getItem("tournamentInfoChecked");
+  if (shouldTournamentInfoChecked) {
+    const roundWinElement = document.getElementById("ShowTournamentInfo");
+    if (shouldTournamentInfoChecked === "true") {
+      roundWinElement.checked = shouldTournamentInfoChecked;
+    }
+    showHideTournament();
+  }
+
+  const tournamentInfo = JSON.parse(localStorage.getItem("tournamentInfo")) || undefined;
+  if (tournamentInfo) {
+    document.getElementById("TournamentNameInput").value = tournamentInfo.name || "";
+    document.getElementById("TournamentLogoInput").value = tournamentInfo.logoUrl || "";
+    document.getElementById("TournamentBackdropInput").value = tournamentInfo.backdropUrl || "";
+  }
+
+  const shouldMappoolChecked = localStorage.getItem("mapPoolChecked");
+  if (shouldMappoolChecked) {
+    const mapPoolElement = document.getElementById("ShowMappoolInfo");
+    if (shouldMappoolChecked === "true") {
+      mapPoolElement.checked = shouldMappoolChecked;
+    }
     showHideMapPool();
   }
 

@@ -8,6 +8,7 @@ import {
   IFormattedData,
   ISeedingInfo,
   ISeriesInfo,
+  ITournamentInfo,
 } from "./formattingService";
 import HotkeyService from "./hotkeyService";
 
@@ -58,6 +59,7 @@ export class ConnectorService {
     key: string,
     seriesInfo: ISeriesInfo,
     seedingInfo: ISeedingInfo,
+    tournamentInfo: ITournamentInfo,
     win: Electron.Main.BrowserWindow,
   ) {
     if (RegExp("(http|https)://[^/]+:[0-9]+").test(ingestIp)) {
@@ -159,6 +161,7 @@ export class ConnectorService {
       toolsData: {
         seriesInfo: seriesInfo,
         seedingInfo: seedingInfo,
+        tournamentInfo: tournamentInfo,
       },
     };
 

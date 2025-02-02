@@ -108,18 +108,42 @@
       </div>
       <div class="scroll-txt">Scroll for hotkeys and optional settings</div>
       <div class="section">
-        <h1 class="txt">Hotkeys</h1>
-        <label class="txt" for="hotkeySpikeInput">Spike planted</label>
+        <label class="txt" for="ShowTournamentInfo">
+          Show Round Win Box<input type="checkbox" id="ShowTournamentInfo" />
+        </label>
+        <label class="txt invisible" id="TournamentNameLabel" for="TournamentNameInput"
+          >Enter tournament name</label
+        >
         <input
           type="text"
-          class="textInput"
-          id="hotkeySpikeInput"
-          maxlength="30"
-          placeholder="e.g. Ctrl+F9"
-          value="F9"
-          pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-2]?|\d)$"
-          title="Can't resolve key. Try 'Ctrl+F9' for example."
+          maxlength="50"
+          class="textInput invisible"
+          id="TournamentNameInput"
+          placeholder="e.g. Spectra Invitational"
+        />
+        <label class="txt invisible" id="TournamentLogoLabel" for="TournamentLogoInput"
+          >Tournament logo URL</label
+        >
+        <input
+          type="text"
+          class="textInput invisible"
+          id="TournamentLogoInput"
+          maxlength="300"
+          placeholder="e.g. https://imgur.com/*.png "
+          title="Ensure the link ends in .png, .jpg, or .webp to ensure the image is able to be displayed"
+          pattern="https://.*\.(png|jpg|webp)"
           required
+        />
+        <label class="txt invisible" id="TournamentBackdropLabel" for="TournamentBackdropInput"
+          >Tournament backdrop URL</label
+        >
+        <input
+          type="text"
+          class="textInput invisible"
+          id="TournamentBackdropInput"
+          maxlength="300"
+          placeholder="e.g. https://imgur.com/*.png, empty for default"
+          title="Ensure the link ends in .png, .jpg, or .webp to ensure the image is able to be displayed"
         />
       </div>
       <div class="section">
@@ -291,6 +315,22 @@
           <input type="radio" id="Map3RightPicker" name="Map3Picker" />
           <label class="txt" for="Map3RightPicker">Right Team</label>
         </div>
+      </div>
+
+      <div class="section">
+        <h1 class="txt">Hotkeys</h1>
+        <label class="txt" for="hotkeySpikeInput">Spike planted</label>
+        <input
+          type="text"
+          class="textInput"
+          id="hotkeySpikeInput"
+          maxlength="30"
+          placeholder="e.g. Ctrl+F9"
+          value="F9"
+          pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-2]?|\d)$"
+          title="Can't resolve key. Try 'Ctrl+F9' for example."
+          required
+        />
       </div>
       <div class="scroll-txt"></div>
     </div>

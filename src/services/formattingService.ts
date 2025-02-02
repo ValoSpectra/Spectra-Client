@@ -197,6 +197,7 @@ export interface IMapWinInfo {
 export interface IToolsData {
   seriesInfo: ISeriesInfo;
   seedingInfo: ISeedingInfo;
+  tournamentInfo: ITournamentInfo;
 }
 
 export type ISeriesInfo = {
@@ -209,6 +210,12 @@ export type ISeriesInfo = {
 export type ISeedingInfo = {
   left: string;
   right: string;
+};
+
+export type ITournamentInfo = {
+  name: string;
+  logoUrl: string;
+  backdropUrl: string;
 };
 
 type BaseMapPoolInfo = {

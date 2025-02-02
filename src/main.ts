@@ -7,7 +7,12 @@ import { dialog } from "electron";
 import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
-import { FormattingService, ISeedingInfo, ISeriesInfo } from "./services/formattingService";
+import {
+  FormattingService,
+  ISeedingInfo,
+  ISeriesInfo,
+  ITournamentInfo,
+} from "./services/formattingService";
 import HotkeyService, { HotkeyType } from "./services/hotkeyService";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
@@ -39,6 +44,7 @@ const createWindow = () => {
 
   ipcMain.on("process-inputs", processInputs);
   ipcMain.on("config-drop", processConfigDrop);
+  ipcMain.on("process-log", processLog);
 
   win.menuBarVisible = false;
   win.loadFile("./src/frontend/index.html");
@@ -98,6 +104,7 @@ function processInputs(
   key: string,
   seriesInfo: ISeriesInfo,
   seedingInfo: ISeedingInfo,
+  tournamentInfo: ITournamentInfo,
   hotkeys: any,
 ) {
   const webContents = event.sender;
@@ -151,8 +158,7 @@ function processInputs(
   const regex = /^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-2]?|\d)$/g;
   if (hotkeys.spikePlanted.match(regex)) {
     HotkeyService.getInstance().setKeyForHotkey(HotkeyType.SPIKE_PLANTED, hotkeys.spikePlanted);
-  }
-  else {
+  } else {
     messageBox(
       "Spectra Client - Error",
       "The hotkey for 'Spike planted' is invalid!",
@@ -174,6 +180,7 @@ function processInputs(
     key,
     seriesInfo,
     seedingInfo,
+    tournamentInfo,
     win,
   );
 }
@@ -212,6 +219,10 @@ function processConfigDrop(event: any, filePath: string) {
     log.error(`Error reading config file: ${e}`);
     return;
   }
+}
+
+function processLog(event: any, message: string) {
+  log.info(message);
 }
 
 function validateSpectraConfig(data: any) {
