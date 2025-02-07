@@ -27,6 +27,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
       tournamentInfo,
       hotkeys,
     ),
+  processAuxInputs: (ingestIp, name) => ipcRenderer.send("process-aux-inputs", ingestIp, name),
   processConfigDrop: (filePath) => ipcRenderer.send("config-drop", filePath),
   processLog: (toLog) => ipcRenderer.send("process-log", toLog),
 

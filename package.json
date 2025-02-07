@@ -4,7 +4,7 @@
     "name": "Spectra Team",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.15",
+  "version": "0.2.16",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
@@ -15,6 +15,7 @@
   },
   "scripts": {
     "start": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
+    "start-aux": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages --auxiliary",
     "start:live": "rimraf app && npx tsc && copy-files-from-to && ow-electron .",
     "build": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=never",
     "publish": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=always",
@@ -40,7 +41,8 @@
   "build": {
     "productName": "Spectra Client",
     "compression": "maximum",
-    "nsis": {
+    "nsisWeb": {
+      "artifactName": "Spectra-Client-Setup.${ext}",
       "oneClick": false,
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
@@ -52,7 +54,7 @@
     "afterAllArtifactBuild": ".electron-delta.js",
     "win": {
       "target": [
-        "nsis"
+        "nsis-web"
       ],
       "publish": {
         "provider": "github",
@@ -65,26 +67,31 @@
   "license": "GPL-3.0-only",
   "devDependencies": {
     "@electron-delta/builder": "^0.1.17",
-    "@eslint/js": "^9.17.0",
-    "@overwolf/ow-electron-builder": "^24.13.8",
+    "@eslint/js": "^9.19.0",
+    "@overwolf/ow-electron": "^31.7.6",
+    "@overwolf/ow-electron-builder": "^24.13.10",
     "@overwolf/ow-electron-packages-types": "^0.0.13",
     "@overwolf/types": "^3.24.7",
-    "@types/node": "^22.10.2",
+    "@types/electron-json-storage": "^4",
+    "@types/node": "^22.13.1",
+    "@types/semver": "^7",
     "copy-files-from-to": "^3.12.0",
     "electron": "^32.1.2",
-    "eslint": "^9.17.0",
+    "eslint": "^9.19.0",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.4.2",
     "rimraf": "^6.0.1",
-    "typescript": "^5.7.2",
-    "typescript-eslint": "^8.18.1"
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.23.0"
   },
   "dependencies": {
     "@electron-delta/updater": "^0.1.17",
-    "@overwolf/ow-electron": "^31.7.3",
-    "bufferutil": "^4.0.8",
+    "axios": "^1.7.9",
+    "bufferutil": "^4.0.9",
     "dotenv": "^16.4.7",
-    "electron-log": "^5.2.4",
+    "electron-json-storage": "^4.6.0",
+    "electron-log": "^5.3.0",
+    "semver": "^7.7.1",
     "socket.io-client": "^4.8.1"
   },
   "packageManager": "yarn@4.5.1"

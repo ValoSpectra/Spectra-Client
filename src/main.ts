@@ -3,7 +3,7 @@ require("dotenv").config();
 import path from "path";
 import { GameEventsService } from "./services/gepService";
 import { ConnectorService } from "./services/connectorService";
-import { dialog } from "electron";
+import { dialog, shell } from "electron";
 import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
@@ -14,9 +14,12 @@ import {
   ITournamentInfo,
 } from "./services/formattingService";
 import HotkeyService, { HotkeyType } from "./services/hotkeyService";
+import axios from "axios";
+import * as semver from "semver";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
-const DeltaUpdater = require("@electron-delta/updater");
+
+let isAuxiliary = false;
 
 let gepService: GameEventsService;
 const connService = ConnectorService.getInstance();
@@ -26,11 +29,19 @@ let win!: Electron.Main.BrowserWindow;
 const VALORANT_ID = 21640;
 
 log.initialize();
+log.errorHandler.startCatching();
 
 const createWindow = () => {
+  isAuxiliary = app.commandLine.hasSwitch("auxiliary");
+  if (!isAuxiliary) {
+    log.info("Starting in Observer Mode");
+  } else {
+    log.info("Starting in Auxiliary Mode");
+  }
+
   win = new BrowserWindow({
     width: 730, // 1300 for debug console
-    height: 650,
+    height: !isAuxiliary ? 650 : 270,
     backgroundColor: "#303338",
     resizable: false,
     webPreferences: {
@@ -43,11 +54,17 @@ const createWindow = () => {
   });
 
   ipcMain.on("process-inputs", processInputs);
+  ipcMain.on("process-aux-inputs", processAuxInputs);
   ipcMain.on("config-drop", processConfigDrop);
   ipcMain.on("process-log", processLog);
 
   win.menuBarVisible = false;
-  win.loadFile("./src/frontend/index.html");
+
+  if (!isAuxiliary) {
+    win.loadFile("./src/frontend/index.html");
+  } else {
+    win.loadFile("./src/frontend/auxiliary.html");
+  }
 };
 
 app.whenReady().then(async () => {
@@ -56,29 +73,17 @@ app.whenReady().then(async () => {
     enabled: false,
   });
 
-  const deltaUpdater = new DeltaUpdater({
-    logger: log,
-  });
-
-  try {
-    await deltaUpdater.boot({
-      splashScreen: true,
-    });
-  } catch (error) {
-    log.error(error);
+  createWindow();
+  const updateAvailable = await updateCheck();
+  if (updateAvailable) {
+    shell.openExternal(`https://valospectra.com/download`);
+    app.quit();
+    // return to not init overwolf
+    return;
   }
 
-  createWindow();
-
-  gepService = new GameEventsService();
+  gepService = new GameEventsService(isAuxiliary);
   overwolfSetup();
-
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
-      overwolfSetup();
-    }
-  });
 
   setStatus("Idle");
 });
@@ -90,6 +95,7 @@ app.on("window-all-closed", () => {
 });
 
 app.on("before-quit", () => {
+  if (isAuxiliary) return;
   const formatted = formattingService.formatRoundData("game_end", -1);
   connService.sendToIngest(formatted);
 });
@@ -185,6 +191,11 @@ function processInputs(
   );
 }
 
+function processAuxInputs(event: any, ingestIp: string, name: string) {
+  win!.setTitle(`Spectra Client | Attempting to connect...`);
+  connService.handleAuxAuthProcess(ingestIp, name, win);
+}
+
 function processConfigDrop(event: any, filePath: string) {
   log.info(`Reading config data from ${filePath}`);
   if (!filePath.endsWith(".scg")) {
@@ -241,6 +252,57 @@ function overwolfSetup() {
   gepService.registerOverwolfPackageManager();
 }
 
+async function updateCheck(): Promise<boolean> {
+  try {
+    const releaseName = (
+      await axios.get("https://api.github.com/repos/ValoSpectra/Spectra-Client/releases")
+    ).data[0].name;
+
+    const latestRelease = semver.valid(releaseName);
+    const currentRelease = semver.valid(app.getVersion());
+
+    if (!latestRelease || !currentRelease) {
+      messageBox(
+        "Spectra Client - Update Check Failed",
+        "The automatic update check failed - please manually check if a new version of the client is available!",
+        messageBoxType.WARNING,
+      );
+      log.error(
+        "Error checking for latest release, invalid version:",
+        latestRelease,
+        currentRelease,
+      );
+      return false;
+    }
+
+    if (semver.gt(latestRelease, currentRelease)) {
+      log.info(`New client version available: ${latestRelease} (current: ${currentRelease})`);
+      const button = messageBox(
+        "Spectra Client - Update Available",
+        `A new version of the Spectra Client is available. Please update to the latest version.`,
+        messageBoxType.WARNING,
+        ["Update"],
+      );
+
+      if (button === 0) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  } catch (error) {
+    messageBox(
+      "Spectra Client - Update Check Failed",
+      "The automatic update check failed - please manually check if a new version of the client is available!",
+      messageBoxType.WARNING,
+    );
+    log.error("Error checking for latest release:", error);
+    return false;
+  }
+}
+
 export function setPlayerName(name: string) {
   win.webContents.send("set-player-name", name);
 }
@@ -254,6 +316,7 @@ export function setStatus(newStatus: string) {
 }
 
 export function fireConnect() {
+  connService.stopAttempts();
   if (connService.isConnected()) return;
   win.webContents.send("fire-connect");
 }

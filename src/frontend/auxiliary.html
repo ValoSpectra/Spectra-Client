@@ -1,0 +1,47 @@
+<link rel="stylesheet" href="style.css" />
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+    <title class="txt">Spectra Client</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="section">
+        <label class="txt" for="ValorantNameInput">Please double-check your Valorant name</label>
+        <input
+          type="text"
+          class="textInput"
+          id="ValorantNameInput"
+          placeholder="Auto-detected on game start"
+          disabled="true"
+        />
+        <label class="txt" for="IngestServerSelect">Spectra Ingest Server</label>
+        <select id="IngestServerSelect" class="textInput" value="">
+          <option disabled selected value="error">-- Select an Option --</option>
+          <option value="eu">EU</option>
+          <option value="na">NA</option>
+          <option value="custom">Custom</option>
+        </select>
+        <label class="txt invisible" id="IngestIpInputLabel" for="IngestIpInput"
+          >Enter the ingest server IP</label
+        >
+        <input
+          type="text"
+          class="textInput invisible"
+          id="IngestIpInput"
+          placeholder="e.g. 162.512.238.54"
+        />
+      </div>
+      <div class="section">
+        <img class="logo" src="../assets/icon.png" />
+        <label class="txt" for="statusInput">Status</label>
+        <input type="text" class="textInput" id="statusInput" disabled="true" />
+      </div>
+    </div>
+  </body>
+</html>
+<script src="renderer_aux.js"></script>

@@ -4,13 +4,16 @@ import * as io from "socket.io-client";
 import { messageBox, messageBoxType, setInputAllowed, setStatus } from "../main";
 import {
   DataTypes,
-  IAUthenticationData,
+  IAuthenticationData,
+  IAuxAuthenticationData,
   IFormattedData,
   ISeedingInfo,
   ISeriesInfo,
   ITournamentInfo,
+  SocketChannels,
 } from "./formattingService";
 import HotkeyService from "./hotkeyService";
+const storage = require("electron-json-storage");
 
 export interface AuthTeam {
   name: string;
@@ -22,6 +25,12 @@ export interface AuthTeam {
 export class ConnectorService {
   private INGEST_SERVER_URL = "https://localhost:5100";
   private OBS_NAME = "";
+  private IS_AUX = false;
+  private PLAYER_ID = this.getPlayerId();
+  private PLAYER_HEALTH = 100;
+  private LAST_HEALTH = 0;
+  private HEALTH_INTERVAL: NodeJS.Timeout | undefined;
+  private MATCH_ID = this.getMatchId();
   private GROUP_CODE = "";
   private LEFT_TEAM: AuthTeam = {
     name: "",
@@ -150,7 +159,7 @@ export class ConnectorService {
       log.info(`Spectra Client | Reconnected`);
     });
 
-    const logonData: IAUthenticationData = {
+    const logonData: IAuthenticationData = {
       type: DataTypes.AUTH,
       clientVersion: app.getVersion(),
       obsName: this.OBS_NAME,
@@ -165,7 +174,115 @@ export class ConnectorService {
       },
     };
 
-    this.ws.emit("obs_logon", JSON.stringify(logonData));
+    this.ws.emit(SocketChannels.OBSERVER_LOGON, JSON.stringify(logonData));
+  }
+
+  handleAuxAuthProcess(ingestIp: string, name: string, win: Electron.Main.BrowserWindow) {
+    if (RegExp("(http|https)://[^/]+:[0-9]+").test(ingestIp)) {
+      this.INGEST_SERVER_URL = `${ingestIp}`;
+    } else if (ingestIp.includes(":") && !ingestIp.startsWith("http")) {
+      this.INGEST_SERVER_URL = `https://${ingestIp}`;
+    } else {
+      this.INGEST_SERVER_URL = ingestIp.startsWith("http")
+        ? `${ingestIp}:5100`
+        : `https://${ingestIp}:5100`;
+    }
+    this.OBS_NAME = name;
+    this.win = win;
+
+    log.info(`Attempting to connect to ${this.INGEST_SERVER_URL} for match ${this.MATCH_ID}`);
+    if (this.MATCH_ID === "") {
+      log.info("Match ID not set, cannot connect");
+      setStatus("No Match ID found, cannot connect");
+      this.win.setTitle(`Spectra Client | No Match ID found, cannot connect`);
+      return;
+    }
+
+    this.unreachable = false;
+    if (this.ws?.connected) {
+      this.setDisconnected();
+      this.ws.disconnect();
+      this.ws = undefined;
+    }
+
+    this.ws = io.connect(this.INGEST_SERVER_URL, {
+      reconnection: true,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      rejectUnauthorized: false,
+    });
+
+    this.ws.once("aux_logon_ack", (msg) => {
+      const json = JSON.parse(msg.toString());
+      if (json.type === DataTypes.AUX_AUTH) {
+        if (json.value === true) {
+          log.info("Authentication successful!");
+          this.win.setTitle(`Spectra Client | Connected, Auxiliary`);
+          this.connected = true;
+          this.GROUP_CODE = json.reason;
+          this.IS_AUX = true;
+          setStatus("Connected, Auxiliary");
+          setInputAllowed(false);
+          this.websocketSetup();
+          this.startAuxHealthLoop();
+          this.saveMatchId(this.MATCH_ID);
+        } else {
+          log.info("Authentication failed!");
+          messageBox(
+            "Spectra Client - Error",
+            `Connection failed, reason: ${json.reason}`,
+            messageBoxType.ERROR,
+          );
+          this.win.setTitle(`Spectra Client | Connection failed`);
+          this.setDisconnected();
+          this.ws?.disconnect();
+          setStatus(`Connection failed - ${json.reason}`);
+        }
+      }
+    });
+
+    this.ws.on("close", () => {
+      log.info("Connection to spectra server closed");
+      if (this.unreachable === true) {
+        this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
+
+        messageBox("Spectra Client - Error", "Spectra server not reachable!", messageBoxType.ERROR);
+      } else {
+        this.win.setTitle(`Spectra Client | Connection closed`);
+      }
+      this.setDisconnected();
+      this.ws?.disconnect();
+    });
+
+    this.ws.on("error", (e: any) => {
+      log.info("Failed connection to spectra server - is it up?");
+      if (e.code === "ECONNREFUSED") {
+        this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
+        this.unreachable = true;
+      } else {
+        this.win.setTitle(`Spectra Client | Connection failed`);
+      }
+      log.error(e);
+    });
+
+    this.ws.io.on("reconnect_attempt", (attempt: number) => {
+      log.info(`Reconnecting to spectra server, attempt ${attempt}`);
+      this.win.setTitle(`Spectra Client | Connection lost, attempting reconnect...`);
+    });
+
+    this.ws.io.on("reconnect", () => {
+      log.info(`Spectra Client | Reconnected`);
+    });
+
+    const logonData: IAuxAuthenticationData = {
+      type: DataTypes.AUX_AUTH,
+      clientVersion: app.getVersion(),
+      name: this.OBS_NAME,
+      matchId: this.MATCH_ID,
+      playerId: this.PLAYER_ID,
+    };
+
+    this.ws.emit(SocketChannels.AUXILIARY_LOGON, JSON.stringify(logonData));
   }
 
   private websocketSetup() {
@@ -176,9 +293,37 @@ export class ConnectorService {
   }
 
   sendToIngest(formatted: IFormattedData) {
-    if (this.connected) {
+    if (this.connected && !this.IS_AUX) {
       const toSend = { obsName: this.OBS_NAME, groupCode: this.GROUP_CODE, ...formatted };
-      this.ws!.emit("obs_data", JSON.stringify(toSend));
+      this.ws!.emit(SocketChannels.OBSERVER_DATA, JSON.stringify(toSend));
+    }
+  }
+
+  sendToIngestAux(formatted: IFormattedData) {
+    if (this.connected) {
+      const toSend = { playerId: this.PLAYER_ID, groupCode: this.GROUP_CODE, ...formatted };
+      this.ws!.emit(SocketChannels.AUXILIARY_DATA, JSON.stringify(toSend));
+    }
+  }
+
+  startAuxHealthLoop() {
+    this.HEALTH_INTERVAL = setInterval(() => {
+      if (this.connected) {
+        if (this.PLAYER_HEALTH !== this.LAST_HEALTH) {
+          this.LAST_HEALTH = this.PLAYER_HEALTH;
+          this.sendToIngestAux({
+            type: DataTypes.AUX_HEALTH,
+            data: this.PLAYER_HEALTH,
+          });
+        }
+      }
+    }, 300);
+  }
+
+  stopAttempts() {
+    if (!this.connected) {
+      this.ws?.disconnect();
+      this.setDisconnected();
     }
   }
 
@@ -194,10 +339,66 @@ export class ConnectorService {
     this.connected = false;
     setInputAllowed(true);
     setStatus("Disconnected");
+    clearInterval(this.HEALTH_INTERVAL);
     HotkeyService.getInstance().deactivateAllHotkeys();
   }
 
   isConnected() {
     return this.connected;
+  }
+
+  setMatchId(matchId: string) {
+    this.MATCH_ID = matchId;
+  }
+
+  setPlayerId(matchId: string) {
+    this.PLAYER_ID = matchId;
+  }
+
+  setAndSavePlayerId(playerId: string) {
+    this.PLAYER_ID = playerId;
+    this.savePlayerId(playerId);
+  }
+
+  setPlayerHealth(health: number) {
+    this.PLAYER_HEALTH = health;
+  }
+
+  savePlayerId(playerId: string) {
+    log.debug(`Saving player ID: ${playerId}`);
+    storage.set("playerId", { playerId: playerId }, function (error: any) {
+      if (error) log.error(error);
+    });
+  }
+
+  getPlayerId() {
+    const retrieved = storage.getSync("playerId");
+    if (retrieved == null || Object.keys(retrieved).length == 0) {
+      return "";
+    } else {
+      log.debug(`Retrieved player ID: ${retrieved.playerId}`);
+      return retrieved.playerId;
+    }
+  }
+
+  saveMatchId(matchId: string) {
+    log.debug(`Saving match ID: ${matchId}`);
+    storage.set("matchId", { matchId: matchId, timestamp: Date.now() }, function (error: any) {
+      if (error) log.error(error);
+    });
+  }
+
+  getMatchId() {
+    const retrieved = storage.getSync("matchId");
+    if (retrieved == null || Object.keys(retrieved).length == 0) {
+      return "";
+    }
+    // Expire after 2 hours
+    if (retrieved.timestamp + 1000 * 60 * 60 * 2 < Date.now()) {
+      return "";
+    } else {
+      log.debug(`Retrieved match ID: ${retrieved.matchId}`);
+      return retrieved.matchId;
+    }
   }
 }

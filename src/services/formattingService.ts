@@ -148,6 +148,12 @@ export interface IFormattedScore {
   team_1: number;
 }
 
+export interface IFormattedAbilities {
+  grenade: number;
+  ability_1: number;
+  ability_2: number;
+}
+
 export interface IFormattedData {
   type: string;
   data:
@@ -156,11 +162,13 @@ export interface IFormattedData {
     | IFormattedRoster
     | IFormattedRoundInfo
     | IFormattedScore
+    | IFormattedAbilities
     | boolean
-    | string;
+    | string
+    | number;
 }
 
-export interface IAUthenticationData {
+export interface IAuthenticationData {
   type: DataTypes.AUTH;
   clientVersion: string;
   obsName: string;
@@ -169,6 +177,14 @@ export interface IAUthenticationData {
   leftTeam: AuthTeam;
   rightTeam: AuthTeam;
   toolsData: IToolsData;
+}
+
+export interface IAuxAuthenticationData {
+  type: DataTypes.AUX_AUTH;
+  clientVersion: string;
+  name: string;
+  matchId: string;
+  playerId: string;
 }
 
 export enum DataTypes {
@@ -186,6 +202,17 @@ export enum DataTypes {
   SPIKE_DETONATED = "spike_detonated",
   SPIKE_DEFUSED = "spike_defused",
   AUTH = "authenticate",
+  AUX_AUTH = "aux_authenticate",
+  AUX_ABILITIES = "aux_abilities",
+  AUX_HEALTH = "aux_health",
+  AUX_SCOREBOARD = "aux_scoreboard",
+}
+
+export enum SocketChannels {
+  OBSERVER_LOGON = "obs_logon",
+  OBSERVER_DATA = "obs_data",
+  AUXILIARY_LOGON = "aux_logon",
+  AUXILIARY_DATA = "aux_data",
 }
 
 export interface IMapWinInfo {

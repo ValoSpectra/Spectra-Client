@@ -9,12 +9,14 @@ import {
   IFormattedData,
   IFormattedRoundInfo,
   IFormattedScore,
+  IFormattedScoreboard,
 } from "./formattingService";
 import HotkeyService from "./hotkeyService";
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
 let enabled = false;
+let auxiliary = false;
 
 export class GameEventsService {
   private gepApi!: overwolf.packages.OverwolfGameEventPackage;
@@ -26,9 +28,10 @@ export class GameEventsService {
   public currRoundNumber: number = 0;
   private currScene: string = "";
   private currMatchId: string = "";
+  private localPlayerId: string = "";
   private win: any;
 
-  constructor() {
+  constructor(isAuxiliary: boolean) {
     app.overwolf.packages.on("failed-to-initialize", (e, info) => {
       log.info(`Failed to initialize package ${info}`);
     });
@@ -41,6 +44,7 @@ export class GameEventsService {
         this.win?.setTitle("Spectra Client | GEP Updating...");
       }
     });
+    auxiliary = isAuxiliary;
   }
 
   public registerGame(gepGamesId: number) {
@@ -77,6 +81,7 @@ export class GameEventsService {
 
     this.gepApi.removeAllListeners();
 
+    this.setRequiredFeaturesValorant();
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     this.gepApi.on("game-detected", async (e, gameId, name, gameInfo) => {
       log.info(`Game detected: ${gameId} - ${name}`);
@@ -92,7 +97,6 @@ export class GameEventsService {
       }
 
       e.enable();
-      this.setRequiredFeaturesValorant();
       enabled = true;
     });
 
@@ -129,6 +133,11 @@ export class GameEventsService {
   processInfoUpdate(data: any) {
     if (data.gameId !== VALORANT_ID) return;
 
+    if (auxiliary) {
+      this.processAuxUpdate(data);
+      return;
+    }
+
     if (data.key.includes("scoreboard")) {
       const value = JSON.parse(data.value);
       if (value.name == undefined || value.name == "") return;
@@ -146,10 +155,6 @@ export class GameEventsService {
     let formatted: IFormattedData;
     let toSend: IFormattedData;
     switch (data.key) {
-      case "health":
-        // Nothing yet, sadly
-        break;
-
       case "kill_feed":
         const value = JSON.parse(data.value);
         formatted = this.formattingService.formatKillfeedData(value);
@@ -255,12 +260,17 @@ export class GameEventsService {
         setPlayerName(data.value);
         break;
 
+      case "health":
+      case "abilities":
+      case "player_id":
+      case "state":
+      case "score":
+      case "agent":
       case "team":
       case "match_outcome":
       case "pseudo_match_id":
-      case "player_id":
       case "region":
-      case "state":
+      case "planted_site":
       case "is_pbe":
         // Irrelevant, ignore
         break;
@@ -272,6 +282,12 @@ export class GameEventsService {
   }
 
   processGameUpdate(data: any) {
+    if (data.gameId !== VALORANT_ID) return;
+    if (auxiliary) {
+      this.processAuxUpdate(data);
+      return;
+    }
+
     let toSend: IFormattedData;
     switch (data.key) {
       case "match_start":
@@ -304,10 +320,90 @@ export class GameEventsService {
       case "scoreboard_screen":
       // I do not know why we are getting a duplicate of kill feeds here now
       case "kill_feed":
+      case "shop":
         break;
 
       default:
         log.info("Unhandled game update:", data);
+        break;
+    }
+  }
+
+  processAuxUpdate(data: any) {
+    if (data.key.includes("scoreboard")) {
+      const value = JSON.parse(data.value);
+      if (value.name == undefined || value.name == "") return;
+      data = JSON.parse(data.value);
+      if (data.is_local) {
+        const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
+        formatted.type = DataTypes.AUX_SCOREBOARD;
+        this.localPlayerId = (formatted.data as IFormattedScoreboard).playerId;
+        this.connService.setPlayerId(this.localPlayerId);
+        this.connService.sendToIngestAux(formatted);
+        return;
+      }
+    } else if (data.key.includes("roster")) {
+      const value = JSON.parse(data.value);
+      if (value.local) {
+        this.localPlayerId = value.player_id;
+        this.connService.setPlayerId(this.localPlayerId);
+      }
+      return;
+    }
+
+    let formatted: IFormattedData;
+    switch (data.key) {
+      case "health":
+        this.connService.setPlayerHealth(+data.value);
+        break;
+
+      case "abilities":
+        const valueObject = JSON.parse(data.value);
+        formatted = {
+          type: DataTypes.AUX_ABILITIES,
+          data: {
+            grenade: valueObject["C"],
+            ability_1: valueObject["Q"],
+            ability_2: valueObject["E"],
+          },
+        };
+        this.connService.sendToIngestAux(formatted);
+        break;
+
+      case "round_phase":
+        if (data.value === "end") {
+          // Try connecting on round end in case someone fixes their connection settings (or restarts)
+          fireConnect();
+        } else if (data.value === "game_end") {
+          this.connService.handleMatchEnd();
+        }
+        break;
+
+      case "match_start":
+        if (this.currScene !== "Range") {
+          // Wait 1 seconds before firing connect to give observer time to send match ID
+          setTimeout(() => {
+            fireConnect();
+          }, 1000);
+        }
+        break;
+
+      case "player_id":
+        this.localPlayerId = data.value;
+        this.connService.setAndSavePlayerId(this.localPlayerId);
+        break;
+
+      case "match_id":
+        this.currMatchId = data.value;
+        this.connService.setMatchId(this.currMatchId);
+        break;
+
+      case "player_name":
+        log.info(`Detected player name: ${data.value}`);
+        setPlayerName(data.value);
+        break;
+
+      default:
         break;
     }
   }
