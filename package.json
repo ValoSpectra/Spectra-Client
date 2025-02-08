@@ -51,7 +51,6 @@
       "runAfterFinish": false,
       "differentialPackage": true
     },
-    "afterAllArtifactBuild": ".electron-delta.js",
     "win": {
       "target": [
         "nsis-web"
@@ -66,7 +65,6 @@
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "@electron-delta/builder": "^0.1.17",
     "@eslint/js": "^9.19.0",
     "@overwolf/ow-electron": "^31.7.6",
     "@overwolf/ow-electron-builder": "^24.13.10",
@@ -85,7 +83,6 @@
     "typescript-eslint": "^8.23.0"
   },
   "dependencies": {
-    "@electron-delta/updater": "^0.1.17",
     "axios": "^1.7.9",
     "bufferutil": "^4.0.9",
     "dotenv": "^16.4.7",
