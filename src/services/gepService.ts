@@ -367,7 +367,16 @@ export class GameEventsService {
             ability_2: valueObject["E"],
           },
         };
-        this.connService.sendToIngestAux(formatted);
+
+        if (this.connService.isConnected()) {
+          this.connService.sendToIngestAux(formatted);
+        } else {
+          log.info("Delaying ability event by 1.5 seconds to wait out auto-connect");
+          setTimeout(() => {
+            this.connService.sendToIngestAux(formatted);
+          }, 1500);
+        }
+
         break;
 
       case "round_phase":

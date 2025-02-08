@@ -1,4 +1,6 @@
 document.querySelector("#IngestServerSelect").addEventListener("change", () => {
+  const ingestSelector = document.getElementById("IngestServerSelect").value;
+  localStorage.setItem("auxIngestSelector", ingestSelector);
   showHideServerSelect();
 });
 
@@ -7,7 +9,9 @@ function connect() {
 
   const ingestSelector = document.getElementById("IngestServerSelect").value;
   let ingestIp =
-    ingestSelector == "custom" ? document.getElementById("IngestIpInput").value : ingestSelector;
+    ingestSelector == "custom"
+      ? document.getElementById("IngestIpInput").value
+      : `${ingestSelector}.valospectra.com`;
 
   window.electronAPI.processAuxInputs(ingestIp, name);
 
@@ -44,7 +48,11 @@ function showHideServerSelect() {
 }
 
 function loadAll() {
+  const ingestSelect = localStorage.getItem("auxIngestSelector");
+  document.getElementById("IngestServerSelect").value = ingestSelect || "eu";
   document.getElementById("IngestIpInput").value = localStorage.getItem("auxIngestIp") || "";
+
+  showHideServerSelect();
 }
 
 loadAll();
