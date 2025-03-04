@@ -206,6 +206,7 @@ export enum DataTypes {
   AUX_ABILITIES = "aux_abilities",
   AUX_HEALTH = "aux_health",
   AUX_SCOREBOARD = "aux_scoreboard",
+  AUX_ASTRA_TARGETING = "aux_astra_targeting",
 }
 
 export enum SocketChannels {

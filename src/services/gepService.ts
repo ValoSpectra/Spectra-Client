@@ -388,6 +388,19 @@ export class GameEventsService {
         }
         break;
 
+      // Astra "Ult" form is an actual agent change, so can be tracked
+      case "agent":
+        // Check if it's Astra (Rift)
+        if (data.value.includes("Rift")) {
+          // Check if she entered targeting form (Rift_TargetingForm_PC_C)
+          const isTargeting = data.value.includes("Targeting");
+          this.connService.sendToIngestAux({
+            type: DataTypes.AUX_ASTRA_TARGETING,
+            data: isTargeting,
+          });
+        }
+        break;
+
       case "match_start":
         if (this.currScene !== "Range") {
           // Wait 1 seconds before firing connect to give observer time to send match ID
