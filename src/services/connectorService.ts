@@ -219,7 +219,6 @@ export class ConnectorService {
           log.info("Authentication successful!");
           this.win.setTitle(`Spectra Client | Connected, Auxiliary`);
           this.connected = true;
-          this.GROUP_CODE = json.reason;
           this.IS_AUX = true;
           setStatus("Connected, Auxiliary");
           setInputAllowed(false);
@@ -301,7 +300,7 @@ export class ConnectorService {
 
   sendToIngestAux(formatted: IFormattedData) {
     if (this.connected) {
-      const toSend = { playerId: this.PLAYER_ID, groupCode: this.GROUP_CODE, ...formatted };
+      const toSend = { playerId: this.PLAYER_ID, matchId: this.MATCH_ID, ...formatted };
       this.ws!.emit(SocketChannels.AUXILIARY_DATA, JSON.stringify(toSend));
     }
   }
