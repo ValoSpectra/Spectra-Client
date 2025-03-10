@@ -172,6 +172,36 @@ function processInputs(
     );
     return;
   }
+  if (hotkeys.techPause.match(regex)) {
+    HotkeyService.getInstance().setKeyForHotkey(HotkeyType.TECH_PAUSE, hotkeys.techPause);
+  } else {
+    messageBox(
+      "Spectra Client - Error",
+      "The hotkey for 'Tech pause' is invalid!",
+      messageBoxType.ERROR,
+    );
+    return;
+  }
+  if (hotkeys.leftTimeout.match(regex)) {
+    HotkeyService.getInstance().setKeyForHotkey(HotkeyType.LEFT_TIMEOUT, hotkeys.leftTimeout);
+  } else {
+    messageBox(
+      "Spectra Client - Error",
+      "The hotkey for 'Left timeout' is invalid!",
+      messageBoxType.ERROR,
+    );
+    return;
+  }
+  if (hotkeys.rightTimeout.match(regex)) {
+    HotkeyService.getInstance().setKeyForHotkey(HotkeyType.RIGHT_TIMEOUT, hotkeys.rightTimeout);
+  } else {
+    messageBox(
+      "Spectra Client - Error",
+      "The hotkey for 'Right timeout' is invalid!",
+      messageBoxType.ERROR,
+    );
+    return;
+  }
 
   log.info(
     `Received Observer Name ${obsName}, Group Code ${groupCode}, Key ${key}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`,
@@ -290,6 +320,7 @@ async function updateCheck(): Promise<boolean> {
         return false;
       }
     } else {
+      log.info(`Running latest client version: ${currentRelease}`);
       return false;
     }
   } catch (error) {

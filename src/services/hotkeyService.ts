@@ -9,10 +9,26 @@ export default class HotkeyService {
   private hotkeys: Hotkey[] = [];
   private currentRoundPhase: string = "";
 
+  private techPause: boolean = false;
+  private leftTimeout: boolean = false;
+  private rightTimeout: boolean = false;
+
   private constructor() {
     this.hotkeys[HotkeyType.SPIKE_PLANTED] = {
       key: "",
       action: this._spikePlantedHotkeyAction.bind(this),
+    };
+    this.hotkeys[HotkeyType.TECH_PAUSE] = {
+      key: "",
+      action: this._techPauseHotkeyAction.bind(this),
+    };
+    this.hotkeys[HotkeyType.LEFT_TIMEOUT] = {
+      key: "",
+      action: this._leftTimeoutHotkeyAction.bind(this),
+    };
+    this.hotkeys[HotkeyType.RIGHT_TIMEOUT] = {
+      key: "",
+      action: this._rightTimeoutHotkeyAction.bind(this),
     };
   }
 
@@ -64,9 +80,32 @@ export default class HotkeyService {
     const toSend = { type: DataTypes.SPIKE_PLANTED, data: true };
     ConnectorService.getInstance().sendToIngest(toSend);
   }
+
+  private _techPauseHotkeyAction() {
+    this.techPause = !this.techPause;
+    const toSend = { type: DataTypes.TECH_PAUSE, data: this.techPause };
+    ConnectorService.getInstance().sendToIngest(toSend);
+  }
+
+  private _leftTimeoutHotkeyAction() {
+    this.leftTimeout = !this.leftTimeout;
+    if (this.leftTimeout) this.rightTimeout = false;
+    const toSend = { type: DataTypes.LEFT_TIMEOUT, data: this.leftTimeout };
+    ConnectorService.getInstance().sendToIngest(toSend);
+  }
+
+  private _rightTimeoutHotkeyAction() {
+    this.rightTimeout = !this.rightTimeout;
+    if (this.rightTimeout) this.leftTimeout = false;
+    const toSend = { type: DataTypes.RIGHT_TIMEOUT, data: this.rightTimeout };
+    ConnectorService.getInstance().sendToIngest(toSend);
+  }
 }
 export enum HotkeyType {
   SPIKE_PLANTED,
+  TECH_PAUSE,
+  LEFT_TIMEOUT,
+  RIGHT_TIMEOUT,
 }
 type Hotkey = {
   key: string;

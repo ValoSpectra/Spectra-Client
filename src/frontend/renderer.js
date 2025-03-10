@@ -73,9 +73,15 @@ function connect() {
     : emptyTournamentInfo;
 
   const hotkeySpike = document.getElementById("hotkeySpikeInput").value || "";
+  const hotkeyTechPause = document.getElementById("techPauseInput").value || "";
+  const hotkeyLeftTimeout = document.getElementById("leftTimeoutInput").value || "";
+  const hotkeyRightTimeout = document.getElementById("rightTimeoutInput").value || "";
 
   const hotkeys = {
     spikePlanted: hotkeySpike,
+    techPause: hotkeyTechPause,
+    leftTimeout: hotkeyLeftTimeout,
+    rightTimeout: hotkeyRightTimeout,
   };
 
   window.electronAPI.processInputs(
@@ -270,6 +276,9 @@ window.electronAPI.setInputAllowed((value) => {
   document.getElementById("Map3RightPicker").disabled = disableInput;
 
   document.getElementById("hotkeySpikeInput").disabled = disableInput;
+  document.getElementById("techPauseInput").disabled = disableInput;
+  document.getElementById("leftTimeoutInput").disabled = disableInput;
+  document.getElementById("rightTimeoutInput").disabled = disableInput;
 });
 
 window.electronAPI.loadConfig((config) => {
@@ -437,6 +446,15 @@ function loadAll() {
 
   document.getElementById("hotkeySpikeInput").value =
     JSON.parse(localStorage.getItem("hotkeys"))?.spikePlanted || "F9";
+
+  document.getElementById("techPauseInput").value =
+    JSON.parse(localStorage.getItem("hotkeys"))?.techPause || "F10";
+
+  document.getElementById("leftTimeoutInput").value =
+    JSON.parse(localStorage.getItem("hotkeys"))?.leftTimeout || "O";
+
+  document.getElementById("rightTimeoutInput").value =
+    JSON.parse(localStorage.getItem("hotkeys"))?.rightTimeout || "P";
 }
 
 loadAll();

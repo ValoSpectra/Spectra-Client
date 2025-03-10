@@ -198,15 +198,20 @@ export enum DataTypes {
   GAME_MODE = "game_mode",
   MAP = "map",
   OBSERVING = "observing",
-  SPIKE_PLANTED = "spike_planted",
   SPIKE_DETONATED = "spike_detonated",
   SPIKE_DEFUSED = "spike_defused",
   AUTH = "authenticate",
+  // Auxiliary data types
   AUX_AUTH = "aux_authenticate",
   AUX_ABILITIES = "aux_abilities",
   AUX_HEALTH = "aux_health",
   AUX_SCOREBOARD = "aux_scoreboard",
   AUX_ASTRA_TARGETING = "aux_astra_targeting",
+  // Hotkey data types
+  SPIKE_PLANTED = "spike_planted",
+  TECH_PAUSE = "tech_pause",
+  LEFT_TIMEOUT = "left_timeout",
+  RIGHT_TIMEOUT = "right_timeout",
 }
 
 export enum SocketChannels {

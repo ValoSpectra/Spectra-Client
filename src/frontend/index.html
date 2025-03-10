@@ -163,7 +163,7 @@
           id="MapsWonLeftInput"
           placeholder="e.g. 1"
           min="0"
-          max="1"
+          max="10"
         />
         <label class="txt" for="MapsWonRight">Maps won by Right Team</label>
         <input
@@ -327,6 +327,42 @@
           maxlength="30"
           placeholder="e.g. Ctrl+F9"
           value="F9"
+          pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-2]?|\d)$"
+          title="Can't resolve key. Try 'Ctrl+F9' for example."
+          required
+        />
+        <label class="txt" for="techPauseInput">Tech Pause</label>
+        <input
+          type="text"
+          class="textInput"
+          id="techPauseInput"
+          maxlength="30"
+          placeholder="e.g. Ctrl+F9"
+          value="F10"
+          pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-2]?|\d)$"
+          title="Can't resolve key. Try 'Ctrl+F9' for example."
+          required
+        />
+        <label class="txt" for="leftTimeoutInput">Left Team Timeout</label>
+        <input
+          type="text"
+          class="textInput"
+          id="leftTimeoutInput"
+          maxlength="30"
+          placeholder="e.g. Ctrl+F9"
+          value="O"
+          pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-2]?|\d)$"
+          title="Can't resolve key. Try 'Ctrl+F9' for example."
+          required
+        />
+        <label class="txt" for="rightTimeoutInput">Right Team Timeout</label>
+        <input
+          type="text"
+          class="textInput"
+          id="rightTimeoutInput"
+          maxlength="30"
+          placeholder="e.g. Ctrl+F9"
+          value="P"
           pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-2]?|\d)$"
           title="Can't resolve key. Try 'Ctrl+F9' for example."
           required
