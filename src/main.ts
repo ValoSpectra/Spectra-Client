@@ -161,7 +161,7 @@ function processInputs(
   }
 
   //regex check hotkeys
-  const regex = /^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-2]?|\d)$/g;
+  const regex = /^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$/g;
   if (hotkeys.spikePlanted.match(regex)) {
     HotkeyService.getInstance().setKeyForHotkey(HotkeyType.SPIKE_PLANTED, hotkeys.spikePlanted);
   } else {
