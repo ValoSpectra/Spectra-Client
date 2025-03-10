@@ -10,8 +10,6 @@ export default class HotkeyService {
   private currentRoundPhase: string = "";
 
   private techPause: boolean = false;
-  private leftTimeout: boolean = false;
-  private rightTimeout: boolean = false;
 
   private constructor() {
     this.hotkeys[HotkeyType.SPIKE_PLANTED] = {
@@ -83,21 +81,17 @@ export default class HotkeyService {
 
   private _techPauseHotkeyAction() {
     this.techPause = !this.techPause;
-    const toSend = { type: DataTypes.TECH_PAUSE, data: this.techPause };
+    const toSend = { type: DataTypes.TECH_PAUSE, data: true };
     ConnectorService.getInstance().sendToIngest(toSend);
   }
 
   private _leftTimeoutHotkeyAction() {
-    this.leftTimeout = !this.leftTimeout;
-    if (this.leftTimeout) this.rightTimeout = false;
-    const toSend = { type: DataTypes.LEFT_TIMEOUT, data: this.leftTimeout };
+    const toSend = { type: DataTypes.LEFT_TIMEOUT, data: true };
     ConnectorService.getInstance().sendToIngest(toSend);
   }
 
   private _rightTimeoutHotkeyAction() {
-    this.rightTimeout = !this.rightTimeout;
-    if (this.rightTimeout) this.leftTimeout = false;
-    const toSend = { type: DataTypes.RIGHT_TIMEOUT, data: this.rightTimeout };
+    const toSend = { type: DataTypes.RIGHT_TIMEOUT, data: true };
     ConnectorService.getInstance().sendToIngest(toSend);
   }
 }

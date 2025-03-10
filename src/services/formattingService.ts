@@ -231,6 +231,7 @@ export interface IToolsData {
   seriesInfo: ISeriesInfo;
   seedingInfo: ISeedingInfo;
   tournamentInfo: ITournamentInfo;
+  timeoutDuration: number;
 }
 
 export type ISeriesInfo = {

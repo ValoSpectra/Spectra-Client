@@ -69,6 +69,7 @@ export class ConnectorService {
     seriesInfo: ISeriesInfo,
     seedingInfo: ISeedingInfo,
     tournamentInfo: ITournamentInfo,
+    timeoutDuration: number,
     win: Electron.Main.BrowserWindow,
   ) {
     if (RegExp("(http|https)://[^/]+:[0-9]+").test(ingestIp)) {
@@ -171,6 +172,7 @@ export class ConnectorService {
         seriesInfo: seriesInfo,
         seedingInfo: seedingInfo,
         tournamentInfo: tournamentInfo,
+        timeoutDuration: timeoutDuration,
       },
     };
 

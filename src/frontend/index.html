@@ -145,6 +145,17 @@
           placeholder="e.g. https://imgur.com/*.png, empty for default"
           title="Ensure the link ends in .png, .jpg, or .webp to ensure the image is able to be displayed"
         />
+        <label class="txt" for="timeoutDurationInput">
+          Timeout Duration (in seconds)<input
+            type="number"
+            class="textInput"
+            id="timeoutDurationInput"
+            placeholder="60"
+            min="10"
+            max="600"
+            value="60"
+          />
+        </label>
       </div>
       <div class="section">
         <label class="txt" for="MapsNeededInput">Enter maps needed to win series</label>

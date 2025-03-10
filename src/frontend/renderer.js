@@ -84,6 +84,8 @@ function connect() {
     rightTimeout: hotkeyRightTimeout,
   };
 
+  const timeoutDuration = document.getElementById("timeoutDurationInput").value || 60;
+
   window.electronAPI.processInputs(
     ingestIp,
     groupCode,
@@ -95,6 +97,7 @@ function connect() {
     seedingInfo,
     tournamentInfoToSend,
     hotkeys,
+    timeoutDuration,
   );
 
   localStorage.setItem("key", key);
@@ -113,6 +116,7 @@ function connect() {
   localStorage.setItem("seriesInfo", JSON.stringify(seriesInfo));
   localStorage.setItem("seedingInfo", JSON.stringify(seedingInfo));
   localStorage.setItem("hotkeys", JSON.stringify(hotkeys));
+  localStorage.setItem("timeoutDuration", JSON.stringify(timeoutDuration));
 }
 
 function getTournamentInfo() {
@@ -279,6 +283,8 @@ window.electronAPI.setInputAllowed((value) => {
   document.getElementById("techPauseInput").disabled = disableInput;
   document.getElementById("leftTimeoutInput").disabled = disableInput;
   document.getElementById("rightTimeoutInput").disabled = disableInput;
+
+  document.getElementById("timeoutDurationInput").disabled = disableInput;
 });
 
 window.electronAPI.loadConfig((config) => {
@@ -455,6 +461,9 @@ function loadAll() {
 
   document.getElementById("rightTimeoutInput").value =
     JSON.parse(localStorage.getItem("hotkeys"))?.rightTimeout || "P";
+
+  document.getElementById("timeoutDurationInput").value =
+    JSON.parse(localStorage.getItem("timeoutDuration")) || 60;
 }
 
 loadAll();

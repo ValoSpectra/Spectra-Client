@@ -112,6 +112,7 @@ function processInputs(
   seedingInfo: ISeedingInfo,
   tournamentInfo: ITournamentInfo,
   hotkeys: any,
+  timeoutDuration: number,
 ) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
@@ -217,6 +218,7 @@ function processInputs(
     seriesInfo,
     seedingInfo,
     tournamentInfo,
+    timeoutDuration,
     win,
   );
 }

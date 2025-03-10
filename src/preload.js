@@ -13,6 +13,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     seedingInfo,
     tournamentInfo,
     hotkeys,
+    timeoutDuration,
   ) =>
     ipcRenderer.send(
       "process-inputs",
@@ -26,6 +27,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
       seedingInfo,
       tournamentInfo,
       hotkeys,
+      timeoutDuration,
     ),
   processAuxInputs: (ingestIp, name) => ipcRenderer.send("process-aux-inputs", ingestIp, name),
   processConfigDrop: (filePath) => ipcRenderer.send("config-drop", filePath),
