@@ -6,6 +6,7 @@ import {
   DataTypes,
   IAuthenticationData,
   IAuxAuthenticationData,
+  IFormattedAuxScoreboardTeam as IFormattedAuxScoreboardTeammate,
   IFormattedData,
   ISeedingInfo,
   ISeriesInfo,
@@ -29,7 +30,7 @@ export class ConnectorService {
   private PLAYER_ID = this.getPlayerId();
   private PLAYER_HEALTH = 100;
   private LAST_HEALTH = 0;
-  private HEALTH_INTERVAL: NodeJS.Timeout | undefined;
+  private AUX_SEND_INTERVAL: NodeJS.Timeout | undefined;
   private MATCH_ID = this.getMatchId();
   private GROUP_CODE = "";
   private LEFT_TEAM: AuthTeam = {
@@ -44,6 +45,8 @@ export class ConnectorService {
     url: "",
     attackStart: false,
   };
+  private TEAMMATE_STORE: Record<string, IFormattedAuxScoreboardTeammate> = {};
+  private TEAMMATE_STORE_UPDATE: boolean = false;
 
   private connected = false;
   private unreachable = false;
@@ -225,7 +228,7 @@ export class ConnectorService {
           setStatus("Connected, Auxiliary");
           setInputAllowed(false);
           this.websocketSetup();
-          this.startAuxHealthLoop();
+          this.startAuxSendLoop();
           this.saveMatchId(this.MATCH_ID);
         } else {
           log.info("Authentication failed!");
@@ -307,8 +310,8 @@ export class ConnectorService {
     }
   }
 
-  startAuxHealthLoop() {
-    this.HEALTH_INTERVAL = setInterval(() => {
+  startAuxSendLoop() {
+    this.AUX_SEND_INTERVAL = setInterval(() => {
       if (this.connected) {
         if (this.PLAYER_HEALTH !== this.LAST_HEALTH) {
           this.LAST_HEALTH = this.PLAYER_HEALTH;
@@ -316,6 +319,14 @@ export class ConnectorService {
             type: DataTypes.AUX_HEALTH,
             data: this.PLAYER_HEALTH,
           });
+        }
+        if (this.TEAMMATE_STORE_UPDATE) {
+          this.TEAMMATE_STORE_UPDATE = false;
+          this.sendToIngestAux({
+            type: DataTypes.AUX_SCOREBOARD_TEAM,
+            data: JSON.stringify(Object.values(this.TEAMMATE_STORE)),
+          });
+          this.TEAMMATE_STORE = {};
         }
       }
     }, 300);
@@ -340,7 +351,7 @@ export class ConnectorService {
     this.connected = false;
     setInputAllowed(true);
     setStatus("Disconnected");
-    clearInterval(this.HEALTH_INTERVAL);
+    clearInterval(this.AUX_SEND_INTERVAL);
     HotkeyService.getInstance().deactivateAllHotkeys();
   }
 
@@ -401,5 +412,10 @@ export class ConnectorService {
       log.debug(`Retrieved match ID: ${retrieved.matchId}`);
       return retrieved.matchId;
     }
+  }
+
+  updateTeammateStore(playerId: string, data: IFormattedAuxScoreboardTeammate) {
+    this.TEAMMATE_STORE[playerId] = data;
+    this.TEAMMATE_STORE_UPDATE = true;
   }
 }

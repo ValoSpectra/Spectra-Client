@@ -11,6 +11,7 @@ export class FormattingService {
     return FormattingService.instance;
   }
 
+  //#region Formatters
   public formatScoreboardData(data: any): IFormattedData {
     const nameSplit = data.name.split(" #");
 
@@ -98,6 +99,38 @@ export class FormattingService {
 
     return toReturn;
   }
+
+  public formatAuxScoreboardData(data: any): IFormattedAuxScoreboardTeam {
+    // In some GEPs, the spike is a boolean, in others it's a string
+    let hasSpike = data.spike;
+    if (typeof hasSpike !== "boolean") {
+      hasSpike = data.spike === "TX_Hud_Bomb_S" ? true : false;
+    }
+
+    // Check for the potential rename from shield to armor
+    let armorNum = 0;
+    if (data.armor != undefined) {
+      armorNum = data.armor;
+    } else {
+      armorNum = data.shield;
+    }
+
+    const formatted: IFormattedAuxScoreboardTeam = {
+      playerId: data.player_id,
+      agentInternal: data.character,
+      isAlive: data.alive,
+      initialArmor: armorNum,
+      scoreboardWeaponInternal: data.weapon,
+      currUltPoints: data.ult_points,
+      maxUltPoints: data.ult_max,
+      hasSpike: hasSpike,
+      money: data.money,
+      assists: data.assists,
+    };
+
+    return formatted;
+  }
+  //#endregion
 }
 
 export interface IFormattedScoreboard {
@@ -148,12 +181,6 @@ export interface IFormattedScore {
   team_1: number;
 }
 
-export interface IFormattedAbilities {
-  grenade: number;
-  ability_1: number;
-  ability_2: number;
-}
-
 export interface IFormattedData {
   type: string;
   data:
@@ -163,6 +190,7 @@ export interface IFormattedData {
     | IFormattedRoundInfo
     | IFormattedScore
     | IFormattedAbilities
+    | IFormattedAuxScoreboardTeam
     | boolean
     | string
     | number;
@@ -179,6 +207,7 @@ export interface IAuthenticationData {
   toolsData: IToolsData;
 }
 
+//#region Auxiliary Data
 export interface IAuxAuthenticationData {
   type: DataTypes.AUX_AUTH;
   clientVersion: string;
@@ -186,6 +215,26 @@ export interface IAuxAuthenticationData {
   matchId: string;
   playerId: string;
 }
+
+export interface IFormattedAbilities {
+  grenade: number;
+  ability_1: number;
+  ability_2: number;
+}
+
+export interface IFormattedAuxScoreboardTeam {
+  playerId: string;
+  agentInternal: string;
+  isAlive: boolean;
+  initialArmor: number;
+  scoreboardWeaponInternal: string;
+  currUltPoints: number;
+  maxUltPoints: number;
+  hasSpike: boolean;
+  money: number;
+  assists: number;
+}
+//#endregion
 
 export enum DataTypes {
   SCOREBOARD = "scoreboard",
@@ -206,6 +255,7 @@ export enum DataTypes {
   AUX_ABILITIES = "aux_abilities",
   AUX_HEALTH = "aux_health",
   AUX_SCOREBOARD = "aux_scoreboard",
+  AUX_SCOREBOARD_TEAM = "aux_scoreboard_team",
   AUX_ASTRA_TARGETING = "aux_astra_targeting",
   // Hotkey data types
   SPIKE_PLANTED = "spike_planted",
@@ -221,6 +271,7 @@ export enum SocketChannels {
   AUXILIARY_DATA = "aux_data",
 }
 
+//#region Tools Data
 export interface IMapWinInfo {
   needed: number;
   wonLeft: number;
@@ -289,3 +340,5 @@ export type MapPoolInfo =
   | PresentMapPoolInfo
   | FutureMapPoolInfo
   | ErrorMapPoolInfo;
+
+//#endregion

@@ -6,6 +6,7 @@ import { ConnectorService } from "./connectorService";
 import {
   DataTypes,
   FormattingService,
+  IFormattedAuxScoreboardTeam,
   IFormattedData,
   IFormattedRoundInfo,
   IFormattedScore,
@@ -130,6 +131,7 @@ export class GameEventsService {
     });
   }
 
+  //#region Observer updates
   processInfoUpdate(data: any) {
     if (data.gameId !== VALORANT_ID) return;
 
@@ -328,7 +330,9 @@ export class GameEventsService {
         break;
     }
   }
+  //#endregion
 
+  //#region Auxiliary updates
   processAuxUpdate(data: any) {
     if (data.key.includes("scoreboard")) {
       const value = JSON.parse(data.value);
@@ -340,6 +344,9 @@ export class GameEventsService {
         this.localPlayerId = (formatted.data as IFormattedScoreboard).playerId;
         this.connService.setPlayerId(this.localPlayerId);
         this.connService.sendToIngestAux(formatted);
+        return;
+      } else if (data.is_teammate) {
+        this.processAuxScoreboardTeammates(data);
         return;
       }
     } else if (data.key.includes("roster")) {
@@ -429,4 +436,11 @@ export class GameEventsService {
         break;
     }
   }
+
+  processAuxScoreboardTeammates(data: any) {
+    const formatted: IFormattedAuxScoreboardTeam =
+      this.formattingService.formatAuxScoreboardData(data);
+    this.connService.updateTeammateStore(formatted.playerId, formatted);
+  }
+  //#endregion
 }
