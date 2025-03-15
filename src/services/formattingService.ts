@@ -261,6 +261,7 @@ export enum DataTypes {
   AUX_SCOREBOARD = "aux_scoreboard",
   AUX_SCOREBOARD_TEAM = "aux_scoreboard_team",
   AUX_ASTRA_TARGETING = "aux_astra_targeting",
+  AUX_CYPHER_CAM = "aux_cypher_cam",
   // Hotkey data types
   SPIKE_PLANTED = "spike_planted",
   TECH_PAUSE = "tech_pause",

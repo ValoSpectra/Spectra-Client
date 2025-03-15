@@ -141,9 +141,9 @@ export class GameEventsService {
     }
 
     if (data.key.includes("scoreboard")) {
+      if (data.value == "open" || data.value == "closed") return;
       const value = JSON.parse(data.value);
-      if (value.name == undefined || value.name == "" || value == "open" || value == "closed")
-        return;
+      if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
       this.connService.sendToIngest(formatted);
       return;
@@ -336,8 +336,9 @@ export class GameEventsService {
   //#region Auxiliary updates
   processAuxUpdate(data: any) {
     if (data.key.includes("scoreboard")) {
+      if (data.value == "open" || data.value == "closed") return;
       data = JSON.parse(data.value);
-      if (data.name == undefined || data.name == "" || data == "open" || data == "closed") return;
+      if (data.name == undefined || data.name == "") return;
       if (data.is_local) {
         const formatted: IFormattedData = this.formattingService.formatScoreboardData(data);
         formatted.type = DataTypes.AUX_SCOREBOARD;
@@ -404,6 +405,13 @@ export class GameEventsService {
           this.connService.sendToIngestAux({
             type: DataTypes.AUX_ASTRA_TARGETING,
             data: isTargeting,
+          });
+          // Pawn_Gumshoe_Q_PossessableCamera_C = Cypher in Cam
+        } else if (data.value.includes("Gumshoe")) {
+          const isInCam = data.value.includes("PossessableCamera");
+          this.connService.sendToIngestAux({
+            type: DataTypes.AUX_CYPHER_CAM,
+            data: isInCam,
           });
         }
         break;
