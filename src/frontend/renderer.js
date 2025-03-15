@@ -66,7 +66,7 @@ function connect() {
   const emptyTournamentInfo = {
     name: "",
     logoUrl: "",
-    backdropUrl: "",
+    backdropUrl: tournamentInfo.backdropUrl,
   };
   const tournamentInfoToSend = document.getElementById("ShowTournamentInfo").checked
     ? tournamentInfo
@@ -121,7 +121,7 @@ function connect() {
 
 function getTournamentInfo() {
   const toReturn = {
-    name: document.getElementById("TournamentNameInput").value || "",
+    name: document.getElementById("TournamentNameInput").value || "Enable",
     logoUrl: document.getElementById("TournamentLogoInput").value || "",
     backdropUrl: document.getElementById("TournamentBackdropInput").value || "",
   };
@@ -366,17 +366,13 @@ function showHideTournament() {
   const chkbox = document.getElementById("ShowTournamentInfo");
   const roundwin1 = document.getElementById("TournamentNameInput");
   const roundwin2 = document.getElementById("TournamentLogoInput");
-  const roundwin3 = document.getElementById("TournamentBackdropInput");
   const roundwin4 = document.getElementById("TournamentNameLabel");
   const roundwin5 = document.getElementById("TournamentLogoLabel");
-  const roundwin6 = document.getElementById("TournamentBackdropLabel");
 
   roundwin1.style.display = chkbox.checked ? "block" : "none";
   roundwin2.style.display = chkbox.checked ? "block" : "none";
-  roundwin3.style.display = chkbox.checked ? "block" : "none";
   roundwin4.style.display = chkbox.checked ? "block" : "none";
   roundwin5.style.display = chkbox.checked ? "block" : "none";
-  roundwin6.style.display = chkbox.checked ? "block" : "none";
 }
 
 function showHideMapDetails(map) {

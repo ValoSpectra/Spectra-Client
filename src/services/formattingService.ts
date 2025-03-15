@@ -125,6 +125,8 @@ export class FormattingService {
       maxUltPoints: data.ult_max,
       hasSpike: hasSpike,
       money: data.money,
+      kills: data.kills,
+      deaths: data.deaths,
       assists: data.assists,
     };
 
@@ -232,6 +234,8 @@ export interface IFormattedAuxScoreboardTeam {
   maxUltPoints: number;
   hasSpike: boolean;
   money: number;
+  kills: number;
+  deaths: number;
   assists: number;
 }
 //#endregion
