@@ -142,7 +142,8 @@ export class GameEventsService {
 
     if (data.key.includes("scoreboard")) {
       const value = JSON.parse(data.value);
-      if (value.name == undefined || value.name == "") return;
+      if (value.name == undefined || value.name == "" || value == "open" || value == "closed")
+        return;
       const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
       this.connService.sendToIngest(formatted);
       return;
@@ -335,17 +336,16 @@ export class GameEventsService {
   //#region Auxiliary updates
   processAuxUpdate(data: any) {
     if (data.key.includes("scoreboard")) {
-      const value = JSON.parse(data.value);
-      if (value.name == undefined || value.name == "") return;
       data = JSON.parse(data.value);
+      if (data.name == undefined || data.name == "" || data == "open" || data == "closed") return;
       if (data.is_local) {
-        const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
+        const formatted: IFormattedData = this.formattingService.formatScoreboardData(data);
         formatted.type = DataTypes.AUX_SCOREBOARD;
         this.localPlayerId = (formatted.data as IFormattedScoreboard).playerId;
         this.connService.setPlayerId(this.localPlayerId);
         this.connService.sendToIngestAux(formatted);
         return;
-      } else if (data.is_teammate) {
+      } else if (data.teammate == true) {
         this.processAuxScoreboardTeammates(data);
         return;
       }
