@@ -37,10 +37,6 @@ const createWindow = () => {
   if (!isAuxiliary) {
     log.info("Starting in Observer Mode");
   } else {
-    createTray();
-    win.on('minimize', () => {
-      win.hide();
-    });
     log.info("Starting in Auxiliary Mode");
   }
 
@@ -68,6 +64,10 @@ const createWindow = () => {
   if (!isAuxiliary) {
     win.loadFile("./src/frontend/index.html");
   } else {
+    createTray();
+    win.on('minimize', () => {
+      win.hide();
+    });
     win.loadFile("./src/frontend/auxiliary.html");
   }
 };
