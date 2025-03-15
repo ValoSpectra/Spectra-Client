@@ -3,7 +3,7 @@ require("dotenv").config();
 import path from "path";
 import { GameEventsService } from "./services/gepService";
 import { ConnectorService } from "./services/connectorService";
-import { dialog, shell } from "electron";
+import { dialog, shell, Tray } from "electron";
 import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
@@ -25,6 +25,7 @@ let gepService: GameEventsService;
 const connService = ConnectorService.getInstance();
 const formattingService = FormattingService.getInstance();
 let win!: Electron.Main.BrowserWindow;
+let tray: Tray | null = null;
 
 const VALORANT_ID = 21640;
 
@@ -36,6 +37,10 @@ const createWindow = () => {
   if (!isAuxiliary) {
     log.info("Starting in Observer Mode");
   } else {
+    createTray();
+    win.on('minimize', () => {
+      win.hide();
+    });
     log.info("Starting in Auxiliary Mode");
   }
 
@@ -99,6 +104,14 @@ app.on("before-quit", () => {
   const formatted = formattingService.formatRoundData("game_end", -1);
   connService.sendToIngest(formatted);
 });
+
+function createTray() {
+  tray = new Tray(path.join(__dirname, "./assets/icon.ico"));
+  tray.setToolTip('Spectra Client');
+  tray.on('click', () => {
+    win.show();
+  });
+}
 
 function processInputs(
   event: any,
