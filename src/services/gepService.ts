@@ -71,7 +71,7 @@ export class GameEventsService {
         return;
       }
       log.info(`GEP version ${version} ready!`);
-      this.win!.setTitle(`Spectra Client | Ready (GEP: ${version})`);
+      this.win!.setTitle(`Spectra Client | Ready (GEP: ${version}, Spectra: ${app.getVersion()})`);
 
       this.onGameEventsPackageReady();
     });
