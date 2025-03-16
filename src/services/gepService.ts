@@ -29,6 +29,9 @@ export class GameEventsService {
   public currRoundNumber: number = 0;
   private currScene: string = "";
   private currMatchId: string = "";
+  private currMap: string = "";
+  private currGamemode: string = "";
+  private isCustomGame: boolean = false;
   private localPlayerId: string = "";
   private win: any;
 
@@ -218,10 +221,13 @@ export class GameEventsService {
         break;
 
       case "game_mode":
+        const modeInfo = JSON.parse(data.value);
         toSend = {
           type: DataTypes.GAME_MODE,
-          data: JSON.parse(data.value).mode,
+          data: modeInfo.mode,
         };
+        this.currGamemode = modeInfo.mode;
+        this.isCustomGame = modeInfo.custom;
 
         if (this.connService.isConnected()) {
           this.connService.sendToIngest(toSend);
@@ -240,6 +246,8 @@ export class GameEventsService {
         if (data.value === "Infinity") {
           data.value = "Infinityy";
         }
+
+        this.currMap = data.value;
 
         toSend = { type: DataTypes.MAP, data: data.value };
 
@@ -389,8 +397,10 @@ export class GameEventsService {
 
       case "round_phase":
         if (data.value === "end") {
-          // Try connecting on round end in case someone fixes their connection settings (or restarts)
-          fireConnect();
+          if ((this.currGamemode == "bomb" || this.currGamemode == "swift") && this.isCustomGame) {
+            // Try connecting on round end in case someone fixes their connection settings (or restarts)
+            fireConnect();
+          }
         } else if (data.value === "game_end") {
           this.connService.handleMatchEnd();
         }
@@ -417,12 +427,22 @@ export class GameEventsService {
         break;
 
       case "match_start":
-        if (this.currScene !== "Range") {
+        if ((this.currGamemode == "bomb" || this.currGamemode == "swift") && this.isCustomGame) {
           // Wait 1 seconds before firing connect to give observer time to send match ID
           setTimeout(() => {
             fireConnect();
           }, 1000);
         }
+        break;
+
+      case "map":
+        this.currMap = data.value;
+        break;
+
+      case "game_mode":
+        const modeInfo = JSON.parse(data.value);
+        this.currGamemode = modeInfo.mode;
+        this.isCustomGame = modeInfo.custom;
         break;
 
       case "player_id":
