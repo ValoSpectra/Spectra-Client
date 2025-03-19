@@ -206,10 +206,13 @@ function getMappoolInfo() {
   } else if (map3.type == "future") {
     map3.map = document.getElementById("Map3NameInput").value;
     const isLeft = document.getElementById("Map3LeftPicker").checked;
+    const isRight = document.getElementById("Map3RightPicker").checked;
     if (isLeft) {
       map3.logo = document.getElementById("TeamLeftLogoInput").value;
-    } else {
+    } else if (isRight) {
       map3.logo = document.getElementById("TeamRightLogoInput").value;
+    } else {
+      map3.logo = "";
     }
   }
   mappool.push(map3);
