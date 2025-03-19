@@ -1,5 +1,5 @@
 import { overwolf } from "@overwolf/ow-electron";
-import { app as electronApp } from "electron";
+import { dialog, app as electronApp } from "electron";
 import log from "electron-log";
 import { fireConnect, setPlayerName, setStatus } from "../main";
 import { ConnectorService } from "./connectorService";
@@ -13,6 +13,7 @@ import {
   IFormattedScoreboard,
 } from "./formattingService";
 import HotkeyService from "./hotkeyService";
+import * as semver from "semver";
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
@@ -34,6 +35,7 @@ export class GameEventsService {
   private isCustomGame: boolean = false;
   private localPlayerId: string = "";
   private win: any;
+  private gepVersion: string = "";
 
   constructor(isAuxiliary: boolean) {
     app.overwolf.packages.on("failed-to-initialize", (e, info) => {
@@ -61,7 +63,17 @@ export class GameEventsService {
 
   public async setRequiredFeaturesValorant() {
     // https://overwolf.github.io/api/live-game-data/supported-games/valorant
-    await this.gepApi.setRequiredFeatures(VALORANT_ID, ["match_info", "me", "game_info"]);
+    try {
+      await this.gepApi.setRequiredFeatures(VALORANT_ID, ["match_info", "me", "game_info"]);
+    } catch (e) {
+      log.error("Error setting required features: ", e);
+      dialog.showMessageBoxSync(this.win!, {
+        title: "Potential GEP Version Issue",
+        message: `GEP version ${this.gepVersion} detected, which does not support Valorant.\nPlease use the shortcuts created by the installer to launch the app.\nContinuing will prevent Spectra from working.`,
+        type: "warning",
+        buttons: ["Understood"],
+      });
+    }
   }
 
   public registerOverwolfPackageManager() {
@@ -75,6 +87,7 @@ export class GameEventsService {
       }
       log.info(`GEP version ${version} ready!`);
       this.win!.setTitle(`Spectra Client | Ready (GEP: ${version}, Spectra: ${app.getVersion()})`);
+      this.gepVersion = version;
 
       this.onGameEventsPackageReady();
     });
