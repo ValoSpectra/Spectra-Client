@@ -1,6 +1,16 @@
 ::-webkit-scrollbar {
   display: none;
 }
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active{
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: #e9ecf0;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px #0f1923d9;
+}
+
 
 .txt {
   color: #e9ecf0;
