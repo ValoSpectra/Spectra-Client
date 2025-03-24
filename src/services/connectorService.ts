@@ -369,16 +369,16 @@ export class ConnectorService {
 
   setAndSavePlayerId(playerId: string) {
     this.PLAYER_ID = playerId;
-    this.savePlayerId(playerId);
+    this.savePlayerId();
   }
 
   setPlayerHealth(health: number) {
     this.PLAYER_HEALTH = health;
   }
 
-  savePlayerId(playerId: string) {
-    log.debug(`Saving player ID: ${playerId}`);
-    storage.set("playerId", { playerId: playerId }, function (error: any) {
+  savePlayerId() {
+    log.debug(`Saving player ID: ${this.PLAYER_ID}`);
+    storage.set("playerId", { playerId: this.PLAYER_ID }, function (error: any) {
       if (error) log.error(error);
     });
   }
