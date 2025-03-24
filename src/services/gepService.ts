@@ -13,7 +13,6 @@ import {
   IFormattedScoreboard,
 } from "./formattingService";
 import HotkeyService from "./hotkeyService";
-import * as semver from "semver";
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
@@ -385,7 +384,6 @@ export class GameEventsService {
       }
       return;
     }
-
 
     let formatted: IFormattedData;
     switch (data.key) {

@@ -26,10 +26,9 @@ const lock = app.requestSingleInstanceLock();
 if (!lock) {
   //we are the second instance
   app.exit();
-}
-else {
+} else {
   //we are the first instance
-  app.on('second-instance', () => {
+  app.on("second-instance", () => {
     if (win) {
       win.show();
     }
@@ -85,7 +84,7 @@ const createWindow = () => {
     win.loadFile("./src/frontend/index.html");
   } else {
     createTray();
-    win.on('minimize', () => {
+    win.on("minimize", () => {
       if (traySetting) {
         //only hide when setting says so
         win.hide();
@@ -130,25 +129,25 @@ app.on("before-quit", () => {
 
 function createTray() {
   tray = new Tray(path.join(__dirname, "./assets/icon.ico"));
-  tray.setToolTip('Spectra Client');
+  tray.setToolTip("Spectra Client");
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: 'Show',
+      label: "Show",
       click: () => {
         win.show();
-      }
+      },
     },
     {
-      label: 'Exit',
+      label: "Exit",
       click: () => {
         app.isQuitting = true;
         app.quit();
-      }
-    }
+      },
+    },
   ]);
 
   tray.setContextMenu(contextMenu);
-  tray.on('click', () => {
+  tray.on("click", () => {
     win.show();
   });
 }
@@ -416,13 +415,13 @@ function setTraySetting(event: any, setting: boolean) {
 
 function getTraySetting() {
   const retrieved = storage.getSync("traySetting");
-    if (retrieved == null || Object.keys(retrieved).length == 0) {
-      //default value
-      return true;
-    } else {
-      log.debug(`Retrieved tray setting: ${retrieved.traySetting}`);
-      return retrieved.traySetting;
-    }
+  if (retrieved == null || Object.keys(retrieved).length == 0) {
+    //default value
+    return true;
+  } else {
+    log.debug(`Retrieved tray setting: ${retrieved.traySetting}`);
+    return retrieved.traySetting;
+  }
 }
 
 export enum messageBoxType {
