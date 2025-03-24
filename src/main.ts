@@ -18,6 +18,24 @@ import axios from "axios";
 import * as semver from "semver";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
+const storage = require("electron-json-storage");
+
+//check for second instance //KEEP UP HERE
+//#region SingleInstanceLock
+const lock = app.requestSingleInstanceLock();
+if (!lock) {
+  //we are the second instance
+  app.exit();
+}
+else {
+  //we are the first instance
+  app.on('second-instance', () => {
+    if (win) {
+      win.show();
+    }
+  });
+}
+//#endregion
 
 let isAuxiliary = false;
 
@@ -26,6 +44,7 @@ const connService = ConnectorService.getInstance();
 const formattingService = FormattingService.getInstance();
 let win!: Electron.Main.BrowserWindow;
 let tray: Tray | null = null;
+let traySetting: boolean = getTraySetting();
 
 const VALORANT_ID = 21640;
 
@@ -58,6 +77,7 @@ const createWindow = () => {
   ipcMain.on("process-aux-inputs", processAuxInputs);
   ipcMain.on("config-drop", processConfigDrop);
   ipcMain.on("process-log", processLog);
+  ipcMain.on("set-tray-setting", setTraySetting);
 
   win.menuBarVisible = false;
 
@@ -66,7 +86,10 @@ const createWindow = () => {
   } else {
     createTray();
     win.on('minimize', () => {
-      win.hide();
+      if (traySetting) {
+        //only hide when setting says so
+        win.hide();
+      }
     });
     win.loadFile("./src/frontend/auxiliary.html");
   }
@@ -382,6 +405,24 @@ export function fireConnect() {
   connService.stopAttempts();
   if (connService.isConnected()) return;
   win.webContents.send("fire-connect");
+}
+
+function setTraySetting(event: any, setting: boolean) {
+  traySetting = setting;
+  storage.set("traySetting", { traySetting: traySetting }, function (error: any) {
+    if (error) log.error(error);
+  });
+}
+
+function getTraySetting() {
+  const retrieved = storage.getSync("traySetting");
+    if (retrieved == null || Object.keys(retrieved).length == 0) {
+      //default value
+      return true;
+    } else {
+      log.debug(`Retrieved tray setting: ${retrieved.traySetting}`);
+      return retrieved.traySetting;
+    }
 }
 
 export enum messageBoxType {

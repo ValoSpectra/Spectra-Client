@@ -4,6 +4,12 @@ document.querySelector("#IngestServerSelect").addEventListener("change", () => {
   showHideServerSelect();
 });
 
+document.querySelector("#TraySettingCheck").addEventListener("change", () => {
+  const traySettingCheck = document.getElementById("TraySettingCheck").checked;
+  localStorage.setItem("traySettingCheck", traySettingCheck);
+  window.electronAPI.setTraySetting(traySettingCheck);
+});
+
 function connect() {
   const name = document.getElementById("ValorantNameInput").value;
 
@@ -51,6 +57,14 @@ function loadAll() {
   const ingestSelect = localStorage.getItem("auxIngestSelector");
   document.getElementById("IngestServerSelect").value = ingestSelect || "eu";
   document.getElementById("IngestIpInput").value = localStorage.getItem("auxIngestIp") || "";
+
+  const shouldTraySettingCheck = localStorage.getItem("traySettingCheck");
+  if (shouldTraySettingCheck === "false") {
+    //yes, the response is a string
+    const traySettingCheck = document.getElementById("TraySettingCheck");
+    //remove attribute because html checkboxes are ASS
+    traySettingCheck.checked = undefined;
+  }
 
   showHideServerSelect();
 }
