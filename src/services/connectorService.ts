@@ -352,6 +352,9 @@ export class ConnectorService {
     setInputAllowed(true);
     setStatus("Disconnected");
     clearInterval(this.AUX_SEND_INTERVAL);
+    this.LAST_HEALTH = 0;
+    this.TEAMMATE_STORE_UPDATE = false;
+    this.TEAMMATE_STORE = {};
     HotkeyService.getInstance().deactivateAllHotkeys();
   }
 

@@ -34,7 +34,7 @@ export class GameEventsService {
   private currGamemode: string = "";
   private isCustomGame: boolean = false;
   private localPlayerId: string = "";
-  private isPlayer: boolean = false;
+  private isAuxObserver: boolean = false;
   private win: any;
   private gepVersion: string = "";
 
@@ -368,7 +368,7 @@ export class GameEventsService {
         this.connService.setPlayerId(this.localPlayerId);
         this.connService.sendToIngestAux(formatted);
         return;
-      } else if (!this.isPlayer) {
+      } else if (this.isAuxObserver) {
         const formatted: IFormattedData = this.formattingService.formatScoreboardData(data);
         formatted.type = DataTypes.AUX_SCOREBOARD;
         this.connService.sendToIngestAux(formatted);
@@ -380,7 +380,6 @@ export class GameEventsService {
     } else if (data.key.includes("roster")) {
       const value = JSON.parse(data.value);
       if (value.local) {
-        this.isPlayer = true;
         this.localPlayerId = value.player_id;
         this.connService.setAndSavePlayerId(this.localPlayerId);
       }
@@ -392,14 +391,14 @@ export class GameEventsService {
     switch (data.key) {
       case "health":
         //ignore event if we are aux_observer
-        if (!this.isPlayer) return;
+        if (this.isAuxObserver) return;
 
         this.connService.setPlayerHealth(+data.value);
         break;
 
       case "abilities":
         //ignore event if we are aux_observer
-        if (!this.isPlayer) return;
+        if (this.isAuxObserver) return;
 
         const valueObject = JSON.parse(data.value);
         formatted = {
@@ -419,7 +418,6 @@ export class GameEventsService {
             this.connService.sendToIngestAux(formatted);
           }, 1500);
         }
-
         break;
 
       case "round_phase":
@@ -429,7 +427,7 @@ export class GameEventsService {
             fireConnect();
           }
         } else if (data.value === "game_end") {
-          this.isPlayer = false;
+          this.isAuxObserver = false;
           this.connService.savePlayerId();
           this.connService.handleMatchEnd();
         }
@@ -438,7 +436,7 @@ export class GameEventsService {
       // Astra "Ult" form is an actual agent change, so can be tracked
       case "agent":
         //ignore event if we are aux_observer
-        if (!this.isPlayer) return;
+        if (this.isAuxObserver) return;
 
         // Check if it's Astra (Rift)
         if (data.value.includes("Rift")) {
@@ -482,13 +480,22 @@ export class GameEventsService {
 
         switch (this.currScene) {
           case "MainMenu":
-            this.isPlayer = false;
+            this.isAuxObserver = false;
             break;
 
           default:
             break;
         }
 
+        break;
+
+      case "team":
+        if (data.value === "observer") {
+          this.isAuxObserver = true;
+        }
+        break;
+      case "observing":
+        this.isAuxObserver = true;
         break;
 
       case "player_id":
