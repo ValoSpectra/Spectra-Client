@@ -34,8 +34,21 @@ export class GameEventsService {
   private isCustomGame: boolean = false;
   private localPlayerId: string = "";
   private isAuxObserver: boolean = false;
+  private isObserver: boolean = false;
+  private roundPhase: string = "";
   private win: any;
   private gepVersion: string = "";
+
+  //Experimental Spike settings
+  private isPlantDetectionEnabled: boolean = false;
+  private lastSpikeHolderId: string = "";
+  private holderHasSpike: boolean = false;
+  private holderStartUltPoints: number = 0;
+  private holderGotUltPoint: boolean = false;
+  private holderStartKills: number = 0;
+  private holderGotKill: boolean = false;
+  private holderDied: boolean = false;
+  private plantCheckTimeout: NodeJS.Timeout | undefined = undefined;
 
   constructor(isAuxiliary: boolean) {
     app.overwolf.packages.on("failed-to-initialize", (e, info) => {
@@ -74,6 +87,10 @@ export class GameEventsService {
         buttons: ["Understood"],
       });
     }
+  }
+
+  public setPlantDetectionSetting(setting: boolean) {
+    this.isPlantDetectionEnabled = setting;
   }
 
   public registerOverwolfPackageManager() {
@@ -162,6 +179,16 @@ export class GameEventsService {
       if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
       this.connService.sendToIngest(formatted);
+
+      if (this.isPlantDetectionEnabled && this.isObserver) {
+        const data = formatted.data as IFormattedScoreboard;
+        if (data.kills > 0) return;
+        log.info(
+          `Spike: ${data.hasSpike}, Ult: ${data.currUltPoints}, Kills: ${data.kills}, Alive: ${data.isAlive}`,
+        );
+        this.processSpikePlantDetection(formatted.data as IFormattedScoreboard);
+      }
+
       return;
     } else if (data.key.includes("roster")) {
       const value = JSON.parse(data.value);
@@ -183,6 +210,7 @@ export class GameEventsService {
       case "observing":
         toSend = { type: DataTypes.OBSERVING, data: data.value };
         this.connService.sendToIngest(toSend);
+        this.isObserver = true;
         break;
 
       case "round_number":
@@ -193,8 +221,10 @@ export class GameEventsService {
         formatted = this.formattingService.formatRoundData(data.value, this.currRoundNumber);
         this.connService.sendToIngest(formatted);
         HotkeyService.getInstance().setRoundPhase(data.value);
+        this.roundPhase = data.value;
 
         if ((formatted.data as IFormattedRoundInfo).roundPhase === "game_end") {
+          this.isObserver = false;
           this.connService.handleMatchEnd();
         }
 
@@ -210,6 +240,12 @@ export class GameEventsService {
         this.connService.sendToIngest(toSend);
         break;
 
+      case "team":
+        if (data.value === "observer") {
+          this.isObserver = true;
+        }
+        break;
+
       case "scene":
         this.currScene = data.value;
 
@@ -221,6 +257,7 @@ export class GameEventsService {
 
           case "MainMenu":
             setStatus("Main Menu");
+            this.isObserver = false;
             break;
 
           case "Range":
@@ -290,7 +327,6 @@ export class GameEventsService {
       case "state":
       case "score":
       case "agent":
-      case "team":
       case "match_outcome":
       case "pseudo_match_id":
       case "region":
@@ -371,6 +407,11 @@ export class GameEventsService {
         const formatted: IFormattedData = this.formattingService.formatScoreboardData(data);
         formatted.type = DataTypes.AUX_SCOREBOARD;
         this.connService.sendToIngestAux(formatted);
+
+        if (this.isPlantDetectionEnabled) {
+          this.processSpikePlantDetection(formatted.data as IFormattedScoreboard);
+        }
+
         return;
       } else if (data.teammate == true) {
         this.processAuxScoreboardTeammates(data);
@@ -429,6 +470,7 @@ export class GameEventsService {
           this.connService.savePlayerId();
           this.connService.handleMatchEnd();
         }
+        this.roundPhase = data.value;
         break;
 
       // Astra "Ult" form is an actual agent change, so can be tracked
@@ -520,6 +562,40 @@ export class GameEventsService {
     const formatted: IFormattedAuxScoreboardTeam =
       this.formattingService.formatAuxScoreboardData(data);
     this.connService.updateTeammateStore(formatted.playerId, formatted);
+  }
+
+  processSpikePlantDetection(data: IFormattedScoreboard) {
+    if (data.hasSpike == true) {
+      //RESET
+      this.lastSpikeHolderId = data.playerId;
+      this.holderHasSpike = true;
+      this.holderStartUltPoints = data.currUltPoints;
+      clearTimeout(this.plantCheckTimeout);
+    }
+
+    if (this.roundPhase != "combat") return;
+
+    if (this.lastSpikeHolderId != data.playerId) return;
+
+    this.holderDied = !data.isAlive;
+
+    if (
+      data.hasSpike == false &&
+      this.holderHasSpike == true &&
+      data.isAlive == true &&
+      data.currUltPoints > this.holderStartUltPoints &&
+      (this.isObserver || this.isAuxObserver)
+    ) {
+      // START TIMER
+      this.holderHasSpike = false;
+
+      clearTimeout(this.plantCheckTimeout);
+      this.plantCheckTimeout = setTimeout(() => {
+        if (this.holderDied == false && this.holderHasSpike == false) {
+          this.connService.sendToIngest({ type: DataTypes.SPIKE_PLANTED, data: true });
+        }
+      }, 100);
+    }
   }
   //#endregion
 }

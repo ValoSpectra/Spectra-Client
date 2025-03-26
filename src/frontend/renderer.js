@@ -22,6 +22,12 @@ document.querySelector("#Map3TimeSelect").addEventListener("change", () => {
   showHideMapDetails(3);
 });
 
+document.querySelector("#automaticPlantDetection").addEventListener("change", () => {
+  const plantCheck = document.getElementById("automaticPlantDetection").checked;
+  localStorage.setItem("automaticPlantDetectionCheck", plantCheck);
+  window.electronAPI.setPlantDetectionSetting(plantCheck);
+});
+
 function connect() {
   const obsName = document.getElementById("ValorantNameInput").value;
   const key = document.getElementById("KeyInput").value
@@ -463,6 +469,14 @@ function loadAll() {
 
   document.getElementById("timeoutDurationInput").value =
     JSON.parse(localStorage.getItem("timeoutDuration")) || 60;
+
+  const shouldPlantSettingCheck = localStorage.getItem("automaticPlantDetectionCheck");
+  if (shouldPlantSettingCheck === "false") {
+    //yes, the response is a string
+    const plantSettingCheck = document.getElementById("automaticPlantDetection");
+    //remove attribute because html checkboxes are ASS
+    plantSettingCheck.checked = undefined;
+  }
 }
 
 loadAll();
