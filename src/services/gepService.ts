@@ -44,9 +44,6 @@ export class GameEventsService {
   private lastSpikeHolderId: string = "";
   private holderHasSpike: boolean = false;
   private holderStartUltPoints: number = 0;
-  private holderGotUltPoint: boolean = false;
-  private holderStartKills: number = 0;
-  private holderGotKill: boolean = false;
   private holderDied: boolean = false;
   private plantCheckTimeout: NodeJS.Timeout | undefined = undefined;
 
@@ -183,9 +180,6 @@ export class GameEventsService {
       if (this.isPlantDetectionEnabled && this.isObserver) {
         const data = formatted.data as IFormattedScoreboard;
         if (data.kills > 0) return;
-        log.info(
-          `Spike: ${data.hasSpike}, Ult: ${data.currUltPoints}, Kills: ${data.kills}, Alive: ${data.isAlive}`,
-        );
         this.processSpikePlantDetection(formatted.data as IFormattedScoreboard);
       }
 

@@ -4,7 +4,7 @@
     "name": "Spectra Team",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.22",
+  "version": "0.2.23",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
@@ -14,8 +14,8 @@
     ]
   },
   "scripts": {
-    "start": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages",
-    "start-aux": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --owepm-packages-url=https://electronapi-qa.overwolf.com/packages --auxiliary",
+    "start": "rimraf app && npx tsc && copy-files-from-to && ow-electron .",
+    "start-aux": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --auxiliary",
     "start:live": "rimraf app && npx tsc && copy-files-from-to && ow-electron .",
     "build": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=never",
     "publish": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=always",
@@ -91,5 +91,5 @@
     "semver": "^7.7.1",
     "socket.io-client": "^4.8.1"
   },
-  "packageManager": "yarn@4.5.1"
+  "packageManager": "yarn@4.8.1"
 }
