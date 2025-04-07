@@ -39,14 +39,6 @@ export class GameEventsService {
   private win: any;
   private gepVersion: string = "";
 
-  //Experimental Spike settings
-  private isPlantDetectionEnabled: boolean = false;
-  private lastSpikeHolderId: string = "";
-  private holderHasSpike: boolean = false;
-  private holderStartUltPoints: number = 0;
-  private holderDied: boolean = false;
-  private plantCheckTimeout: NodeJS.Timeout | undefined = undefined;
-
   constructor(isAuxiliary: boolean) {
     app.overwolf.packages.on("failed-to-initialize", (e, info) => {
       log.info(`Failed to initialize package ${info}`);
@@ -84,10 +76,6 @@ export class GameEventsService {
         buttons: ["Understood"],
       });
     }
-  }
-
-  public setPlantDetectionSetting(setting: boolean) {
-    this.isPlantDetectionEnabled = setting;
   }
 
   public registerOverwolfPackageManager() {
@@ -132,6 +120,7 @@ export class GameEventsService {
     });
 
     this.gepApi.on("new-info-update", (e, gameId, ...args) => {
+      log.info(args);
       if (enabled) {
         for (const data of args) {
           try {
@@ -144,6 +133,7 @@ export class GameEventsService {
     });
 
     this.gepApi.on("new-game-event", (e, gameId, ...args) => {
+      log.info(args);
       if (enabled) {
         for (const data of args) {
           try {
@@ -176,13 +166,6 @@ export class GameEventsService {
       if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
       this.connService.sendToIngest(formatted);
-
-      if (this.isPlantDetectionEnabled && this.isObserver) {
-        const data = formatted.data as IFormattedScoreboard;
-        if (data.kills > 0) return;
-        this.processSpikePlantDetection(formatted.data as IFormattedScoreboard);
-      }
-
       return;
     } else if (data.key.includes("roster")) {
       const value = JSON.parse(data.value);
@@ -402,10 +385,6 @@ export class GameEventsService {
         formatted.type = DataTypes.AUX_SCOREBOARD;
         this.connService.sendToIngestAux(formatted);
 
-        if (this.isPlantDetectionEnabled) {
-          this.processSpikePlantDetection(formatted.data as IFormattedScoreboard);
-        }
-
         return;
       } else if (data.teammate == true) {
         this.processAuxScoreboardTeammates(data);
@@ -556,40 +535,6 @@ export class GameEventsService {
     const formatted: IFormattedAuxScoreboardTeam =
       this.formattingService.formatAuxScoreboardData(data);
     this.connService.updateTeammateStore(formatted.playerId, formatted);
-  }
-
-  processSpikePlantDetection(data: IFormattedScoreboard) {
-    if (data.hasSpike == true) {
-      //RESET
-      this.lastSpikeHolderId = data.playerId;
-      this.holderHasSpike = true;
-      this.holderStartUltPoints = data.currUltPoints;
-      clearTimeout(this.plantCheckTimeout);
-    }
-
-    if (this.roundPhase != "combat") return;
-
-    if (this.lastSpikeHolderId != data.playerId) return;
-
-    this.holderDied = !data.isAlive;
-
-    if (
-      data.hasSpike == false &&
-      this.holderHasSpike == true &&
-      data.isAlive == true &&
-      data.currUltPoints > this.holderStartUltPoints &&
-      (this.isObserver || this.isAuxObserver)
-    ) {
-      // START TIMER
-      this.holderHasSpike = false;
-
-      clearTimeout(this.plantCheckTimeout);
-      this.plantCheckTimeout = setTimeout(() => {
-        if (this.holderDied == false && this.holderHasSpike == false) {
-          this.connService.sendToIngest({ type: DataTypes.SPIKE_PLANTED, data: true });
-        }
-      }, 100);
-    }
   }
   //#endregion
 }

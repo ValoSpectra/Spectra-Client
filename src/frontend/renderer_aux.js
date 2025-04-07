@@ -10,12 +10,6 @@ document.querySelector("#TraySettingCheck").addEventListener("change", () => {
   window.electronAPI.setTraySetting(traySettingCheck);
 });
 
-document.querySelector("#automaticPlantDetection").addEventListener("change", () => {
-  const plantCheck = document.getElementById("automaticPlantDetection").checked;
-  localStorage.setItem("automaticPlantDetectionCheck", plantCheck);
-  window.electronAPI.setPlantDetectionSetting(plantCheck);
-});
-
 function connect() {
   const name = document.getElementById("ValorantNameInput").value;
 
@@ -70,14 +64,6 @@ function loadAll() {
     const traySettingCheck = document.getElementById("TraySettingCheck");
     //remove attribute because html checkboxes are ASS
     traySettingCheck.checked = undefined;
-  }
-
-  const shouldPlantSettingCheck = localStorage.getItem("automaticPlantDetectionCheck");
-  if (shouldPlantSettingCheck === "false") {
-    //yes, the response is a string
-    const plantSettingCheck = document.getElementById("automaticPlantDetection");
-    //remove attribute because html checkboxes are ASS
-    plantSettingCheck.checked = undefined;
   }
 
   showHideServerSelect();

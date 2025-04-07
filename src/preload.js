@@ -33,7 +33,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   processConfigDrop: (filePath) => ipcRenderer.send("config-drop", filePath),
   processLog: (toLog) => ipcRenderer.send("process-log", toLog),
   setTraySetting: (setting) => ipcRenderer.send("set-tray-setting", setting),
-  setPlantDetectionSetting: (setting) => ipcRenderer.send("set-plant-detection-setting", setting),
 
   setPlayerName: (callback) =>
     ipcRenderer.on("set-player-name", (_event, value) => callback(value)),

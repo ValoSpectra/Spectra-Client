@@ -77,7 +77,6 @@ const createWindow = () => {
   ipcMain.on("config-drop", processConfigDrop);
   ipcMain.on("process-log", processLog);
   ipcMain.on("set-tray-setting", setTraySetting);
-  ipcMain.on("set-plant-detection-setting", setPlantDetectionSetting);
 
   win.menuBarVisible = false;
 
@@ -112,7 +111,6 @@ app.whenReady().then(async () => {
 
   gepService = new GameEventsService(isAuxiliary);
   overwolfSetup();
-  getAndSetPlantDetectionSetting();
 
   setStatus("Idle");
 });
@@ -415,13 +413,6 @@ function setTraySetting(event: any, setting: boolean) {
   });
 }
 
-function setPlantDetectionSetting(event: any, setting: boolean) {
-  gepService.setPlantDetectionSetting(setting);
-  storage.set("plantDetectionSetting", { plantDetectionSetting: setting }, function (error: any) {
-    if (error) log.error(error);
-  });
-}
-
 function getTraySetting() {
   const retrieved = storage.getSync("traySetting");
   if (retrieved == null || Object.keys(retrieved).length == 0) {
@@ -430,17 +421,6 @@ function getTraySetting() {
   } else {
     log.debug(`Retrieved tray setting: ${retrieved.traySetting}`);
     return retrieved.traySetting;
-  }
-}
-
-function getAndSetPlantDetectionSetting() {
-  const retrieved = storage.getSync("plantDetectionSetting");
-  if (retrieved == null || Object.keys(retrieved).length == 0) {
-    //default value
-    gepService.setPlantDetectionSetting(true);
-  } else {
-    log.debug(`Retrieved plant detection setting: ${retrieved.plantDetectionSetting}`);
-    gepService.setPlantDetectionSetting(retrieved.plantDetectionSetting);
   }
 }
 
