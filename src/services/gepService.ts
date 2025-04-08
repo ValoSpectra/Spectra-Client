@@ -120,7 +120,6 @@ export class GameEventsService {
     });
 
     this.gepApi.on("new-info-update", (e, gameId, ...args) => {
-      log.info(args);
       if (enabled) {
         for (const data of args) {
           try {
@@ -133,7 +132,6 @@ export class GameEventsService {
     });
 
     this.gepApi.on("new-game-event", (e, gameId, ...args) => {
-      log.info(args);
       if (enabled) {
         for (const data of args) {
           try {
