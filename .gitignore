@@ -131,5 +131,6 @@ dist
 
 # electron app folder (used for building)
 app
+!angular/src/app
 
 electron-builder.env
