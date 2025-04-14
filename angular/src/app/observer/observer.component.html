@@ -1,0 +1,222 @@
+<div class="grid grid-cols-2 gap-4 m-4">
+    <div class="flex flex-col border border-gray-500 rounded-lg p-5">
+        <p-iftalabel>
+            <input class="w-full mb-3" pInputText id="ValorantNameInput" placeholder="Auto-detected on game start"
+                autocomplete="off" />
+            <label for="ValorantNameInput">Please double-check your Valorant name</label>
+        </p-iftalabel>
+        <p-iftalabel>
+            <input class="w-full mb-3" pInputText [(value)]="key" id="KeyInput" autocomplete="off" />
+            <label for="KeyInput">Enter your Key</label>
+        </p-iftalabel>
+        <p-iftalabel>
+            <input class="w-full mb-3" pInputText [(value)]="groupCode" id="GroupCodeInput" autocomplete="off" />
+            <label for="GroupCodeInput">Enter your Group Code</label>
+        </p-iftalabel>
+        <p-iftalabel>
+            <input class="w-full mb-3" pInputText [(value)]="ingestServerIp" id="IngestIpInput" autocomplete="off" />
+            <label for="IngestIpInput">Enter the ingest server IP</label>
+        </p-iftalabel>
+    </div>
+    <div class="flex flex-col border border-gray-500 rounded-lg p-5">
+        <img class="h-40 self-center" src="assets/icon.png" />
+        <label class="text-md text-white" for="statusInput">Status</label>
+        <input pInputText type="text" class="w-full mb-2" id="statusInput" disabled="true" />
+        <p-button styleClass="w-full" label="Connect" severity="secondary" (onClick)="onConnectClick()" />
+    </div>
+    <div class="flex flex-col border border-gray-500 rounded-lg p-5">
+        <h1 class="text-xl text-white mb-2">Left Team</h1>
+        <p-iftalabel>
+            <input class="w-full mb-3" pInputText [(value)]="leftTeamInfo.name" id="TeamLeftNameInput" placeholder="" autocomplete="off" />
+            <label for="TeamLeftNameInput">Enter team name</label>
+        </p-iftalabel>
+        <p-iftalabel>
+            <input class="w-full mb-3" pInputText [(value)]="leftTeamInfo.tricode" id="TeamLeftTricodeInput" placeholder="" autocomplete="off" />
+            <label for="TeamLeftTricodeInput">Enter team tricode</label>
+        </p-iftalabel>
+        <p-iftalabel>
+            <input class="w-full mb-3" pInputText [(value)]="leftTeamInfo.url" id="TeamLeftLogoInput" placeholder="" autocomplete="off" />
+            <label for="TeamLeftLogoInput">Enter team logo URL</label>
+        </p-iftalabel>
+        <!-- <div class="flex items-center">
+            <p-radiobutton name="attacker" value="left" inputId="TeamLeftAttackerStart" />
+            <label for="TeamLeftAttackerStart" class="ml-2">Starts as attacker</label>
+        </div> -->
+    </div>
+    <div class="flex flex-col border border-gray-500 rounded-lg p-5">
+        <h1 class="text-xl text-white mb-2">Right Team</h1>
+        <p-iftalabel>
+            <input class="w-full mb-3" pInputText [(value)]="rightTeamInfo.name" id="TeamRightNameInput" placeholder="" autocomplete="off" />
+            <label for="TeamRightNameInput">Enter team name</label>
+        </p-iftalabel>
+        <p-iftalabel>
+            <input class="w-full mb-3" pInputText [(value)]="rightTeamInfo.tricode" id="TeamRightTricodeInput" placeholder="" autocomplete="off" />
+            <label for="TeamRightTricodeInput">Enter team tricode</label>
+        </p-iftalabel>
+        <p-iftalabel>
+            <input class="w-full mb-3" pInputText [(value)]="rightTeamInfo.url" id="TeamRightLogoInput" placeholder="" autocomplete="off" />
+            <label for="TeamRightLogoInput">Enter team logo URL</label>
+        </p-iftalabel>
+        <!-- <div class="flex items-center">
+            <p-radiobutton name="attacker" value="right" inputId="TeamRightAttackerStart" />
+            <label for="TeamRightAttackerStart" class="ml-2">Starts as attacker</label>
+        </div> -->
+    </div>
+    <div class="flex flex-col border border-gray-500 rounded-lg  p-5">
+        <label class="text-md text-white" for="ShowTournamentInfo">
+            Show Round Win Box<input pInputText type="checkbox" id="ShowTournamentInfo" />
+        </label>
+        <label class="text-md text-white " id="TournamentNameLabel" for="TournamentNameInput">Enter tournament
+            name</label>
+        <input pInputText type="text" maxlength="50" class="w-full bg-gray-900 text-white border "
+            id="TournamentNameInput" placeholder="e.g. Spectra Invitational" />
+        <label class="text-md text-white " id="TournamentLogoLabel" for="TournamentLogoInput">Tournament logo
+            URL</label>
+        <input pInputText type="text" class="w-full bg-gray-900 text-white border " id="TournamentLogoInput"
+            maxlength="300" placeholder="e.g. https://imgur.com/*.png "
+            title="Ensure the link ends in .png, .jpg, or .webp to ensure the image is able to be displayed"
+            pattern="https://.*\.(png|jpg|webp)" required />
+        <label class="text-md text-white" id="TournamentBackdropLabel" for="TournamentBackdropInput">Tournament backdrop
+            URL (Round Win
+            / Pauses)</label>
+        <input pInputText type="text" class="w-full bg-gray-900 text-white border" id="TournamentBackdropInput"
+            maxlength="300" placeholder="e.g. https://imgur.com/*.png, empty for default"
+            title="Ensure the link ends in .png, .jpg, or .webp to ensure the image is able to be displayed" />
+        <label class="text-md text-white" for="timeoutDurationInput">
+            Timeout Duration (in seconds)<input pInputText type="number" class="w-full bg-gray-900 text-white border"
+                id="timeoutDurationInput" placeholder="60" min="10" max="600" value="60" />
+        </label>
+    </div>
+    <div class="flex flex-col border border-gray-500 rounded-lg  p-5">
+        <label class="text-md text-white" for="MapsNeededInput">Enter maps needed to win series</label>
+        <input pInputText type="number" class="w-full bg-gray-900 text-white border" id="MapsNeededInput"
+            placeholder="e.g. 2" min="0" max="10" />
+        <label class="text-md text-white" for="MapsWonLeft">Maps won by Left Team</label>
+        <input pInputText type="number" class="w-full bg-gray-900 text-white border" id="MapsWonLeftInput"
+            placeholder="e.g. 1" min="0" max="10" />
+        <label class="text-md text-white" for="MapsWonRight">Maps won by Right Team</label>
+        <input pInputText type="number" class="w-full bg-gray-900 text-white border" id="MapsWonRightInput"
+            placeholder="e.g. 0" min="0" max="10" />
+        <label class="text-md text-white" for="SeedingLeft">Seeding for Left Team</label>
+        <input pInputText type="text" maxlength="10" class="w-full bg-gray-900 text-white border" id="SeedingLeftInput"
+            placeholder="e.g. Group A" />
+        <label class="text-md text-white" for="SeedingRight">Seeding for Right Team</label>
+        <input pInputText type="text" maxlength="10" class="w-full bg-gray-900 text-white border" id="SeedingRightInput"
+            placeholder="e.g. Group B" />
+
+        <label class="text-md text-white" for="ShowMappoolInfo">
+            Show Mappool Info<input pInputText type="checkbox" id="ShowMappoolInfo" />
+        </label>
+    </div>
+    <div id="Mappool1Info" class="flex flex-col border border-gray-500 rounded-lg  p-5 ">
+        <h2 class="text-md text-white">Left Map</h2>
+        <label class="text-md text-white" for="Map1TimeSelect">When is/was the match</label>
+        <select id="Map1TimeSelect" class="w-full bg-gray-900 text-white border" value="">
+            <option disabled selected value="error">-- Select an Option --</option>
+            <option value="past">Past</option>
+            <option value="present">Present</option>
+        </select>
+        <div id="Map1Name" class="">
+            <label class="text-md text-white" for="Map1NameInput">Map Name</label>
+            <input pInputText type="text" class="w-full bg-gray-900 text-white border" id="Map1NameInput"
+                placeholder="e.g. Bind" />
+        </div>
+        <div id="Map1Scores" class="">
+            <label class="text-md text-white" for="Map1LeftScore">Left Score</label>
+            <input pInputText type="number" class="w-full bg-gray-900 text-white border" id="Map1LeftScore"
+                placeholder="e.g. 13" min="0" max="99" />
+            <label class="text-md text-white" for="Map1RightScore">Right Score</label>
+            <input pInputText type="number" class="w-full bg-gray-900 text-white border" id="Map1RightScore"
+                placeholder="e.g. 11" min="0" max="99" />
+        </div>
+        <div id="Map1Picker" class="">
+            <div class="text-md text-white" for="Map1Picker">Who picked the map</div>
+            <input pInputText type="radio" id="Map1LeftPicker" name="Map1Picker" checked />
+            <label class="text-md text-white" for="Map1LeftPicker">Left Team</label>
+            <input pInputText type="radio" id="Map1RightPicker" name="Map1Picker" />
+            <label class="text-md text-white" for="Map1RightPicker">Right Team</label>
+        </div>
+    </div>
+    <div id="Mappool2Info" class="flex flex-col border border-gray-500 rounded-lg  p-5 ">
+        <h2 class="text-md text-white">Center Map</h2>
+        <label class="text-md text-white" for="Map2TimeSelect">When is/was the match</label>
+        <select id="Map2TimeSelect" class="w-full bg-gray-900 text-white border" value="">
+            <option disabled selected value="error">-- Select an Option --</option>
+            <option value="past">Past</option>
+            <option value="present">Present</option>
+            <option value="future">Future</option>
+        </select>
+        <div id="Map2Name" class="">
+            <label class="text-md text-white" for="Map2NameInput">Map Name</label>
+            <input pInputText type="text" class="w-full bg-gray-900 text-white border" id="Map2NameInput"
+                placeholder="e.g. Bind" />
+        </div>
+        <div id="Map2Scores" class="">
+            <label class="text-md text-white" for="Map2LeftScore">Left Score</label>
+            <input pInputText type="number" class="w-full bg-gray-900 text-white border" id="Map2LeftScore"
+                placeholder="e.g. 13" min="0" max="99" />
+            <label class="text-md text-white" for="Map2RightScore">Right Score</label>
+            <input pInputText type="number" class="w-full bg-gray-900 text-white border" id="Map2RightScore"
+                placeholder="e.g. 11" min="0" max="99" />
+        </div>
+        <div id="Map2Picker" class="">
+            <div class="text-md text-white" for="Map2Picker">Who picked the map</div>
+            <input pInputText type="radio" id="Map2LeftPicker" name="Map2Picker" checked />
+            <label class="text-md text-white" for="Map2LeftPicker">Left Team</label>
+            <input pInputText type="radio" id="Map2RightPicker" name="Map2Picker" />
+            <label class="text-md text-white" for="Map2RightPicker">Right Team</label>
+        </div>
+    </div>
+    <div id="Mappool3Info" class="flex flex-col border border-gray-500 rounded-lg  p-5 ">
+        <h2 class="text-md text-white">Right Map</h2>
+        <label class="text-md text-white" for="Map3TimeSelect">When is/was the match</label>
+        <select id="Map3TimeSelect" class="w-full bg-gray-900 text-white border" value="">
+            <option disabled selected value="error">-- Select an Option --</option>
+            <option value="present">Present</option>
+            <option value="future">Future</option>
+        </select>
+        <div id="Map3Name" class="">
+            <label class="text-md text-white" for="Map3NameInput">Map Name</label>
+            <input pInputText type="text" class="w-full bg-gray-900 text-white border" id="Map3NameInput"
+                placeholder="e.g. Bind" />
+        </div>
+        <div id="Map3Scores" class="">
+            <label class="text-md text-white" for="Map3LeftScore">Left Score</label>
+            <input pInputText type="number" class="w-full bg-gray-900 text-white border" id="Map3LeftScore"
+                placeholder="e.g. 13" min="0" max="99" />
+            <label class="text-md text-white" for="Map3RightScore">Right Score</label>
+            <input pInputText type="number" class="w-full bg-gray-900 text-white border" id="Map3RightScore"
+                placeholder="e.g. 11" min="0" max="99" />
+        </div>
+        <div id="Map3Picker" class="">
+            <div class="text-md text-white" for="Map3Picker">Who picked the map</div>
+            <input pInputText type="radio" id="Map3LeftPicker" name="Map3Picker" checked />
+            <label class="text-md text-white" for="Map3LeftPicker">Left Team</label>
+            <input pInputText type="radio" id="Map3RightPicker" name="Map3Picker" />
+            <label class="text-md text-white" for="Map3RightPicker">Right Team</label>
+            <input pInputText type="radio" id="Map3NonePicker" name="Map3Picker" />
+            <label class="text-md text-white" for="Map3NonePicker">Decider</label>
+        </div>
+    </div>
+
+    <div class="flex flex-col border border-gray-500 rounded-lg  p-5">
+        <h1 class="text-md text-white">Hotkeys</h1>
+        <label class="text-md text-white" for="hotkeySpikeInput">Spike planted</label>
+        <input pInputText type="text" class="w-full bg-gray-900 text-white border" id="hotkeySpikeInput" maxlength="30"
+            placeholder="e.g. Ctrl+F9" value="F9" pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
+            title="Can't resolve key. Try 'Ctrl+F9' for example." required />
+        <label class="text-md text-white" for="techPauseInput">Tech Pause</label>
+        <input pInputText type="text" class="w-full bg-gray-900 text-white border" id="techPauseInput" maxlength="30"
+            placeholder="e.g. Ctrl+F9" value="F10" pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
+            title="Can't resolve key. Try 'Ctrl+F9' for example." required />
+        <label class="text-md text-white" for="leftTimeoutInput">Left Team Timeout</label>
+        <input pInputText type="text" class="w-full bg-gray-900 text-white border" id="leftTimeoutInput" maxlength="30"
+            placeholder="e.g. Ctrl+F9" value="O" pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
+            title="Can't resolve key. Try 'Ctrl+F9' for example." required />
+        <label class="text-md text-white" for="rightTimeoutInput">Right Team Timeout</label>
+        <input pInputText type="text" class="w-full bg-gray-900 text-white border" id="rightTimeoutInput" maxlength="30"
+            placeholder="e.g. Ctrl+F9" value="P" pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
+            title="Can't resolve key. Try 'Ctrl+F9' for example." required />
+    </div>
+    <div class="scroll-text-md text-white"></div>
+</div>

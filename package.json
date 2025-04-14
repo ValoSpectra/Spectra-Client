@@ -17,21 +17,15 @@
     "angular"
   ],
   "scripts": {
-    "start": "rimraf app && npx tsc && copy-files-from-to && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron .\" --kill-others",
-    "start-aux": "rimraf app && npx tsc && copy-files-from-to && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron . --auxiliary\" --kill-others",
-    "build": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=never",
-    "publish": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=always",
+    "start": "rimraf app && npx tsc && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron .\" --kill-others",
+    "start-aux": "rimraf app && npx tsc && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron . --auxiliary\" --kill-others",
+    "build": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=never",
+    "publish": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=always",
     "postinstall": "ow-electron-builder install-app-deps",
     "lint": "eslint ./src",
     "lint-fix": "eslint ./src --fix",
     "format": "prettier --write ./src"
   },
-  "copyFiles": [
-    {
-      "from": "src/assets/*",
-      "to": "app/assets/"
-    }
-  ],
   "build": {
     "productName": "Spectra Client",
     "compression": "maximum",
@@ -68,7 +62,6 @@
     "@types/node": "^22.14.0",
     "@types/semver": "^7.7.0",
     "concurrently": "^9.1.2",
-    "copy-files-from-to": "^3.12.1",
     "electron": "34.3.3",
     "eslint": "^9.23.0",
     "eslint-config-prettier": "^10.1.1",

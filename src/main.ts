@@ -62,7 +62,7 @@ const createWindow = () => {
     width: 730, // 1300 for debug console
     height: !isAuxiliary ? 650 : 300,
     backgroundColor: "#303338",
-    resizable: false,
+    resizable: true,
     webPreferences: {
       preload: path.join(__dirname, "./preload.js"),
       webSecurity: true,
@@ -71,6 +71,8 @@ const createWindow = () => {
     titleBarOverlay: true,
     icon: path.join(__dirname, "./assets/icon.ico"),
   });
+  win.setMinimumSize(730, !isAuxiliary ? 650 : 300);
+  win.setMaximumSize(1920, 1080);
 
   ipcMain.on("process-inputs", processInputs);
   ipcMain.on("process-aux-inputs", processAuxInputs);
@@ -82,8 +84,9 @@ const createWindow = () => {
 
   if (!isAuxiliary) {
     if (app.isPackaged) {
-      win.loadFile("./src/frontend/browser/index.html");
+      win.loadFile("./app/frontend/browser/index.html");
     } else {
+      win.webContents.openDevTools();
       win.loadURL("http://localhost:4401");
     }
   } else {
