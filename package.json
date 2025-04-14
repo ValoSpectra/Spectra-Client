@@ -13,10 +13,12 @@
       "gep"
     ]
   },
+  "workspaces": [
+    "angular"
+  ],
   "scripts": {
-    "start": "rimraf app && npx tsc && copy-files-from-to && ow-electron .",
-    "start-aux": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --auxiliary",
-    "start:live": "rimraf app && npx tsc && copy-files-from-to && ow-electron .",
+    "start": "rimraf app && npx tsc && copy-files-from-to && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron .\" --kill-others",
+    "start-aux": "rimraf app && npx tsc && copy-files-from-to && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron . --auxiliary\" --kill-others",
     "build": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=never",
     "publish": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=always",
     "postinstall": "ow-electron-builder install-app-deps",
@@ -26,16 +28,8 @@
   },
   "copyFiles": [
     {
-      "from": "src/frontend/*",
-      "to": "app/frontend/"
-    },
-    {
       "from": "src/assets/*",
       "to": "app/assets/"
-    },
-    {
-      "from": "src/preload.js",
-      "to": "app/preload.js"
     }
   ],
   "build": {
@@ -73,6 +67,7 @@
     "@types/electron-json-storage": "^4.5.4",
     "@types/node": "^22.14.0",
     "@types/semver": "^7.7.0",
+    "concurrently": "^9.1.2",
     "copy-files-from-to": "^3.12.1",
     "electron": "34.3.3",
     "eslint": "^9.23.0",
@@ -80,7 +75,8 @@
     "prettier": "^3.5.3",
     "rimraf": "^6.0.1",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.29.0"
+    "typescript-eslint": "^8.29.0",
+    "wait-on": "^8.0.3"
   },
   "dependencies": {
     "axios": "^1.8.4",

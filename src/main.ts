@@ -81,7 +81,11 @@ const createWindow = () => {
   win.menuBarVisible = false;
 
   if (!isAuxiliary) {
-    win.loadFile("./src/frontend/index.html");
+    if (app.isPackaged) {
+      win.loadFile("./src/frontend/browser/index.html");
+    } else {
+      win.loadURL("http://localhost:4401");
+    }
   } else {
     createTray();
     win.on("minimize", () => {
@@ -275,12 +279,12 @@ function processInputs(
   );
 }
 
-function processAuxInputs(event: any, ingestIp: string, name: string) {
+function processAuxInputs(_event: any, ingestIp: string, name: string) {
   win!.setTitle(`Spectra Client | Attempting to connect...`);
   connService.handleAuxAuthProcess(ingestIp, name, win);
 }
 
-function processConfigDrop(event: any, filePath: string) {
+function processConfigDrop(_event: any, filePath: string) {
   log.info(`Reading config data from ${filePath}`);
   if (!filePath.endsWith(".scg")) {
     messageBox(
@@ -316,7 +320,7 @@ function processConfigDrop(event: any, filePath: string) {
   }
 }
 
-function processLog(event: any, message: string) {
+function processLog(_event: any, message: string) {
   log.info(message);
 }
 
