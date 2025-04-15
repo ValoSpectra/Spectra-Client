@@ -22,9 +22,9 @@
     "build": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=never",
     "publish": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=always",
     "postinstall": "ow-electron-builder install-app-deps",
-    "lint": "eslint ./src",
-    "lint-fix": "eslint ./src --fix",
-    "format": "prettier --write ./src"
+    "lint": "eslint src/ angular/src",
+    "lint-fix": "eslint src/ angular/src --fix",
+    "format": "prettier src/ angular/src --write"
   },
   "build": {
     "productName": "Spectra Client",
@@ -63,8 +63,9 @@
     "@types/semver": "^7.7.0",
     "concurrently": "^9.1.2",
     "electron": "34.3.3",
-    "eslint": "^9.23.0",
-    "eslint-config-prettier": "^10.1.1",
+    "eslint": "^9.24.0",
+    "eslint-config-prettier": "^10.1.2",
+    "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "rimraf": "^6.0.1",
     "typescript": "^5.8.2",
