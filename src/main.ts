@@ -73,6 +73,7 @@ const createWindow = () => {
   });
   win.setMinimumSize(730, !isAuxiliary ? 650 : 300);
   win.setMaximumSize(1920, 1080);
+  win.menuBarVisible = false;
 
   ipcMain.on("process-inputs", processInputs);
   ipcMain.on("process-aux-inputs", processAuxInputs);
@@ -86,7 +87,8 @@ const createWindow = () => {
     if (app.isPackaged) {
       win.loadFile("./app/frontend/browser/index.html");
     } else {
-      win.webContents.openDevTools();
+      // win.webContents.openDevTools();
+      win.setAlwaysOnTop(true, "screen-saver");
       win.loadURL("http://localhost:4401");
     }
   } else {
@@ -119,7 +121,7 @@ app.whenReady().then(async () => {
   gepService = new GameEventsService(isAuxiliary);
   overwolfSetup();
 
-  setStatus("Idle");
+  deeplinkSetup();
 });
 
 app.on("window-all-closed", () => {
@@ -405,6 +407,10 @@ export function setInputAllowed(allowed: boolean) {
 
 export function setStatus(newStatus: string) {
   win.webContents.send("set-status", newStatus);
+}
+
+export function setLoadingStatus(loading: boolean) {
+  win.webContents.send("set-loading-status", loading);
 }
 
 export function fireConnect() {

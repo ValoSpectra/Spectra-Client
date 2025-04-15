@@ -1,1 +1,10 @@
-<router-outlet/>
+@if (loading) {
+  <div class="loading-screen" [@loadingFade]>
+    <div class="loading-screen-container">
+      <img class="w-40 -mt-20 justify-self-center animate-pulse" src="assets/icon.png" />
+      <p class="loading-screen-text">Spectra is loading</p>
+      <p-progressbar mode="indeterminate" [style]="{ height: '100%' }"></p-progressbar>
+    </div>
+  </div>
+}
+<router-outlet />

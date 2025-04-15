@@ -1,7 +1,7 @@
 import { overwolf } from "@overwolf/ow-electron";
 import { dialog, app as electronApp } from "electron";
 import log from "electron-log";
-import { fireConnect, setPlayerName, setStatus } from "../main";
+import { fireConnect, setLoadingStatus, setPlayerName, setStatus } from "../main";
 import { ConnectorService } from "./connectorService";
 import {
   DataTypes,
@@ -89,6 +89,9 @@ export class GameEventsService {
       }
       log.info(`GEP version ${version} ready!`);
       this.win!.setTitle(`Spectra Client | Ready (GEP: ${version}, Spectra: ${app.getVersion()})`);
+      setTimeout(() => {
+        setLoadingStatus(false);
+      }, 300);
       this.gepVersion = version;
 
       this.onGameEventsPackageReady();

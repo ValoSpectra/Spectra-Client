@@ -46,6 +46,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("add-log-line", (_event: any, value: any) => callback(value)),
   setStatus: (callback: (arg0: any) => any) =>
     ipcRenderer.on("set-status", (_event: any, value: any) => callback(value)),
+  setLoadingStatus: (callback: (arg0: any) => any) =>
+    ipcRenderer.on("set-loading-status", (_event: any, value: boolean) => callback(value)),
   fireConnect: (callback: (arg0: any) => any) =>
     ipcRenderer.on("fire-connect", (_event: any, value: any) => callback(value)),
 });
