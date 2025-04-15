@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -24,5 +24,10 @@ export class MapinfoComponent {
   mapTimeOptions: string[] = [
     "Past", "Present", "Future"
   ]
+
+  @Input()
+  title: string = "";
+
+  protected picker!: number;
 
 }

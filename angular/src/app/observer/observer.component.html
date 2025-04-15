@@ -1,5 +1,5 @@
-<div class="grid grid-cols-2 gap-4 m-4">
-  <div class="col-span-1 flex flex-col border border-gray-500 rounded-lg p-5 justify-around">
+<div class="grid grid-cols-6 gap-4 m-4">
+  <div class="col-span-3 flex flex-col border border-gray-500 rounded-lg p-5 justify-around">
     <p-floatlabel variant="on">
       <input class="w-full" pInputText disabled id="ValorantNameInput" autocomplete="off" />
       <label for="ValorantNameInput" class="text-sm">Please double-check your Valorant name</label>
@@ -23,7 +23,7 @@
       <label for="IngestIpInput">Ingest Server IP</label>
     </p-floatlabel>
   </div>
-  <div class="col-span-1 flex flex-col border border-gray-500 rounded-lg p-5">
+  <div class="col-span-3 flex flex-col border border-gray-500 rounded-lg p-5">
     <img class="h-40 self-center" src="assets/icon.png" />
     <p class="text-md text-white my-2">Status: 
       <p-tag value="Idle" severity="secondary" />
@@ -34,112 +34,15 @@
     <p-button fluid label="Connect" severity="secondary" (onClick)="onConnectClick()" />
   </div>
 
-  <app-teaminfo class="col-span-1" title="Left Team" [teaminfo]="leftTeamInfo"></app-teaminfo>
-  <app-teaminfo class="col-span-1" title="Right Team" [teaminfo]="rightTeamInfo"></app-teaminfo>
+  <app-teaminfo class="col-span-3" title="Left Team" [teaminfo]="leftTeamInfo"></app-teaminfo>
+  <app-teaminfo class="col-span-3" title="Right Team" [teaminfo]="rightTeamInfo"></app-teaminfo>
   
-  <app-tournamentinfo></app-tournamentinfo>
-  <app-seriesinfo></app-seriesinfo>
+  <app-tournamentinfo class="col-span-3"></app-tournamentinfo>
+  <app-seriesinfo class="col-span-3"></app-seriesinfo>
 
-  <app-mapinfo></app-mapinfo>
-  <div id="Mappool2Info" class="flex flex-col border border-gray-500 rounded-lg p-5">
-    <h2 class="text-md text-white">Center Map</h2>
-    <label class="text-md text-white" for="Map2TimeSelect">When is/was the match</label>
-    <select id="Map2TimeSelect" class="w-full bg-gray-900 text-white border" value="">
-      <option disabled selected value="error">-- Select an Option --</option>
-      <option value="past">Past</option>
-      <option value="present">Present</option>
-      <option value="future">Future</option>
-    </select>
-    <div id="Map2Name" class="">
-      <label class="text-md text-white" for="Map2NameInput">Map Name</label>
-      <input
-        pInputText
-        type="text"
-        class="w-full bg-gray-900 text-white border"
-        id="Map2NameInput"
-        placeholder="e.g. Bind"
-      />
-    </div>
-    <div id="Map2Scores" class="">
-      <label class="text-md text-white" for="Map2LeftScore">Left Score</label>
-      <input
-        pInputText
-        type="number"
-        class="w-full bg-gray-900 text-white border"
-        id="Map2LeftScore"
-        placeholder="e.g. 13"
-        min="0"
-        max="99"
-      />
-      <label class="text-md text-white" for="Map2RightScore">Right Score</label>
-      <input
-        pInputText
-        type="number"
-        class="w-full bg-gray-900 text-white border"
-        id="Map2RightScore"
-        placeholder="e.g. 11"
-        min="0"
-        max="99"
-      />
-    </div>
-    <div id="Map2Picker" class="">
-      <div class="text-md text-white" for="Map2Picker">Who picked the map</div>
-      <input pInputText type="radio" id="Map2LeftPicker" name="Map2Picker" checked />
-      <label class="text-md text-white" for="Map2LeftPicker">Left Team</label>
-      <input pInputText type="radio" id="Map2RightPicker" name="Map2Picker" />
-      <label class="text-md text-white" for="Map2RightPicker">Right Team</label>
-    </div>
-  </div>
-  <div id="Mappool3Info" class="flex flex-col border border-gray-500 rounded-lg p-5">
-    <h2 class="text-md text-white">Right Map</h2>
-    <label class="text-md text-white" for="Map3TimeSelect">When is/was the match</label>
-    <select id="Map3TimeSelect" class="w-full bg-gray-900 text-white border" value="">
-      <option disabled selected value="error">-- Select an Option --</option>
-      <option value="present">Present</option>
-      <option value="future">Future</option>
-    </select>
-    <div id="Map3Name" class="">
-      <label class="text-md text-white" for="Map3NameInput">Map Name</label>
-      <input
-        pInputText
-        type="text"
-        class="w-full bg-gray-900 text-white border"
-        id="Map3NameInput"
-        placeholder="e.g. Bind"
-      />
-    </div>
-    <div id="Map3Scores" class="">
-      <label class="text-md text-white" for="Map3LeftScore">Left Score</label>
-      <input
-        pInputText
-        type="number"
-        class="w-full bg-gray-900 text-white border"
-        id="Map3LeftScore"
-        placeholder="e.g. 13"
-        min="0"
-        max="99"
-      />
-      <label class="text-md text-white" for="Map3RightScore">Right Score</label>
-      <input
-        pInputText
-        type="number"
-        class="w-full bg-gray-900 text-white border"
-        id="Map3RightScore"
-        placeholder="e.g. 11"
-        min="0"
-        max="99"
-      />
-    </div>
-    <div id="Map3Picker" class="">
-      <div class="text-md text-white" for="Map3Picker">Who picked the map</div>
-      <input pInputText type="radio" id="Map3LeftPicker" name="Map3Picker" checked />
-      <label class="text-md text-white" for="Map3LeftPicker">Left Team</label>
-      <input pInputText type="radio" id="Map3RightPicker" name="Map3Picker" />
-      <label class="text-md text-white" for="Map3RightPicker">Right Team</label>
-      <input pInputText type="radio" id="Map3NonePicker" name="Map3Picker" />
-      <label class="text-md text-white" for="Map3NonePicker">Decider</label>
-    </div>
-  </div>
+  <app-mapinfo class="col-span-6 lg:col-span-3" title="Left Map"></app-mapinfo>
+  <app-mapinfo class="col-span-6 lg:col-span-3" title="Center Map"></app-mapinfo>
+  <app-mapinfo class="col-span-6 lg:col-span-3" title="Right Map"></app-mapinfo>
 
   <div class="flex flex-col border border-gray-500 rounded-lg p-5">
     <h1 class="text-md text-white">Hotkeys</h1>
