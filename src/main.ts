@@ -409,7 +409,6 @@ async function eventAvailabilityCheck() {
       await axios.get(`https://game-events-status.overwolf.com/${VALORANT_ID}_prod.json`)
     ).data;
 
-    win.webContents.send("set-event-status", 2);
     if (status.state == 1) {
       return;
     } else if (status.disabled) {
