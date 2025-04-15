@@ -7,4 +7,18 @@
     </div>
   </div>
 }
+@if (eventStatus === 2) {
+  <p-message severity="warn" closable icon="pi pi-exclamation-triangle" [@eventFade]
+    >Valorant events are currently marked as deprecated, it's possible not all features of Spectra
+    will work</p-message
+  >
+} @else if (eventStatus === 3) {
+  <p-message severity="error" closable icon="pi pi-exclamation-triangle"
+    >Valorant events are currently marked as unavailable, Spectra will probably not work</p-message
+  >
+} @else if (eventStatus === 4) {
+  <p-message severity="error" closable icon="pi pi-exclamation-triangle"
+    >Valorant events are currently disabled, Spectra will probably not work</p-message
+  >
+}
 <router-outlet />

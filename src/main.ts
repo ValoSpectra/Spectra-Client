@@ -9,6 +9,8 @@ import log from "electron-log/main";
 import { readFileSync } from "fs";
 import {
   FormattingService,
+  GEPStates,
+  GEPStatus,
   ISeedingInfo,
   ISeriesInfo,
   ITournamentInfo,
@@ -87,7 +89,6 @@ const createWindow = () => {
     if (app.isPackaged) {
       win.loadFile("./app/frontend/browser/index.html");
     } else {
-      // win.webContents.openDevTools();
       win.setAlwaysOnTop(true, "screen-saver");
       win.loadURL("http://localhost:4401");
     }
@@ -341,6 +342,11 @@ function overwolfSetup() {
   gepService.registerWindow(win);
   gepService.registerGame(VALORANT_ID);
   gepService.registerOverwolfPackageManager();
+
+  // Wait to ensure renderer is ready
+  setTimeout(() => {
+    eventAvailabilityCheck();
+  }, 2500);
 }
 
 async function updateCheck(): Promise<boolean> {
@@ -395,6 +401,44 @@ async function updateCheck(): Promise<boolean> {
   }
 }
 
+async function eventAvailabilityCheck() {
+  try {
+    const status: GEPStatus = (
+      await axios.get(`https://game-events-status.overwolf.com/${VALORANT_ID}_prod.json`)
+    ).data;
+
+    win.webContents.send("set-event-status", 2);
+    if (status.state == 1) {
+      return;
+    } else if (status.disabled) {
+      win.webContents.send("set-event-status", 4);
+      log.info(`Event availability: disabled`);
+      return;
+    } else {
+      let eventStatus = 1;
+
+      status.features.forEach((feature: any) => {
+        if (feature.name === "match_info") {
+          eventStatus = feature.state;
+        }
+      });
+
+      if (isAuxiliary) {
+        status.features.forEach((feature: any) => {
+          if (feature.name === "me") {
+            eventStatus = feature.state > eventStatus ? feature.state : eventStatus;
+          }
+        });
+      }
+
+      win.webContents.send("set-event-status", eventStatus);
+      log.info(`Event availability: ${GEPStates[eventStatus]}`);
+    }
+  } catch (error) {
+    log.error("Error fetching event availability:", error);
+  }
+}
+
 export function setPlayerName(name: string) {
   win.webContents.send("set-player-name", name);
 }
@@ -432,6 +476,11 @@ function getTraySetting() {
   } else {
     log.debug(`Retrieved tray setting: ${retrieved.traySetting}`);
     return retrieved.traySetting;
+  }
+}
+export function openDevTools() {
+  if (win) {
+    win.webContents.openDevTools();
   }
 }
 
