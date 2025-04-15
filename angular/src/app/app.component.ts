@@ -2,6 +2,7 @@ import { animate, style, transition, trigger } from "@angular/animations";
 import { ChangeDetectorRef, Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { ProgressBarModule } from "primeng/progressbar";
+import { isDevMode } from "@angular/core";
 
 @Component({
   selector: "app-root",
@@ -14,6 +15,7 @@ import { ProgressBarModule } from "primeng/progressbar";
 })
 export class AppComponent {
   loading: boolean = true;
+  isDevMode: boolean = isDevMode();
 
   constructor(private changeDetectorRef: ChangeDetectorRef) {
     window.electronAPI.setLoadingStatus(this.updateLoadingStatus.bind(this));

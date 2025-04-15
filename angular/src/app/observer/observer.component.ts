@@ -1,17 +1,29 @@
 import { Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
-import { IftaLabelModule } from "primeng/iftalabel";
+import { FloatLabelModule } from "primeng/floatlabel";
+import { PasswordModule } from "primeng/password";
+import { SelectModule } from "primeng/select";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { ButtonModule } from "primeng/button";
 
 @Component({
   selector: "app-observer",
-  imports: [InputTextModule, FormsModule, IftaLabelModule, RadioButtonModule, ButtonModule],
+  imports: [
+    InputTextModule,
+    FormsModule,
+    FloatLabelModule,
+    PasswordModule,
+    SelectModule,
+    RadioButtonModule,
+    ButtonModule,
+  ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
 })
 export class ObserverComponent {
+  protected ingestServerOptions: string[] = ["eu.valospectra.com", "us.valospectra.com"];
+
   protected key: string = "";
   protected groupCode: string = "DEBUG";
   protected ingestServerIp: string = "https://eu.valospectra.com";

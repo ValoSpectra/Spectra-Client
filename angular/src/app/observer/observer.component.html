@@ -1,54 +1,36 @@
 <div class="grid grid-cols-2 gap-4 m-4">
-  <div class="flex flex-col border border-gray-500 rounded-lg p-5">
-    <p-iftalabel>
-      <input
-        class="w-full mb-3"
-        pInputText
-        id="ValorantNameInput"
-        placeholder="Auto-detected on game start"
-        autocomplete="off"
-      />
-      <label for="ValorantNameInput">Please double-check your Valorant name</label>
-    </p-iftalabel>
-    <p-iftalabel>
-      <input class="w-full mb-3" pInputText [(value)]="key" id="KeyInput" autocomplete="off" />
-      <label for="KeyInput">Enter your Key</label>
-    </p-iftalabel>
-    <p-iftalabel>
-      <input
-        class="w-full mb-3"
-        pInputText
-        [(value)]="groupCode"
-        id="GroupCodeInput"
-        autocomplete="off"
-      />
-      <label for="GroupCodeInput">Enter your Group Code</label>
-    </p-iftalabel>
-    <p-iftalabel>
-      <input
-        class="w-full mb-3"
-        pInputText
-        [(value)]="ingestServerIp"
+  <div class="flex flex-col border border-gray-500 rounded-lg p-5 justify-around">
+    <p-floatlabel variant="on">
+      <input class="w-full" pInputText disabled id="ValorantNameInput" autocomplete="off" />
+      <label for="ValorantNameInput" class="text-sm">Please double-check your Valorant name</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+      <p-password fluid [feedback]="false" [toggleMask]="true" id="KeyInput" autocomplete="off" />
+      <label for="KeyInput">Organization Key</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+      <input fluid pInputText [(value)]="groupCode" id="GroupCodeInput" autocomplete="off" />
+      <label for="GroupCodeInput">Group Code</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+      <p-select
+        fluid
+        [options]="ingestServerOptions"
+        [editable]="true"
         id="IngestIpInput"
-        autocomplete="off"
-      />
-      <label for="IngestIpInput">Enter the ingest server IP</label>
-    </p-iftalabel>
+      ></p-select>
+      <label for="IngestIpInput">Ingest Server IP</label>
+    </p-floatlabel>
   </div>
   <div class="flex flex-col border border-gray-500 rounded-lg p-5">
     <img class="h-40 self-center" src="assets/icon.png" />
     <label class="text-md text-white" for="statusInput">Status</label>
     <input pInputText type="text" class="w-full mb-2" id="statusInput" disabled="true" />
-    <p-button
-      styleClass="w-full"
-      label="Connect"
-      severity="secondary"
-      (onClick)="onConnectClick()"
-    />
+    <p-button fluid label="Connect" severity="secondary" (onClick)="onConnectClick()" />
   </div>
   <div class="flex flex-col border border-gray-500 rounded-lg p-5">
     <h1 class="text-xl text-white mb-2">Left Team</h1>
-    <p-iftalabel>
+    <p-floatlabel variant="on">
       <input
         class="w-full mb-3"
         pInputText
@@ -57,9 +39,9 @@
         placeholder=""
         autocomplete="off"
       />
-      <label for="TeamLeftNameInput">Enter team name</label>
-    </p-iftalabel>
-    <p-iftalabel>
+      <label for="TeamLeftNameInput">Team name</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
       <input
         class="w-full mb-3"
         pInputText
@@ -68,9 +50,9 @@
         placeholder=""
         autocomplete="off"
       />
-      <label for="TeamLeftTricodeInput">Enter team tricode</label>
-    </p-iftalabel>
-    <p-iftalabel>
+      <label for="TeamLeftTricodeInput">Team tricode</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
       <input
         class="w-full mb-3"
         pInputText
@@ -79,8 +61,8 @@
         placeholder=""
         autocomplete="off"
       />
-      <label for="TeamLeftLogoInput">Enter team logo URL</label>
-    </p-iftalabel>
+      <label for="TeamLeftLogoInput">Team Logo URL</label>
+    </p-floatlabel>
     <!-- <div class="flex items-center">
             <p-radiobutton name="attacker" value="left" inputId="TeamLeftAttackerStart" />
             <label for="TeamLeftAttackerStart" class="ml-2">Starts as attacker</label>
@@ -88,7 +70,7 @@
   </div>
   <div class="flex flex-col border border-gray-500 rounded-lg p-5">
     <h1 class="text-xl text-white mb-2">Right Team</h1>
-    <p-iftalabel>
+    <p-floatlabel variant="on">
       <input
         class="w-full mb-3"
         pInputText
@@ -97,9 +79,9 @@
         placeholder=""
         autocomplete="off"
       />
-      <label for="TeamRightNameInput">Enter team name</label>
-    </p-iftalabel>
-    <p-iftalabel>
+      <label for="TeamRightNameInput">Team name</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
       <input
         class="w-full mb-3"
         pInputText
@@ -108,9 +90,9 @@
         placeholder=""
         autocomplete="off"
       />
-      <label for="TeamRightTricodeInput">Enter team tricode</label>
-    </p-iftalabel>
-    <p-iftalabel>
+      <label for="TeamRightTricodeInput">Team tricode</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
       <input
         class="w-full mb-3"
         pInputText
@@ -119,8 +101,8 @@
         placeholder=""
         autocomplete="off"
       />
-      <label for="TeamRightLogoInput">Enter team logo URL</label>
-    </p-iftalabel>
+      <label for="TeamRightLogoInput">Team Logo URL</label>
+    </p-floatlabel>
     <!-- <div class="flex items-center">
             <p-radiobutton name="attacker" value="right" inputId="TeamRightAttackerStart" />
             <label for="TeamRightAttackerStart" class="ml-2">Starts as attacker</label>
@@ -131,7 +113,7 @@
       Show Round Win Box<input pInputText type="checkbox" id="ShowTournamentInfo" />
     </label>
     <label class="text-md text-white" id="TournamentNameLabel" for="TournamentNameInput"
-      >Enter tournament name</label
+      >Tournament name</label
     >
     <input
       pInputText
@@ -181,7 +163,7 @@
     </label>
   </div>
   <div class="flex flex-col border border-gray-500 rounded-lg p-5">
-    <label class="text-md text-white" for="MapsNeededInput">Enter maps needed to win series</label>
+    <label class="text-md text-white" for="MapsNeededInput">Maps needed to win series</label>
     <input
       pInputText
       type="number"
