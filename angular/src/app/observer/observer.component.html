@@ -1,5 +1,5 @@
 <div class="grid grid-cols-2 gap-4 m-4">
-  <div class="flex flex-col border border-gray-500 rounded-lg p-5 justify-around">
+  <div class="col-span-1 flex flex-col border border-gray-500 rounded-lg p-5 justify-around">
     <p-floatlabel variant="on">
       <input class="w-full" pInputText disabled id="ValorantNameInput" autocomplete="off" />
       <label for="ValorantNameInput" class="text-sm">Please double-check your Valorant name</label>
@@ -15,6 +15,7 @@
     <p-floatlabel variant="on">
       <p-select
         fluid
+        [(ngModel)]="ingestServerIp"
         [options]="ingestServerOptions"
         [editable]="true"
         id="IngestIpInput"
@@ -22,248 +23,24 @@
       <label for="IngestIpInput">Ingest Server IP</label>
     </p-floatlabel>
   </div>
-  <div class="flex flex-col border border-gray-500 rounded-lg p-5">
+  <div class="col-span-1 flex flex-col border border-gray-500 rounded-lg p-5">
     <img class="h-40 self-center" src="assets/icon.png" />
-    <label class="text-md text-white" for="statusInput">Status</label>
-    <input pInputText type="text" class="w-full mb-2" id="statusInput" disabled="true" />
+    <p class="text-md text-white my-2">Status: 
+      <p-tag value="Idle" severity="secondary" />
+      <p-tag value="In Lobby" severity="info" />
+      <p-tag value="Error" severity="danger" />
+      <p-tag value="Running" severity="success" />
+    </p>
     <p-button fluid label="Connect" severity="secondary" (onClick)="onConnectClick()" />
   </div>
-  <div class="flex flex-col border border-gray-500 rounded-lg p-5">
-    <h1 class="text-xl text-white mb-2">Left Team</h1>
-    <p-floatlabel variant="on">
-      <input
-        class="w-full mb-3"
-        pInputText
-        [(value)]="leftTeamInfo.name"
-        id="TeamLeftNameInput"
-        placeholder=""
-        autocomplete="off"
-      />
-      <label for="TeamLeftNameInput">Team name</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
-      <input
-        class="w-full mb-3"
-        pInputText
-        [(value)]="leftTeamInfo.tricode"
-        id="TeamLeftTricodeInput"
-        placeholder=""
-        autocomplete="off"
-      />
-      <label for="TeamLeftTricodeInput">Team tricode</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
-      <input
-        class="w-full mb-3"
-        pInputText
-        [(value)]="leftTeamInfo.url"
-        id="TeamLeftLogoInput"
-        placeholder=""
-        autocomplete="off"
-      />
-      <label for="TeamLeftLogoInput">Team Logo URL</label>
-    </p-floatlabel>
-    <!-- <div class="flex items-center">
-            <p-radiobutton name="attacker" value="left" inputId="TeamLeftAttackerStart" />
-            <label for="TeamLeftAttackerStart" class="ml-2">Starts as attacker</label>
-        </div> -->
-  </div>
-  <div class="flex flex-col border border-gray-500 rounded-lg p-5">
-    <h1 class="text-xl text-white mb-2">Right Team</h1>
-    <p-floatlabel variant="on">
-      <input
-        class="w-full mb-3"
-        pInputText
-        [(value)]="rightTeamInfo.name"
-        id="TeamRightNameInput"
-        placeholder=""
-        autocomplete="off"
-      />
-      <label for="TeamRightNameInput">Team name</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
-      <input
-        class="w-full mb-3"
-        pInputText
-        [(value)]="rightTeamInfo.tricode"
-        id="TeamRightTricodeInput"
-        placeholder=""
-        autocomplete="off"
-      />
-      <label for="TeamRightTricodeInput">Team tricode</label>
-    </p-floatlabel>
-    <p-floatlabel variant="on">
-      <input
-        class="w-full mb-3"
-        pInputText
-        [(value)]="rightTeamInfo.url"
-        id="TeamRightLogoInput"
-        placeholder=""
-        autocomplete="off"
-      />
-      <label for="TeamRightLogoInput">Team Logo URL</label>
-    </p-floatlabel>
-    <!-- <div class="flex items-center">
-            <p-radiobutton name="attacker" value="right" inputId="TeamRightAttackerStart" />
-            <label for="TeamRightAttackerStart" class="ml-2">Starts as attacker</label>
-        </div> -->
-  </div>
-  <div class="flex flex-col border border-gray-500 rounded-lg p-5">
-    <label class="text-md text-white" for="ShowTournamentInfo">
-      Show Round Win Box<input pInputText type="checkbox" id="ShowTournamentInfo" />
-    </label>
-    <label class="text-md text-white" id="TournamentNameLabel" for="TournamentNameInput"
-      >Tournament name</label
-    >
-    <input
-      pInputText
-      type="text"
-      maxlength="50"
-      class="w-full bg-gray-900 text-white border"
-      id="TournamentNameInput"
-      placeholder="e.g. Spectra Invitational"
-    />
-    <label class="text-md text-white" id="TournamentLogoLabel" for="TournamentLogoInput"
-      >Tournament logo URL</label
-    >
-    <input
-      pInputText
-      type="text"
-      class="w-full bg-gray-900 text-white border"
-      id="TournamentLogoInput"
-      maxlength="300"
-      placeholder="e.g. https://imgur.com/*.png "
-      title="Ensure the link ends in .png, .jpg, or .webp to ensure the image is able to be displayed"
-      pattern="https://.*\.(png|jpg|webp)"
-      required
-    />
-    <label class="text-md text-white" id="TournamentBackdropLabel" for="TournamentBackdropInput"
-      >Tournament backdrop URL (Round Win / Pauses)</label
-    >
-    <input
-      pInputText
-      type="text"
-      class="w-full bg-gray-900 text-white border"
-      id="TournamentBackdropInput"
-      maxlength="300"
-      placeholder="e.g. https://imgur.com/*.png, empty for default"
-      title="Ensure the link ends in .png, .jpg, or .webp to ensure the image is able to be displayed"
-    />
-    <label class="text-md text-white" for="timeoutDurationInput">
-      Timeout Duration (in seconds)<input
-        pInputText
-        type="number"
-        class="w-full bg-gray-900 text-white border"
-        id="timeoutDurationInput"
-        placeholder="60"
-        min="10"
-        max="600"
-        value="60"
-      />
-    </label>
-  </div>
-  <div class="flex flex-col border border-gray-500 rounded-lg p-5">
-    <label class="text-md text-white" for="MapsNeededInput">Maps needed to win series</label>
-    <input
-      pInputText
-      type="number"
-      class="w-full bg-gray-900 text-white border"
-      id="MapsNeededInput"
-      placeholder="e.g. 2"
-      min="0"
-      max="10"
-    />
-    <label class="text-md text-white" for="MapsWonLeft">Maps won by Left Team</label>
-    <input
-      pInputText
-      type="number"
-      class="w-full bg-gray-900 text-white border"
-      id="MapsWonLeftInput"
-      placeholder="e.g. 1"
-      min="0"
-      max="10"
-    />
-    <label class="text-md text-white" for="MapsWonRight">Maps won by Right Team</label>
-    <input
-      pInputText
-      type="number"
-      class="w-full bg-gray-900 text-white border"
-      id="MapsWonRightInput"
-      placeholder="e.g. 0"
-      min="0"
-      max="10"
-    />
-    <label class="text-md text-white" for="SeedingLeft">Seeding for Left Team</label>
-    <input
-      pInputText
-      type="text"
-      maxlength="10"
-      class="w-full bg-gray-900 text-white border"
-      id="SeedingLeftInput"
-      placeholder="e.g. Group A"
-    />
-    <label class="text-md text-white" for="SeedingRight">Seeding for Right Team</label>
-    <input
-      pInputText
-      type="text"
-      maxlength="10"
-      class="w-full bg-gray-900 text-white border"
-      id="SeedingRightInput"
-      placeholder="e.g. Group B"
-    />
 
-    <label class="text-md text-white" for="ShowMappoolInfo">
-      Show Mappool Info<input pInputText type="checkbox" id="ShowMappoolInfo" />
-    </label>
-  </div>
-  <div id="Mappool1Info" class="flex flex-col border border-gray-500 rounded-lg p-5">
-    <h2 class="text-md text-white">Left Map</h2>
-    <label class="text-md text-white" for="Map1TimeSelect">When is/was the match</label>
-    <select id="Map1TimeSelect" class="w-full bg-gray-900 text-white border" value="">
-      <option disabled selected value="error">-- Select an Option --</option>
-      <option value="past">Past</option>
-      <option value="present">Present</option>
-    </select>
-    <div id="Map1Name" class="">
-      <label class="text-md text-white" for="Map1NameInput">Map Name</label>
-      <input
-        pInputText
-        type="text"
-        class="w-full bg-gray-900 text-white border"
-        id="Map1NameInput"
-        placeholder="e.g. Bind"
-      />
-    </div>
-    <div id="Map1Scores" class="">
-      <label class="text-md text-white" for="Map1LeftScore">Left Score</label>
-      <input
-        pInputText
-        type="number"
-        class="w-full bg-gray-900 text-white border"
-        id="Map1LeftScore"
-        placeholder="e.g. 13"
-        min="0"
-        max="99"
-      />
-      <label class="text-md text-white" for="Map1RightScore">Right Score</label>
-      <input
-        pInputText
-        type="number"
-        class="w-full bg-gray-900 text-white border"
-        id="Map1RightScore"
-        placeholder="e.g. 11"
-        min="0"
-        max="99"
-      />
-    </div>
-    <div id="Map1Picker" class="">
-      <div class="text-md text-white" for="Map1Picker">Who picked the map</div>
-      <input pInputText type="radio" id="Map1LeftPicker" name="Map1Picker" checked />
-      <label class="text-md text-white" for="Map1LeftPicker">Left Team</label>
-      <input pInputText type="radio" id="Map1RightPicker" name="Map1Picker" />
-      <label class="text-md text-white" for="Map1RightPicker">Right Team</label>
-    </div>
-  </div>
+  <app-teaminfo class="col-span-1" title="Left Team" [teaminfo]="leftTeamInfo"></app-teaminfo>
+  <app-teaminfo class="col-span-1" title="Right Team" [teaminfo]="rightTeamInfo"></app-teaminfo>
+  
+  <app-tournamentinfo></app-tournamentinfo>
+  <app-seriesinfo></app-seriesinfo>
+
+  <app-mapinfo></app-mapinfo>
   <div id="Mappool2Info" class="flex flex-col border border-gray-500 rounded-lg p-5">
     <h2 class="text-md text-white">Center Map</h2>
     <label class="text-md text-white" for="Map2TimeSelect">When is/was the match</label>

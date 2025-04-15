@@ -120,8 +120,6 @@ app.whenReady().then(async () => {
 
   gepService = new GameEventsService(isAuxiliary);
   overwolfSetup();
-
-  deeplinkSetup();
 });
 
 app.on("window-all-closed", () => {

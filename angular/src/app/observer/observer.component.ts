@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { FloatLabelModule } from "primeng/floatlabel";
@@ -6,6 +6,13 @@ import { PasswordModule } from "primeng/password";
 import { SelectModule } from "primeng/select";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { ButtonModule } from "primeng/button";
+import { ElectronService } from "../services/electron.service";
+import { TagModule } from 'primeng/tag';
+import { InputNumberModule } from "primeng/inputnumber";
+import { TeaminfoComponent } from "../teaminfo/teaminfo.component";
+import { SeriesinfoComponent } from "../seriesinfo/seriesinfo.component";
+import { TournamentinfoComponent } from "../tournamentinfo/tournamentinfo.component";
+import { MapinfoComponent } from "../mapinfo/mapinfo.component";
 
 @Component({
   selector: "app-observer",
@@ -17,16 +24,24 @@ import { ButtonModule } from "primeng/button";
     SelectModule,
     RadioButtonModule,
     ButtonModule,
+    TagModule,
+    InputNumberModule,
+    TeaminfoComponent,
+    SeriesinfoComponent,
+    TournamentinfoComponent,
+    MapinfoComponent
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
 })
 export class ObserverComponent {
+  constructor(protected electron: ElectronService) {}
+
   protected ingestServerOptions: string[] = ["eu.valospectra.com", "us.valospectra.com"];
 
   protected key: string = "";
   protected groupCode: string = "DEBUG";
-  protected ingestServerIp: string = "https://eu.valospectra.com";
+  protected ingestServerIp: string = "";
   protected leftTeamInfo: any = {
     name: "Wachunpelo Pelupelu Gamers",
     tricode: "PELU",
@@ -64,7 +79,7 @@ export class ObserverComponent {
       rightTimeout: "P",
     };
 
-    window.electronAPI.processInputs(
+    this.electron.processInputs(
       this.ingestServerIp,
       this.groupCode,
       "Tiranthine",

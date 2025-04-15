@@ -1,0 +1,57 @@
+<div id="Mappool1Info" class="flex flex-col border border-gray-500 rounded-lg p-5 gap-3">
+    <h2 class="text-md text-white">Left Map</h2>
+    <label class="text-md text-white" for="Map1TimeSelect">When is/was the match</label>
+    <select id="Map1TimeSelect" class="w-full bg-gray-900 text-white border" value="">
+      <option disabled selected value="error">-- Select an Option --</option>
+      <option value="past">Past</option>
+      <option value="present">Present</option>
+    </select>
+
+    <p-floatlabel variant="on">
+        <p-select
+          fluid
+          [options]="mapTimeOptions"
+          id="MapTimeSelect"
+        ></p-select>
+        <label for="MapTimeSelect">When is/was the match</label>
+      </p-floatlabel>
+
+    <p-floatlabel variant="on">
+        <input pInputText type="text" maxlength="50" class="w-full bg-gray-900 text-white border" id="MapNameInput" />
+        <label for="MapNameInput">Map Name</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="on">
+        <p-inputnumber id="MapLeftScore" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal"
+            spinnerMode="horizontal" [step]="1" min="0">
+            <ng-template #incrementbuttonicon>
+                <span class="pi pi-plus"></span>
+            </ng-template>
+            <ng-template #decrementbuttonicon>
+                <span class="pi pi-minus"></span>
+            </ng-template>
+        </p-inputnumber>
+        <label for="MapLeftScore">Left Score</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="on">
+        <p-inputnumber id="MapRightScore" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal"
+            spinnerMode="horizontal" [step]="1" min="0">
+            <ng-template #incrementbuttonicon>
+                <span class="pi pi-plus"></span>
+            </ng-template>
+            <ng-template #decrementbuttonicon>
+                <span class="pi pi-minus"></span>
+            </ng-template>
+        </p-inputnumber>
+        <label for="MapRightScore">Right Score</label>
+    </p-floatlabel>
+
+    <div id="Map1Picker" class="">
+      <div class="text-md text-white" for="Map1Picker">Who picked the map</div>
+      <input pInputText type="radio" id="Map1LeftPicker" name="Map1Picker" checked />
+      <label class="text-md text-white" for="Map1LeftPicker">Left Team</label>
+      <input pInputText type="radio" id="Map1RightPicker" name="Map1Picker" />
+      <label class="text-md text-white" for="Map1RightPicker">Right Team</label>
+    </div>
+  </div>
