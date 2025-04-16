@@ -7,12 +7,13 @@ import { SelectModule } from "primeng/select";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { ButtonModule } from "primeng/button";
 import { ElectronService } from "../services/electron.service";
-import { TagModule } from 'primeng/tag';
+import { TagModule } from "primeng/tag";
 import { InputNumberModule } from "primeng/inputnumber";
 import { TeaminfoComponent } from "../teaminfo/teaminfo.component";
 import { SeriesinfoComponent } from "../seriesinfo/seriesinfo.component";
 import { TournamentinfoComponent } from "../tournamentinfo/tournamentinfo.component";
 import { MapinfoComponent } from "../mapinfo/mapinfo.component";
+import { HotkeysComponent } from "../hotkeys/hotkeys.component";
 
 @Component({
   selector: "app-observer",
@@ -29,7 +30,8 @@ import { MapinfoComponent } from "../mapinfo/mapinfo.component";
     TeaminfoComponent,
     SeriesinfoComponent,
     TournamentinfoComponent,
-    MapinfoComponent
+    MapinfoComponent,
+    HotkeysComponent,
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
@@ -41,7 +43,7 @@ export class ObserverComponent {
 
   protected key: string = "";
   protected groupCode: string = "DEBUG";
-  protected ingestServerIp: string = "";
+  protected ingestServerIp: string | undefined = undefined;
   protected leftTeamInfo: any = {
     name: "Wachunpelo Pelupelu Gamers",
     tricode: "PELU",

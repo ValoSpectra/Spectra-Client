@@ -1,0 +1,46 @@
+<div class="flex flex-col border border-gray-500 rounded-lg p-5 gap-3">
+  <h1 class="text-xl text-white font-bold">Hotkeys</h1>
+
+  <p-floatlabel variant="on">
+    <input
+      pInputText
+      type="text"
+      class="w-full bg-gray-900 text-white border"
+      id="HotkeySpikeInput"
+    />
+    <label for="HotkeySpikeInput">Spike planted</label>
+  </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <input
+      pInputText
+      type="text"
+      class="w-full bg-gray-900 text-white border"
+      pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
+      id="TechPauseInput"
+    />
+    <label for="TechPauseInput">Tech Pause</label>
+  </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <input
+      pInputText
+      type="text"
+      class="w-full bg-gray-900 text-white border"
+      pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
+      id="LeftTimeoutInput"
+    />
+    <label for="LeftTimeoutInput">Left Team Timeout</label>
+  </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <input
+      pInputText
+      type="text"
+      class="w-full bg-gray-900 text-white border"
+      pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
+      id="RightTimeoutInput"
+    />
+    <label for="RightTimeoutInput">Right Team Timeout</label>
+  </p-floatlabel>
+</div>

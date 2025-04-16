@@ -61,7 +61,7 @@ const createWindow = () => {
   }
 
   win = new BrowserWindow({
-    width: 730, // 1300 for debug console
+    width: 750, // 1300 for debug console
     height: !isAuxiliary ? 650 : 300,
     backgroundColor: "#303338",
     resizable: true,
@@ -73,7 +73,7 @@ const createWindow = () => {
     titleBarOverlay: true,
     icon: path.join(__dirname, "./assets/icon.ico"),
   });
-  win.setMinimumSize(730, !isAuxiliary ? 650 : 300);
+  win.setMinimumSize(750, !isAuxiliary ? 650 : 300);
   win.setMaximumSize(1920, 1080);
   win.menuBarVisible = false;
 

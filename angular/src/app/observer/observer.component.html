@@ -18,6 +18,7 @@
         [(ngModel)]="ingestServerIp"
         [options]="ingestServerOptions"
         [editable]="true"
+        [showClear]="true"
         id="IngestIpInput"
       ></p-select>
       <label for="IngestIpInput">Ingest Server IP</label>
@@ -25,7 +26,8 @@
   </div>
   <div class="col-span-3 flex flex-col border border-gray-500 rounded-lg p-5">
     <img class="h-40 self-center" src="assets/icon.png" />
-    <p class="text-md text-white my-2">Status: 
+    <p class="text-md text-white my-2">
+      Status:
       <p-tag value="Idle" severity="secondary" />
       <p-tag value="In Lobby" severity="info" />
       <p-tag value="Error" severity="danger" />
@@ -36,68 +38,13 @@
 
   <app-teaminfo class="col-span-3" title="Left Team" [teaminfo]="leftTeamInfo"></app-teaminfo>
   <app-teaminfo class="col-span-3" title="Right Team" [teaminfo]="rightTeamInfo"></app-teaminfo>
-  
+
   <app-tournamentinfo class="col-span-3"></app-tournamentinfo>
   <app-seriesinfo class="col-span-3"></app-seriesinfo>
 
-  <app-mapinfo class="col-span-6 lg:col-span-3" title="Left Map"></app-mapinfo>
-  <app-mapinfo class="col-span-6 lg:col-span-3" title="Center Map"></app-mapinfo>
-  <app-mapinfo class="col-span-6 lg:col-span-3" title="Right Map"></app-mapinfo>
+  <app-mapinfo class="col-span-6 lg:col-span-3" position="left"></app-mapinfo>
+  <app-mapinfo class="col-span-6 lg:col-span-3" position="center"></app-mapinfo>
+  <app-mapinfo class="col-span-6 lg:col-span-3" position="right"></app-mapinfo>
 
-  <div class="flex flex-col border border-gray-500 rounded-lg p-5">
-    <h1 class="text-md text-white">Hotkeys</h1>
-    <label class="text-md text-white" for="hotkeySpikeInput">Spike planted</label>
-    <input
-      pInputText
-      type="text"
-      class="w-full bg-gray-900 text-white border"
-      id="hotkeySpikeInput"
-      maxlength="30"
-      placeholder="e.g. Ctrl+F9"
-      value="F9"
-      pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
-      title="Can't resolve key. Try 'Ctrl+F9' for example."
-      required
-    />
-    <label class="text-md text-white" for="techPauseInput">Tech Pause</label>
-    <input
-      pInputText
-      type="text"
-      class="w-full bg-gray-900 text-white border"
-      id="techPauseInput"
-      maxlength="30"
-      placeholder="e.g. Ctrl+F9"
-      value="F10"
-      pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
-      title="Can't resolve key. Try 'Ctrl+F9' for example."
-      required
-    />
-    <label class="text-md text-white" for="leftTimeoutInput">Left Team Timeout</label>
-    <input
-      pInputText
-      type="text"
-      class="w-full bg-gray-900 text-white border"
-      id="leftTimeoutInput"
-      maxlength="30"
-      placeholder="e.g. Ctrl+F9"
-      value="O"
-      pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
-      title="Can't resolve key. Try 'Ctrl+F9' for example."
-      required
-    />
-    <label class="text-md text-white" for="rightTimeoutInput">Right Team Timeout</label>
-    <input
-      pInputText
-      type="text"
-      class="w-full bg-gray-900 text-white border"
-      id="rightTimeoutInput"
-      maxlength="30"
-      placeholder="e.g. Ctrl+F9"
-      value="P"
-      pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
-      title="Can't resolve key. Try 'Ctrl+F9' for example."
-      required
-    />
-  </div>
-  <div class="scroll-text-md text-white"></div>
+  <app-hotkeys class="col-span-3"></app-hotkeys>
 </div>

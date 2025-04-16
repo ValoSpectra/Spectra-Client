@@ -1,20 +1,26 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { InputTextModule } from 'primeng/inputtext';
+import { Component } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { BlockUIModule } from "primeng/blockui";
+import { FloatLabelModule } from "primeng/floatlabel";
+import { InputNumberModule } from "primeng/inputnumber";
+import { InputTextModule } from "primeng/inputtext";
+import { ToggleSwitchModule } from "primeng/toggleswitch";
+import { BlockableDiv } from "../blockablediv/blockablediv.component";
 
 @Component({
-  selector: 'app-seriesinfo',
+  selector: "app-seriesinfo",
   imports: [
     InputTextModule,
     FormsModule,
     FloatLabelModule,
-    InputNumberModule
+    InputNumberModule,
+    ToggleSwitchModule,
+    BlockUIModule,
+    BlockableDiv,
   ],
-  templateUrl: './seriesinfo.component.html',
-  styleUrl: './seriesinfo.component.css'
+  templateUrl: "./seriesinfo.component.html",
+  styleUrl: "./seriesinfo.component.css",
 })
 export class SeriesinfoComponent {
-
+  enabled: boolean = false;
 }
