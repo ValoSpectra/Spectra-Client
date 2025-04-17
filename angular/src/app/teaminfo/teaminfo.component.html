@@ -1,40 +1,67 @@
 <div class="grid grid-cols-2 border border-gray-500 rounded-lg p-5 gap-3">
-  <div class="col-span-1 flex flex-col gap-3">
-    <h1 class="text-xl text-white font-bold ">{{ title }}</h1>
+  <div class="col-span-1 flex flex-col gap-3 justify-around">
+    <h1 class="text-xl text-white font-bold">{{ title }}</h1>
     <p-floatlabel variant="on">
-      <input class="w-full" pInputText [(value)]="teaminfo.name" id="TeamLeftNameInput" placeholder=""
-        autocomplete="off" />
+      <input
+        class="w-full"
+        pInputText
+        [(value)]="teaminfo.name"
+        id="TeamLeftNameInput"
+        placeholder=""
+        autocomplete="off"
+      />
       <label for="TeamLeftNameInput">Team name</label>
     </p-floatlabel>
     <p-floatlabel variant="on">
-      <input class="w-full" pInputText [(value)]="teaminfo.tricode" id="TeamLeftTricodeInput" placeholder=""
-        autocomplete="off" />
+      <input
+        class="w-full"
+        pInputText
+        [(value)]="teaminfo.tricode"
+        id="TeamLeftTricodeInput"
+        placeholder=""
+        autocomplete="off"
+      />
       <label for="TeamLeftTricodeInput">Team tricode</label>
     </p-floatlabel>
     <p-floatlabel variant="on">
-      <input class="w-full" [class.ng-dirty]="logoImageError" [class.ng-invalid]="logoImageError" pInputText [(ngModel)]="teaminfo.url" id="TeamLeftLogoInput" placeholder=""
-        autocomplete="off" />
+      <input
+        class="w-full"
+        [class.ng-dirty]="logoImageError"
+        [class.ng-invalid]="logoImageError"
+        pInputText
+        [(ngModel)]="teaminfo.url"
+        id="TeamLeftLogoInput"
+        placeholder=""
+        autocomplete="off"
+      />
       <label for="TeamLeftLogoInput">Team Logo URL</label>
     </p-floatlabel>
   </div>
 
   <div class="col-span-1 flex flex-col justify-center items-center">
     <p class="text-sm italic mb-2">Logo preview</p>
-    <img [src]="teaminfo.url" alt="Image link invalid"
+    <img
+      [src]="teaminfo.url"
+      alt="Image link invalid"
       class="w-4/7 aspect-sqare justify-self-center rounded-xl border-gray-500 border"
       [hidden]="!teaminfo.url || logoImageError"
       (load)="onImageLoadSuccess()"
-      (error)="onImageLoadError()" />
-    
+      (error)="onImageLoadError()"
+    />
+
     @if (!teaminfo.url || logoImageError) {
-    <div class="w-4/7 aspect-sqare justify-self-center rounded-xl border-gray-500 bg-gray-300/40 border flex justify-center items-center">
-      <i class="text-md! rounded-full border size-min p-1 cursor-pointer pi pi-info" (click)="info_popover.toggle($event)"></i>
-      <p-popover #info_popover>
-        <p class="">Make sure the link points directly to the image.</p>
-        <p class="">Valid links usually end in .png or .jpg.</p>
-      </p-popover>
-    </div>
+      <div
+        class="w-4/7 aspect-sqare justify-self-center rounded-xl border-gray-500 bg-gray-300/40 border flex justify-center items-center"
+      >
+        <i
+          class="text-md! rounded-full border size-min p-1 cursor-pointer pi pi-info"
+          (click)="info_popover.toggle($event)"
+        ></i>
+        <p-popover #info_popover>
+          <p class="">Make sure the link points directly to the image.</p>
+          <p class="">Valid links usually end in .png or .jpg.</p>
+        </p-popover>
+      </div>
     }
   </div>
-
 </div>
