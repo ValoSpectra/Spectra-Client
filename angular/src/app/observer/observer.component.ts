@@ -39,7 +39,7 @@ import { HotkeysComponent } from "../hotkeys/hotkeys.component";
 export class ObserverComponent {
   constructor(protected electron: ElectronService) {}
 
-  protected ingestServerOptions: string[] = ["eu.valospectra.com", "us.valospectra.com"];
+  protected ingestServerOptions: string[] = ["eu.valospectra.com", "na.valospectra.com"];
 
   protected key: string = "";
   protected groupCode: string = "DEBUG";

@@ -60,9 +60,16 @@ const createWindow = () => {
     log.info("Starting in Auxiliary Mode");
   }
 
+  let iconPath = "";
+  if (app.isPackaged) {
+    iconPath = path.join(__dirname, "./assets/icon.ico");
+  } else {
+    iconPath = path.join(__dirname, "../build/icon.ico");
+  }
+
   win = new BrowserWindow({
     width: 750, // 1300 for debug console
-    height: !isAuxiliary ? 650 : 300,
+    height: !isAuxiliary ? 650 : 320,
     backgroundColor: "#303338",
     resizable: true,
     webPreferences: {
@@ -71,9 +78,10 @@ const createWindow = () => {
     },
     fullscreenable: false,
     titleBarOverlay: true,
-    icon: path.join(__dirname, "./assets/icon.ico"),
+    icon: iconPath,
+    title: "Spectra Client",
   });
-  win.setMinimumSize(750, !isAuxiliary ? 650 : 300);
+  win.setMinimumSize(750, !isAuxiliary ? 650 : 320);
   win.setMaximumSize(1920, 1080);
   win.menuBarVisible = false;
 
@@ -93,14 +101,20 @@ const createWindow = () => {
       win.loadURL("http://localhost:4401");
     }
   } else {
-    createTray();
+    createTray(iconPath);
     win.on("minimize", () => {
       if (traySetting) {
         //only hide when setting says so
         win.hide();
       }
     });
-    win.loadFile("./src/frontend/auxiliary.html");
+
+    if (app.isPackaged) {
+      win.loadFile("./app/frontend/browser/index.html/auxiliary");
+    } else {
+      win.setAlwaysOnTop(true, "screen-saver");
+      win.loadURL("http://localhost:4401/auxiliary");
+    }
   }
 };
 
