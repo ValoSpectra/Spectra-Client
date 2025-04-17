@@ -6,6 +6,8 @@ import { SelectModule } from "primeng/select";
 import { ElectronService } from "../services/electron.service";
 import { ToggleSwitchModule } from "primeng/toggleswitch";
 import { TagModule } from "primeng/tag";
+import { LocalstorageService } from "../services/localstorage.service";
+import { ButtonModule } from "primeng/button";
 
 @Component({
   selector: "app-auxiliary",
@@ -16,12 +18,24 @@ import { TagModule } from "primeng/tag";
     SelectModule,
     ToggleSwitchModule,
     TagModule,
+    ButtonModule,
   ],
   templateUrl: "./auxiliary.component.html",
   styleUrl: "./auxiliary.component.css",
 })
 export class AuxiliaryComponent {
-  constructor(protected electron: ElectronService) {}
+  protected darkModeEnabled: boolean = false;
+
+  constructor(
+    protected electron: ElectronService,
+    protected localStorageService: LocalstorageService,
+  ) {
+    this.darkModeEnabled = this.localStorageService.getItem("darkMode");
+    if (this.darkModeEnabled) {
+      const element = document.querySelector("html");
+      element!.classList.add("app-dark");
+    }
+  }
 
   protected ingestServerOptions: string[] = ["eu.valospectra.com", "na.valospectra.com"];
   protected ingestServerIp: string | undefined = undefined;
@@ -46,4 +60,11 @@ export class AuxiliaryComponent {
   //   60,
   // );
   // }
+
+  protected toggleDarkMode() {
+    const element = document.querySelector("html");
+    element!.classList.toggle("app-dark");
+    this.darkModeEnabled = !this.darkModeEnabled;
+    this.localStorageService.setItem("darkMode", this.darkModeEnabled);
+  }
 }

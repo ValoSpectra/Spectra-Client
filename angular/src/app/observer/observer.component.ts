@@ -14,6 +14,7 @@ import { SeriesinfoComponent } from "../seriesinfo/seriesinfo.component";
 import { TournamentinfoComponent } from "../tournamentinfo/tournamentinfo.component";
 import { MapinfoComponent } from "../mapinfo/mapinfo.component";
 import { HotkeysComponent } from "../hotkeys/hotkeys.component";
+import { LocalstorageService } from "../services/localstorage.service";
 
 @Component({
   selector: "app-observer",
@@ -37,7 +38,18 @@ import { HotkeysComponent } from "../hotkeys/hotkeys.component";
   styleUrl: "./observer.component.css",
 })
 export class ObserverComponent {
-  constructor(protected electron: ElectronService) {}
+  protected darkModeEnabled: boolean = false;
+
+  constructor(
+    protected electron: ElectronService,
+    protected localStorageService: LocalstorageService,
+  ) {
+    this.darkModeEnabled = this.localStorageService.getItem("darkMode");
+    if (this.darkModeEnabled) {
+      const element = document.querySelector("html");
+      element!.classList.add("app-dark");
+    }
+  }
 
   protected ingestServerOptions: string[] = ["eu.valospectra.com", "na.valospectra.com"];
 
@@ -100,5 +112,12 @@ export class ObserverComponent {
       hotkeys,
       60,
     );
+  }
+
+  protected toggleDarkMode() {
+    const element = document.querySelector("html");
+    element!.classList.toggle("app-dark");
+    this.darkModeEnabled = !this.darkModeEnabled;
+    this.localStorageService.setItem("darkMode", this.darkModeEnabled);
   }
 }

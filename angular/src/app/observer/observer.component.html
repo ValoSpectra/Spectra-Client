@@ -25,6 +25,12 @@
     </p-floatlabel>
   </div>
   <div class="col-span-3 flex flex-col border border-gray-500 rounded-lg p-5">
+    <p-button
+      class="w-10 h-10 self-end absolute"
+      severity="contrast"
+      [icon]="darkModeEnabled ? 'pi pi-sun' : 'pi pi-moon'"
+      (onClick)="toggleDarkMode()"
+    />
     <img class="h-40 self-center" src="assets/icon.png" />
     <p class="text-md text-white my-2">
       Status:

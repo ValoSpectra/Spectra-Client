@@ -149,8 +149,8 @@ app.on("before-quit", () => {
   connService.sendToIngest(formatted);
 });
 
-function createTray() {
-  tray = new Tray(path.join(__dirname, "./assets/icon.ico"));
+function createTray(iconPath: string) {
+  tray = new Tray(iconPath);
   tray.setToolTip("Spectra Client");
   const contextMenu = Menu.buildFromTemplate([
     {
