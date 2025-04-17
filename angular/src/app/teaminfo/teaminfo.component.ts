@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { FloatLabelModule } from 'primeng/floatlabel';
+import { ImageModule } from 'primeng/image';
 import { InputTextModule } from 'primeng/inputtext';
+import { PopoverModule } from 'primeng/popover';
 
 @Component({
   selector: 'app-teaminfo',
@@ -9,6 +11,8 @@ import { InputTextModule } from 'primeng/inputtext';
     InputTextModule,
     FormsModule,
     FloatLabelModule,
+    ImageModule,
+    PopoverModule
   ],
   templateUrl: './teaminfo.component.html',
   styleUrl: './teaminfo.component.css'
@@ -24,6 +28,16 @@ export class TeaminfoComponent {
 
   @Input()
   title: string = "";
+
+  protected logoImageError: boolean = false;
+
+  protected onImageLoadError() {
+    this.logoImageError = true;
+  }
+
+  protected onImageLoadSuccess() {
+    this.logoImageError = false;
+  }
 
 }
 type Teaminfo = {
