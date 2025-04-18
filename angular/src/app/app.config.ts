@@ -3,8 +3,27 @@ import { provideRouter } from "@angular/router";
 import { providePrimeNG } from "primeng/config";
 import Aura from "@primeng/themes/aura";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
-
+import { definePreset } from "@primeng/themes";
 import { routes } from "./app.routes";
+
+const theme = definePreset(Aura, {
+  primitive: {
+    test: "#00cc00"
+  },
+  semantic: {
+    colorScheme: {
+      light: {
+        surface: {
+        }
+      },
+      dark: {
+        content: {
+          borderColor: "{surface.500}"
+        }
+      },
+    },
+  },
+});
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,9 +32,13 @@ export const appConfig: ApplicationConfig = {
     provideAnimationsAsync(),
     providePrimeNG({
       theme: {
-        preset: Aura,
+        preset: theme,
         options: {
-          darkModeSelector: ".app-dark",
+          darkModeSelector: ".dark",
+          cssLayer: {
+            name: "primeng",
+            order: "theme, base, primeng"
+          }
         },
       },
     }),

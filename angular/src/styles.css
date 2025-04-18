@@ -1,6 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+@plugin "tailwindcss-primeui";
 @import "primeicons/primeicons.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 ::-webkit-scrollbar {
     width: 4px;

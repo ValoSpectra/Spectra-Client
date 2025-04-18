@@ -1,7 +1,7 @@
-<div id="MappoolInfo" class="flex flex-col border border-gray-500 rounded-lg p-5 gap-3">
+<div id="MappoolInfo" class="flex flex-col border border-surface rounded-lg p-5 gap-3">
   <p-blockui [target]="toBlock" [blocked]="blocked"></p-blockui>
   <blockable-div #toBlock class="flex flex-col gap-3">
-    <h2 class="text-xl text-white font-bold">{{ position | titlecase }} Map</h2>
+    <h2 class="text-xl text-color font-bold">{{ position | titlecase }} Map</h2>
     <div class="flex flex-row gap-3">
       <div class="w-1/2">
         <p-floatlabel variant="on">

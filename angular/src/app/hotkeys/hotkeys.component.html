@@ -1,12 +1,12 @@
-<div class="flex flex-col border border-gray-500 rounded-lg p-5 gap-3">
-  <h1 class="text-xl text-white font-bold">Hotkeys</h1>
+<div class="flex flex-col border border-surface rounded-lg p-5 gap-3">
+  <h1 class="text-xl text-color font-bold">Hotkeys</h1>
 
   <p-floatlabel variant="on">
     <input
       pInputText
+      fluid
       [(ngModel)]="data.spikePlanted"
       type="text"
-      class="w-full bg-gray-900 text-white border"
       id="HotkeySpikeInput"
     />
     <label for="HotkeySpikeInput">Spike planted</label>
@@ -15,9 +15,9 @@
   <p-floatlabel variant="on">
     <input
       pInputText
+      fluid
       [(ngModel)]="data.techPause"
       type="text"
-      class="w-full bg-gray-900 text-white border"
       pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
       id="TechPauseInput"
     />
@@ -27,9 +27,9 @@
   <p-floatlabel variant="on">
     <input
       pInputText
+      fluid
       [(ngModel)]="data.leftTimeout"
       type="text"
-      class="w-full bg-gray-900 text-white border"
       pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
       id="LeftTimeoutInput"
     />
@@ -39,9 +39,9 @@
   <p-floatlabel variant="on">
     <input
       pInputText
+      fluid
       [(ngModel)]="data.rightTimeout"
       type="text"
-      class="w-full bg-gray-900 text-white border"
       pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
       id="RightTimeoutInput"
     />

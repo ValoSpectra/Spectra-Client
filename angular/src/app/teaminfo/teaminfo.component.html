@@ -1,6 +1,6 @@
-<div class="grid grid-cols-7 border border-gray-500 rounded-lg p-5 gap-3">
+<div class="grid grid-cols-7 border border-surface rounded-lg p-5 gap-3">
   <div class="col-span-4 flex flex-col gap-3 justify-around">
-    <h1 class="text-xl text-white font-bold">{{ position | titlecase }} Team</h1>
+    <h1 class="text-xl text-color font-bold">{{ position | titlecase }} Team</h1>
     <p-floatlabel variant="on">
       <input
         class="w-full"
@@ -43,7 +43,7 @@
     <img
       [src]="teaminfo.logoUrl"
       alt="Image link invalid"
-      class="w-4/7 aspect-sqare justify-self-center rounded-xl border-gray-500 border"
+      class="w-4/7 aspect-sqare justify-self-center rounded-xl border-surface border"
       [hidden]="!teaminfo.logoUrl || logoImageError"
       (load)="onImageLoadSuccess()"
       (error)="onImageLoadError()"
@@ -51,7 +51,7 @@
 
     @if (!teaminfo.logoUrl || logoImageError) {
       <div
-        class="w-4/7 aspect-sqare justify-self-center rounded-xl border-gray-500 bg-gray-300/40 border flex justify-center items-center"
+        class="w-4/7 aspect-sqare justify-self-center rounded-xl border-surface bg-emphasis border flex justify-center items-center"
       >
         <i
           class="text-md! rounded-full border size-min p-1 cursor-pointer pi pi-info"

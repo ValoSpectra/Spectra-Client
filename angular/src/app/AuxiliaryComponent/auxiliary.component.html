@@ -1,5 +1,5 @@
 <div class="grid grid-cols-6 gap-4 m-4">
-  <div class="col-span-3 flex flex-col border border-gray-500 rounded-lg p-5 justify-around">
+  <div class="col-span-3 flex flex-col border border-surface rounded-lg p-5 justify-around">
     <p-floatlabel variant="on">
       <input class="w-full" pInputText disabled id="ValorantNameInput" autocomplete="off" />
       <label for="ValorantNameInput" class="text-sm">Please double-check your Valorant name</label>
@@ -19,7 +19,7 @@
       <p-toggleswitch id="ShowTournamentInfo"></p-toggleswitch>
     </div>
   </div>
-  <div class="col-span-3 flex flex-col border border-gray-500 rounded-lg p-5">
+  <div class="col-span-3 flex flex-col border border-surface rounded-lg p-5">
     <p-button
       class="w-10 h-10 self-end absolute"
       severity="contrast"
@@ -27,7 +27,7 @@
       (onClick)="toggleDarkMode()"
     />
     <img class="h-40 self-center" src="assets/icon.png" />
-    <p class="text-md text-white my-2">
+    <p class="text-md text-color my-2">
       Status:
       <p-tag value="Idle" severity="secondary" />
       <p-tag value="In Lobby" severity="info" />

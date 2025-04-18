@@ -33,7 +33,7 @@ export class AuxiliaryComponent {
     this.darkModeEnabled = this.localStorageService.getItem<boolean>("darkMode") || true;
     if (this.darkModeEnabled) {
       const element = document.querySelector("html");
-      element!.classList.add("app-dark");
+      element!.classList.add("dark");
     }
   }
 
@@ -63,7 +63,7 @@ export class AuxiliaryComponent {
 
   protected toggleDarkMode() {
     const element = document.querySelector("html");
-    element!.classList.toggle("app-dark");
+    element!.classList.toggle("dark");
     this.darkModeEnabled = !this.darkModeEnabled;
     this.localStorageService.setItem("darkMode", this.darkModeEnabled);
   }

@@ -4755,6 +4755,7 @@ __metadata:
     primeng: "npm:^19.1.0"
     rxjs: "npm:~7.8.2"
     tailwindcss: "npm:^4.1.4"
+    tailwindcss-primeui: "npm:^0.6.1"
     tslib: "npm:^2.8.1"
     typescript: "npm:~5.7.3"
     zone.js: "npm:~0.15.0"
@@ -11765,6 +11766,15 @@ __metadata:
   version: 4.0.0
   resolution: "symbol-observable@npm:4.0.0"
   checksum: 10c0/5e9a3ab08263a6be8cbee76587ad5880dcc62a47002787ed5ebea56b1eb30dc87da6f0183d67e88286806799fbe21c69077fbd677be4be2188e92318d6c6f31d
+  languageName: node
+  linkType: hard
+
+"tailwindcss-primeui@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "tailwindcss-primeui@npm:0.6.1"
+  peerDependencies:
+    tailwindcss: ">=3.1.0"
+  checksum: 10c0/a7a576660d4b42dd31d8851c69a1c67199bf79b74bb0ac7e7ff3c8f721e8f05b41278d9af47550a78b234426e9df68cea802ddd5d28a97b00af28b2979226f74
   languageName: node
   linkType: hard
 
