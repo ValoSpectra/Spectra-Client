@@ -1,27 +1,27 @@
 <div class="grid grid-cols-7 border border-gray-500 rounded-lg p-5 gap-3">
   <div class="col-span-4 flex flex-col gap-3 justify-around">
-    <h1 class="text-xl text-white font-bold">{{ title }}</h1>
+    <h1 class="text-xl text-white font-bold">{{ position | titlecase }} Team</h1>
     <p-floatlabel variant="on">
       <input
         class="w-full"
         pInputText
-        [(value)]="teaminfo.name"
-        id="TeamLeftNameInput"
+        [(ngModel)]="teaminfo.name"
+        id="TeamNameInput"
         placeholder=""
         autocomplete="off"
       />
-      <label for="TeamLeftNameInput">Team name</label>
+      <label for="TeamNameInput">Team name</label>
     </p-floatlabel>
     <p-floatlabel variant="on">
       <input
         class="w-full"
         pInputText
-        [(value)]="teaminfo.tricode"
-        id="TeamLeftTricodeInput"
+        [(ngModel)]="teaminfo.tricode"
+        id="TeamTricodeInput"
         placeholder=""
         autocomplete="off"
       />
-      <label for="TeamLeftTricodeInput">Team tricode</label>
+      <label for="TeamTricodeInput">Team tricode</label>
     </p-floatlabel>
     <p-floatlabel variant="on">
       <input
@@ -29,27 +29,27 @@
         [class.ng-dirty]="logoImageError"
         [class.ng-invalid]="logoImageError"
         pInputText
-        [(ngModel)]="teaminfo.url"
-        id="TeamLeftLogoInput"
+        [(ngModel)]="teaminfo.logoUrl"
+        id="TeamLogoInput"
         placeholder=""
         autocomplete="off"
       />
-      <label for="TeamLeftLogoInput">Team Logo URL</label>
+      <label for="TeamLogoInput">Team Logo URL</label>
     </p-floatlabel>
   </div>
 
   <div class="col-span-3 flex flex-col justify-center items-center">
     <p class="text-sm italic mb-2">Logo preview</p>
     <img
-      [src]="teaminfo.url"
+      [src]="teaminfo.logoUrl"
       alt="Image link invalid"
       class="w-4/7 aspect-sqare justify-self-center rounded-xl border-gray-500 border"
-      [hidden]="!teaminfo.url || logoImageError"
+      [hidden]="!teaminfo.logoUrl || logoImageError"
       (load)="onImageLoadSuccess()"
       (error)="onImageLoadError()"
     />
 
-    @if (!teaminfo.url || logoImageError) {
+    @if (!teaminfo.logoUrl || logoImageError) {
       <div
         class="w-4/7 aspect-sqare justify-self-center rounded-xl border-gray-500 bg-gray-300/40 border flex justify-center items-center"
       >

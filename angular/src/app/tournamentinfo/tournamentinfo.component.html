@@ -1,37 +1,60 @@
 <div class="flex flex-col border border-gray-500 rounded-lg p-5 gap-3">
-    <h1 class="text-xl text-white font-bold">Tournament Info</h1>
-    <div class="flex gap-2 content-center">
-        <label for="ShowTournamentInfo">Round Win Box:</label>
-        <p-toggleswitch id="ShowTournamentInfo" [(ngModel)]="enabled"></p-toggleswitch>
-    </div>
-    <p-blockui [target]="toBlock" [blocked]="!enabled" />
-    <blockable-div #toBlock>
-        <p-floatlabel variant="on" class="mb-2">
-            <input pInputText fluid type="text" maxlength="50" id="TournamentNameInput" />
-            <label for="TournamentNameInput">Tournament name</label>
-        </p-floatlabel>
+  <h1 class="text-xl text-white font-bold">Tournament Info</h1>
+  <div class="flex gap-2 content-center">
+    <label for="ShowTournamentInfo">Round Win Box</label>
+    <p-toggleswitch id="ShowTournamentInfo" [(ngModel)]="data.name"></p-toggleswitch>
+  </div>
 
-        <p-floatlabel variant="on" class="mb-2">
-            <input pInputText fluid type="text" maxlength="300" id="TournamentLogoInput" />
-            <label for="TournamentLogoInput">Tournament logo URL</label>
-        </p-floatlabel>
+  <p-floatlabel variant="on" class="mb-2">
+    <input
+      pInputText
+      fluid
+      type="text"
+      maxlength="300"
+      id="TournamentLogoInput"
+      [(ngModel)]="data.logoUrl"
+    />
+    <label for="TournamentLogoInput">Tournament logo URL</label>
+  </p-floatlabel>
 
-        <p-floatlabel variant="on" class="mb-2">
-            <input pInputText fluid type="text" maxlength="50" id="TournamentBackdropInput" />
-            <label for="TournamentBackdropInput">Tournament backdrop URL (Round Win / Pauses)</label>
-        </p-floatlabel>
+  <p-floatlabel variant="on" class="mb-2">
+    <input
+      pInputText
+      fluid
+      type="text"
+      maxlength="50"
+      id="TournamentBackdropInput"
+      [(ngModel)]="data.backdropUrl"
+    />
+    <label for="TournamentBackdropInput">Tournament backdrop URL (Round Win / Pauses)</label>
+  </p-floatlabel>
 
-        <p-floatlabel variant="on" class="mb-2">
-            <p-inputnumber fluid id="timeoutDurationInput" [showButtons]="true" buttonLayout="horizontal"
-                inputId="horizontal" spinnerMode="horizontal" [step]="10" value="60" min="10" max="600">
-                <ng-template #incrementbuttonicon>
-                    <span class="pi pi-plus"></span>
-                </ng-template>
-                <ng-template #decrementbuttonicon>
-                    <span class="pi pi-minus"></span>
-                </ng-template>
-            </p-inputnumber>
-            <label for="timeoutDurationInput">Timeout Duration (seconds)</label>
-        </p-floatlabel>
-    </blockable-div>
+  <p-floatlabel variant="on" class="mb-2">
+    <p-inputnumber
+      fluid
+      id="timeoutDurationInput"
+      [showButtons]="true"
+      buttonLayout="horizontal"
+      inputId="horizontal"
+      spinnerMode="horizontal"
+      [(ngModel)]="data.timeoutDuration"
+      [step]="10"
+      value="60"
+      min="10"
+      max="600"
+    >
+      <ng-template #incrementbuttonicon>
+        <span class="pi pi-plus"></span>
+      </ng-template>
+      <ng-template #decrementbuttonicon>
+        <span class="pi pi-minus"></span>
+      </ng-template>
+    </p-inputnumber>
+    <label for="timeoutDurationInput">Timeout Duration (seconds)</label>
+  </p-floatlabel>
+
+  <div class="flex gap-2 content-center">
+    <label for="ShowTournamentInfo">Display Mappool</label>
+    <p-toggleswitch id="ShowTournamentInfo" [(ngModel)]="data.showMappool"></p-toggleswitch>
+  </div>
 </div>

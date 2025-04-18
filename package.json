@@ -63,6 +63,7 @@
     "@types/semver": "^7.7.0",
     "concurrently": "^9.1.2",
     "electron": "34.4.1",
+    "electron-devtools-installer": "^4.0.0",
     "eslint": "^9.24.0",
     "eslint-config-prettier": "^10.1.2",
     "globals": "^16.0.0",

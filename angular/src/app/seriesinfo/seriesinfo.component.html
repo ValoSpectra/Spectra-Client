@@ -1,13 +1,14 @@
 <div class="flex flex-col border border-gray-500 rounded-lg p-5 gap-3">
   <div class="flex items-center gap-2">
     <h1 class="text-xl text-white mb-2 font-bold">Series Info</h1>
-    <p-toggleswitch id="ShowTournamentInfo" [(ngModel)]="enabled"></p-toggleswitch>
+    <p-toggleswitch id="ShowTournamentInfo" [(ngModel)]="data.enable"></p-toggleswitch>
   </div>
-  <p-blockui [target]="toBlock" [blocked]="!enabled" />
+  <p-blockui [target]="toBlock" [blocked]="!data.enable" />
   <blockable-div #toBlock>
     <p-floatlabel variant="on" class="mb-2">
       <p-inputnumber
         fluid
+        [(ngModel)]="data.needed"
         id="MapsNeededInput"
         [showButtons]="true"
         buttonLayout="horizontal"
@@ -31,6 +32,7 @@
       <p-inputnumber
         fluid
         id="MapsWonLeft"
+        [(ngModel)]="data.wonLeft"
         [showButtons]="true"
         buttonLayout="horizontal"
         inputId="horizontal"
@@ -53,6 +55,7 @@
       <p-inputnumber
         fluid
         id="MapsWonRight"
+        [(ngModel)]="data.wonRight"
         [showButtons]="true"
         buttonLayout="horizontal"
         inputId="horizontal"
@@ -74,6 +77,7 @@
     <p-floatlabel variant="on" class="mb-2">
       <input
         pInputText
+        [(ngModel)]="data.seedingLeft"
         type="text"
         maxlength="10"
         class="w-full bg-gray-900 text-white border"
@@ -85,6 +89,7 @@
     <p-floatlabel variant="on">
       <input
         pInputText
+        [(ngModel)]="data.seedingRight"
         type="text"
         maxlength="10"
         class="w-full bg-gray-900 text-white border"

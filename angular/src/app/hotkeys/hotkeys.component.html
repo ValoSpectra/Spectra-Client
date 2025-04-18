@@ -4,6 +4,7 @@
   <p-floatlabel variant="on">
     <input
       pInputText
+      [(ngModel)]="data.spikePlanted"
       type="text"
       class="w-full bg-gray-900 text-white border"
       id="HotkeySpikeInput"
@@ -14,6 +15,7 @@
   <p-floatlabel variant="on">
     <input
       pInputText
+      [(ngModel)]="data.techPause"
       type="text"
       class="w-full bg-gray-900 text-white border"
       pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
@@ -25,6 +27,7 @@
   <p-floatlabel variant="on">
     <input
       pInputText
+      [(ngModel)]="data.leftTimeout"
       type="text"
       class="w-full bg-gray-900 text-white border"
       pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
@@ -36,6 +39,7 @@
   <p-floatlabel variant="on">
     <input
       pInputText
+      [(ngModel)]="data.rightTimeout"
       type="text"
       class="w-full bg-gray-900 text-white border"
       pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"

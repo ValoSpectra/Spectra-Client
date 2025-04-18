@@ -18,6 +18,7 @@ import {
 import HotkeyService, { HotkeyType } from "./services/hotkeyService";
 import axios from "axios";
 import * as semver from "semver";
+import { installExtension } from "electron-devtools-installer";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const storage = require("electron-json-storage");
@@ -135,6 +136,16 @@ app.whenReady().then(async () => {
 
   gepService = new GameEventsService(isAuxiliary);
   overwolfSetup();
+
+  if (!app.isPackaged) {
+    installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
+      .then((ext) => {
+        log.info(`Installed extension: ${ext.name}`);
+      })
+      .catch((err) => {
+        log.error("Failed to install extension:", err);
+      });
+  }
 });
 
 app.on("window-all-closed", () => {

@@ -30,7 +30,7 @@ export class AuxiliaryComponent {
     protected electron: ElectronService,
     protected localStorageService: LocalstorageService,
   ) {
-    this.darkModeEnabled = this.localStorageService.getItem("darkMode");
+    this.darkModeEnabled = this.localStorageService.getItem<boolean>("darkMode") || true;
     if (this.darkModeEnabled) {
       const element = document.querySelector("html");
       element!.classList.add("app-dark");

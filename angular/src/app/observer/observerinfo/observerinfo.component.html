@@ -1,0 +1,39 @@
+<div class="col-span-3 flex flex-col border border-gray-500 rounded-lg p-5 gap-7 justify-around">
+  <p-floatlabel variant="on">
+    <input
+      class="w-full"
+      pInputText
+      [(ngModel)]="data.name"
+      disabled
+      id="ValorantNameInput"
+      autocomplete="off"
+    />
+    <label for="ValorantNameInput" class="text-sm">Please double-check your Valorant name</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on">
+    <p-password
+      fluid
+      [(ngModel)]="data.key"
+      [feedback]="false"
+      [toggleMask]="true"
+      id="KeyInput"
+      autocomplete="off"
+    />
+    <label for="KeyInput">Organization Key</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on">
+    <input fluid pInputText [(ngModel)]="data.groupCode" id="GroupCodeInput" autocomplete="off" />
+    <label for="GroupCodeInput">Group Code</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on">
+    <p-select
+      fluid
+      [options]="ingestServerOptions"
+      [(ngModel)]="data.ingestIp"
+      [editable]="true"
+      [showClear]="true"
+      id="IngestIpInput"
+    ></p-select>
+    <label for="IngestIpInput">Ingest Server IP</label>
+  </p-floatlabel>
+</div>

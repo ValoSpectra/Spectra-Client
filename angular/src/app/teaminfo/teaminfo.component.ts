@@ -1,33 +1,33 @@
-import { Component, Input } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { FloatLabelModule } from 'primeng/floatlabel';
-import { ImageModule } from 'primeng/image';
-import { InputTextModule } from 'primeng/inputtext';
-import { PopoverModule } from 'primeng/popover';
+import { Component, Input } from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { FloatLabelModule } from "primeng/floatlabel";
+import { ImageModule } from "primeng/image";
+import { InputTextModule } from "primeng/inputtext";
+import { PopoverModule } from "primeng/popover";
+import { TeamInfo } from "../observer/observer.component";
+import { TitleCasePipe } from "@angular/common";
+import { CheckboxModule } from "primeng/checkbox";
 
 @Component({
-  selector: 'app-teaminfo',
+  selector: "app-teaminfo",
   imports: [
     InputTextModule,
     FormsModule,
     FloatLabelModule,
     ImageModule,
-    PopoverModule
+    PopoverModule,
+    TitleCasePipe,
+    CheckboxModule,
   ],
-  templateUrl: './teaminfo.component.html',
-  styleUrl: './teaminfo.component.css'
+  templateUrl: "./teaminfo.component.html",
+  styleUrl: "./teaminfo.component.css",
 })
 export class TeaminfoComponent {
+  @Input()
+  teaminfo!: TeamInfo;
 
   @Input()
-  teaminfo: Teaminfo = {
-    name: "",
-    tricode: "",
-    url: ""
-  };
-
-  @Input()
-  title: string = "";
+  position: "left" | "right" = "left";
 
   protected logoImageError: boolean = false;
 
@@ -38,10 +38,4 @@ export class TeaminfoComponent {
   protected onImageLoadSuccess() {
     this.logoImageError = false;
   }
-
-}
-type Teaminfo = {
-  name?: string,
-  tricode?: string,
-  url?: string
 }
