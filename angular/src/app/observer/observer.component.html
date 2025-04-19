@@ -15,7 +15,13 @@
       <p-tag value="Error" severity="danger" />
       <p-tag value="Running" severity="success" />
     </p>
-    <p-button fluid label="Connect" severity="secondary" (onClick)="onConnectClick()" />
+    <p-button fluid label="Connect" severity="primary" (onClick)="onConnectClick()" />
+    <p-button
+      fluid
+      icon="pi pi-external-link"
+      severity="primary"
+      (onClick)="onOpenExternalClick()"
+    />
   </div>
 
   <app-teaminfo

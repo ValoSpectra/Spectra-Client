@@ -6,15 +6,15 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 ::-webkit-scrollbar {
-    width: 4px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
-    -webkit-box-shadow: rgba(0, 0, 0, 0);
-    border-radius: 1px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0);
+  border-radius: 1px;
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: rgba(191, 191, 191, 0.5);
-    border-radius: 1px;
+  background-color: rgba(191, 191, 191, 0.5);
+  border-radius: 1px;
 }

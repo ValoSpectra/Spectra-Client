@@ -8,18 +8,35 @@ import { routes } from "./app.routes";
 
 const theme = definePreset(Aura, {
   primitive: {
-    test: "#00cc00"
+    test: "#ffcc00",
   },
   semantic: {
     colorScheme: {
       light: {
-        surface: {
-        }
+        primary: {
+          color: "{sky.400}",
+          hoverColor: "{sky.500}",
+          activeColor: "{sky.700}",
+        },
+        content: {
+          borderColor: "{surface.500}",
+        },
+        formField: {
+          borderColor: "{surface.400}",
+        },
       },
       dark: {
+        primary: {
+          color: "{sky.400}",
+          hoverColor: "{sky.500}",
+          activeColor: "{sky.700}",
+        },
         content: {
-          borderColor: "{surface.500}"
-        }
+          borderColor: "{surface.400}",
+        },
+        formField: {
+          borderColor: "{surface.500}",
+        },
       },
     },
   },
@@ -37,8 +54,8 @@ export const appConfig: ApplicationConfig = {
           darkModeSelector: ".dark",
           cssLayer: {
             name: "primeng",
-            order: "theme, base, primeng"
-          }
+            order: "theme, base, primeng",
+          },
         },
       },
     }),

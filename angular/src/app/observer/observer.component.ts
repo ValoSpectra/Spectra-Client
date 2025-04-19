@@ -16,6 +16,7 @@ import { MapinfoComponent } from "../mapinfo/mapinfo.component";
 import { HotkeysComponent } from "../hotkeys/hotkeys.component";
 import { LocalstorageService } from "../services/localstorage.service";
 import { ObserverinfoComponent } from "./observerinfo/observerinfo.component";
+import { SplitButtonModule } from "primeng/splitbutton";
 
 @Component({
   selector: "app-observer",
@@ -35,6 +36,7 @@ import { ObserverinfoComponent } from "./observerinfo/observerinfo.component";
     MapinfoComponent,
     HotkeysComponent,
     ObserverinfoComponent,
+    SplitButtonModule,
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
@@ -107,7 +109,12 @@ export class ObserverComponent {
     protected electron: ElectronService,
     protected localStorageService: LocalstorageService,
   ) {
-    this.darkModeEnabled = this.localStorageService.getItem<boolean>("darkMode") || true;
+    const loadedDarkModeEnabled = this.localStorageService.getItem<boolean>("darkMode");
+    if (loadedDarkModeEnabled !== null) {
+      this.darkModeEnabled = loadedDarkModeEnabled;
+    } else {
+      this.darkModeEnabled = true;
+    }
     if (this.darkModeEnabled) {
       const element = document.querySelector("html");
       element!.classList.add("dark");
@@ -186,6 +193,10 @@ export class ObserverComponent {
     this.localStorageService.setItem("centerMap", this.centerMap);
     this.localStorageService.setItem("rightMap", this.rightMap);
     this.localStorageService.setItem("hotkeys", this.hotkeys);
+  }
+
+  onOpenExternalClick() {
+    console.log("Open external link clicked");
   }
 
   protected toggleDarkMode() {
