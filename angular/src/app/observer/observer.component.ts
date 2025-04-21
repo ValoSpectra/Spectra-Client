@@ -244,7 +244,17 @@ export class ObserverComponent implements OnInit {
     }
 
     if (mapInfo.type === "Present" || mapInfo.type === "Future") {
-      mapInfoSend.logo = mapInfo.picker === "left" ? this.leftTeamInfo.url : this.rightTeamInfo.url;
+      switch (mapInfo.picker) {
+        case "left":
+          mapInfoSend.logo = this.leftTeamInfo.url;
+          break;
+        case "right":
+          mapInfoSend.logo = this.rightTeamInfo.url;
+          break;
+        case "decider":
+          mapInfoSend.logo = "";
+          break;
+      }
     }
 
     return mapInfoSend;
