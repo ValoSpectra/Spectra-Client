@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { FloatLabelModule } from "primeng/floatlabel";
@@ -50,7 +50,7 @@ import { BlockableDiv } from "../blockablediv/blockablediv.component";
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
 })
-export class ObserverComponent {
+export class ObserverComponent implements OnInit {
   protected spectraStatus: Status = { message: "Initializing", statusType: StatusTypes.NEUTRAL };
   protected gameStatus: Status = { message: "Waiting", statusType: StatusTypes.NEUTRAL };
   protected darkModeEnabled: boolean = false;
@@ -155,18 +155,20 @@ export class ObserverComponent {
     this.centerMap = this.localStorageService.getItem<MapInfo>("centerMap") || this.centerMap;
     this.rightMap = this.localStorageService.getItem<MapInfo>("rightMap") || this.rightMap;
     this.hotkeys = this.localStorageService.getItem<Hotkeys>("hotkeys") || this.hotkeys;
+  }
 
-    electron.spectraStatusMessage.subscribe((status: Status) => {
+  ngOnInit() {
+    this.electron.spectraStatusMessage.subscribe((status: Status) => {
       this.spectraStatus = status;
       this.changeDetectorRef.detectChanges();
     });
 
-    electron.gameStatusMessage.subscribe((status: Status) => {
+    this.electron.gameStatusMessage.subscribe((status: Status) => {
       this.gameStatus = status;
       this.changeDetectorRef.detectChanges();
     });
 
-    electron.inputAllowedMessage.subscribe((value: boolean) => {
+    this.electron.inputAllowedMessage.subscribe((value: boolean) => {
       this.editable = value;
       this.changeDetectorRef.detectChanges();
     });
@@ -217,7 +219,7 @@ export class ObserverComponent {
   }
 
   copyToClipboardClick() {
-    let link = `https://${this.basicInfo.ingestIp}/overlay?groupCode=${this.basicInfo.groupCode}`;
+    const link = `https://${this.basicInfo.ingestIp}/overlay?groupCode=${this.basicInfo.groupCode}`;
     navigator.clipboard.writeText(link);
   }
 

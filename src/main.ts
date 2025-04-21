@@ -18,7 +18,7 @@ import {
 import HotkeyService, { HotkeyType } from "./services/hotkeyService";
 import axios from "axios";
 import * as semver from "semver";
-import { installExtension } from "electron-devtools-installer";
+// import { installExtension } from "electron-devtools-installer";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const storage = require("electron-json-storage");
@@ -85,8 +85,7 @@ const createWindow = () => {
   if (isAuxiliary) {
     win.setMinimumSize(750, 320);
     win.setMaximumSize(750, 320);
-  }
-  else {
+  } else {
     win.setMinimumSize(750, 650);
     win.setMaximumSize(1920, 1080);
   }
@@ -144,15 +143,15 @@ app.whenReady().then(async () => {
   gepService = new GameEventsService(isAuxiliary);
   overwolfSetup();
 
-  if (!app.isPackaged) {
-    installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
-      .then((ext) => {
-        log.info(`Installed extension: ${ext.name}`);
-      })
-      .catch((err) => {
-        log.error("Failed to install extension:", err);
-      });
-  }
+  // if (!app.isPackaged) {
+  //   installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
+  //     .then((ext: { name: any }) => {
+  //       log.info(`Installed extension: ${ext.name}`);
+  //     })
+  //     .catch((err: any) => {
+  //       log.error("Failed to install extension:", err);
+  //     });
+  // }
 });
 
 app.on("window-all-closed", () => {
@@ -165,6 +164,29 @@ app.on("before-quit", () => {
   if (isAuxiliary) return;
   const formatted = formattingService.formatRoundData("game_end", -1);
   connService.sendToIngest(formatted);
+});
+
+app.on("web-contents-created", (event: any, contents: any) => {
+  contents.on("will-attach-webview", (event: any, webPreferences: any) => {
+    // Strip away preload scripts if unused or verify their location is legitimate
+    delete webPreferences.preload;
+
+    // Disable Node.js integration
+    webPreferences.nodeIntegration = false;
+
+    // Verify URL being loaded
+    // if (!params.src.startsWith("https://example.com/")) {
+    event.preventDefault();
+    // }
+  });
+
+  contents.on("will-navigate", (event: any) => {
+    // const parsedUrl = new URL(navigationUrl);
+
+    // if (parsedUrl.origin !== 'https://example.com') {
+    event.preventDefault();
+    // }
+  });
 });
 
 function createTray(iconPath: string) {
@@ -482,15 +504,15 @@ export enum StatusTypes {
   NEUTRAL = "info",
   RED = "danger",
   YELLOW = "warn",
-  GREEN = "success"
+  GREEN = "success",
 }
 export function setSpectraStatus(message: string, type: StatusTypes = StatusTypes.NEUTRAL) {
-  win.webContents.send("set-spectra-status", {message: message, statusType: type});
+  win.webContents.send("set-spectra-status", { message: message, statusType: type });
   win.setTitle(`Spectra Client | ${message}`);
 }
 
 export function setGameStatus(message: string, type: StatusTypes = StatusTypes.NEUTRAL) {
-  win.webContents.send("set-game-status", {message: message, statusType: type});
+  win.webContents.send("set-game-status", { message: message, statusType: type });
 }
 
 export function setLoadingStatus(loading: boolean) {
@@ -503,7 +525,7 @@ export function fireConnect() {
   win.webContents.send("fire-connect");
 }
 
-function setTraySetting(event: any, setting: boolean) {
+function setTraySetting(_event: any, setting: boolean) {
   traySetting = setting;
   storage.set("traySetting", { traySetting: traySetting }, function (error: any) {
     if (error) log.error(error);
