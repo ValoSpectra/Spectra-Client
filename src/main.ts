@@ -150,7 +150,7 @@ app.whenReady().then(async () => {
   overwolfSetup();
   deeplinkSetup();
 
-  // if (!isDev) {
+  // if (!isDev()) {
   //   installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
   //     .then((ext: { name: any }) => {
   //       log.info(`Installed extension: ${ext.name}`);

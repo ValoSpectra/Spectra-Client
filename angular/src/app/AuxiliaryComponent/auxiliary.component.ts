@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { FloatLabelModule } from "primeng/floatlabel";
@@ -25,7 +25,7 @@ import { TitleCasePipe } from "@angular/common";
   templateUrl: "./auxiliary.component.html",
   styleUrl: "./auxiliary.component.css",
 })
-export class AuxiliaryComponent {
+export class AuxiliaryComponent implements OnInit {
   protected spectraStatus: Status = {message: "Initializing", statusType: StatusTypes.NEUTRAL};
   protected darkModeEnabled: boolean = false;
 
@@ -53,21 +53,25 @@ export class AuxiliaryComponent {
       this.minimizedToTraySetting = true;
     }
 
-    electron.spectraStatusMessage.subscribe((status: Status) => {
+    
+  }
+
+  ngOnInit(): void {
+    this.electron.spectraStatusMessage.subscribe((status: Status) => {
       this.spectraStatus = status;
       this.changeDetectorRef.detectChanges();
     });
 
-    electron.fireConnect.subscribe(() => {
+    this.electron.fireConnect.subscribe(() => {
       this.connect();
     });
 
-    electron.playernameMessage.subscribe((name: string) => {
+    this.electron.playernameMessage.subscribe((name: string) => {
       this.playername = name;
       this.changeDetectorRef.detectChanges();
     });
 
-    electron.inputAllowedMessage.subscribe((value: boolean) => {
+    this.electron.inputAllowedMessage.subscribe((value: boolean) => {
       this.editable = value;
       this.changeDetectorRef.detectChanges();
     });
@@ -81,7 +85,11 @@ export class AuxiliaryComponent {
   protected editable: boolean = true;
 
   protected connect() {
-    let ingestIp = this.ingestServerIp!;
+    if (!this.ingestServerIp) {
+      console.log("No server ip given");
+      return;
+    }
+    let ingestIp = this.ingestServerIp;
     if (ingestIp == this.ingestServerOptions[0]) {
       ingestIp = "eu.valospectra.com";
     }

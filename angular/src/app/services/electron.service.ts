@@ -15,7 +15,7 @@ export class ElectronService {
     constructor() {
         this.api.onSpectraStatusChange(this.changeSpectraStatus.bind(this));
         this.api.onGameStatusChange(this.changeGameStatus.bind(this));
-        this.api.fireConnect(this.fireConnect.emit);
+        this.api.fireConnect(this.receiveFireConnectEvent.bind(this));
         this.api.setPlayerName(this.changePlayername.bind(this));
         this.api.setInputAllowed(this.changeInputAllowed.bind(this));
     }
@@ -72,6 +72,9 @@ export class ElectronService {
 
     @Output()
     fireConnect = new EventEmitter<void>();
+    protected receiveFireConnectEvent(value: any) {
+        this.fireConnect.emit(value);
+    }
 
     public processAuxInputs(serverIp: string, observerName: string) {
         this.api.processAuxInputs(serverIp, observerName);
