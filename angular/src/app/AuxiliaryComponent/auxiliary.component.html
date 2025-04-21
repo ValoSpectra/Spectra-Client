@@ -1,7 +1,14 @@
 <div class="grid grid-cols-6 gap-4 m-4">
   <div class="col-span-3 flex flex-col border border-surface rounded-lg p-5 justify-around">
     <p-floatlabel variant="on">
-      <input class="w-full" pInputText disabled id="ValorantNameInput" [value]="playername" autocomplete="off" />
+      <input
+        class="w-full"
+        pInputText
+        disabled
+        id="ValorantNameInput"
+        [value]="playername"
+        autocomplete="off"
+      />
       <label for="ValorantNameInput" class="text-sm">Please double-check your Valorant name</label>
     </p-floatlabel>
     <p-floatlabel variant="on">
@@ -16,7 +23,11 @@
     </p-floatlabel>
     <div class="flex gap-2 content-center">
       <label for="ShowTournamentInfo">Minimize to Tray</label>
-      <p-toggleswitch id="ShowTournamentInfo" [(ngModel)]="minimizedToTraySetting" (onChange)="toggleTraySetting($event)"></p-toggleswitch>
+      <p-toggleswitch
+        id="ShowTournamentInfo"
+        [(ngModel)]="minimizedToTraySetting"
+        (onChange)="toggleTraySetting($event)"
+      ></p-toggleswitch>
     </div>
   </div>
   <div class="col-span-3 flex flex-col border border-surface rounded-lg p-5">
@@ -26,7 +37,7 @@
       [icon]="darkModeEnabled ? 'pi pi-sun' : 'pi pi-moon'"
       (onClick)="toggleDarkMode()"
     />
-    <img class="h-40 self-center" src="assets/icon.png" />
+    <img class="h-40 self-center" src="assets/icon.webp" />
     <p class="text-md text-color my-2">
       Status:
       <p-tag [value]="spectraStatus.message | titlecase" [severity]="spectraStatus.statusType" />
