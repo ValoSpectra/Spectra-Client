@@ -3,7 +3,7 @@ require("dotenv").config();
 import path from "path";
 import { GameEventsService } from "./services/gepService";
 import { ConnectorService } from "./services/connectorService";
-import { dialog, shell, Tray, Menu } from "electron";
+import { dialog, shell, Tray, Menu, Rectangle } from "electron";
 import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
@@ -74,19 +74,39 @@ const createWindow = () => {
     iconPath = path.join(__dirname, "../build/icon.ico");
   }
 
+  const windowState = isAuxiliary ? { width: 750, height: 320, x: 0, y: 0 } : getWindowState();
+  const boundsSettings: { width: number; height: number; x?: number; y?: number } = {
+    width: 0,
+    height: 0,
+  };
+
+  if (!isAuxiliary) {
+    boundsSettings.width = clamp(windowState.width, 750, 1920);
+    boundsSettings.height = clamp(windowState.height, 650, 1080);
+    boundsSettings.x = windowState.x;
+    boundsSettings.y = windowState.y;
+  } else {
+    boundsSettings.width = windowState.width;
+    boundsSettings.height = windowState.height;
+  }
+
   win = new BrowserWindow({
-    width: 750, // 1300 for debug console
-    height: !isAuxiliary ? 650 : 320,
-    resizable: isAuxiliary ? false : true,
+    ...boundsSettings,
     webPreferences: {
       preload: path.join(__dirname, "./preload.js"),
       webSecurity: true,
       devTools: isDev(),
     },
+    resizable: !isAuxiliary,
     fullscreenable: false,
     titleBarOverlay: true,
     icon: iconPath,
     title: "Spectra Client",
+    show: false,
+  });
+
+  win.once("ready-to-show", () => {
+    win.show();
   });
 
   if (isAuxiliary) {
@@ -96,6 +116,7 @@ const createWindow = () => {
     win.setMinimumSize(750, 650);
     win.setMaximumSize(1920, 1080);
   }
+
   win.menuBarVisible = false;
 
   ipcMain.on("process-inputs", processInputs);
@@ -129,6 +150,11 @@ const createWindow = () => {
       win.loadURL("http://localhost:4401#auxiliary");
     }
   }
+
+  win.on("resized", storeWindowState);
+  win.on("moved", storeWindowState);
+  win.on("maximize", storeWindowState);
+  win.on("unmaximize", storeWindowState);
 };
 
 app.whenReady().then(async () => {
@@ -548,6 +574,27 @@ function getTraySetting() {
     log.debug(`Retrieved tray setting: ${retrieved.traySetting}`);
     return retrieved.traySetting;
   }
+}
+
+function storeWindowState() {
+  if (isAuxiliary) return;
+  const bounds = win.getBounds();
+  storage.set("windowState", { bounds: bounds }, function (error: any) {
+    if (error) log.error(error);
+  });
+}
+
+function getWindowState(): Rectangle {
+  const retrieved = storage.getSync("windowState");
+  if (retrieved == null || Object.keys(retrieved).length == 0) {
+    return { x: -9999, y: -9999, width: 750, height: 650 };
+  } else {
+    return retrieved.bounds;
+  }
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
 }
 
 export function isDev() {
