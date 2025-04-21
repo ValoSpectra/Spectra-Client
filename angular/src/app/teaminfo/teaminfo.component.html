@@ -36,6 +36,10 @@
       />
       <label for="TeamLogoInput">Team Logo URL</label>
     </p-floatlabel>
+    <div class="flex flex-row gap-2 content-center">
+      <p-radiobutton [inputId]="'attackStartRadioButton'+position" name="attackStart" [value]="position" [(ngModel)]="radiobuttonService.attackStart"/>
+      <label [for]="'attackStartRadioButton'+position">Starts as attacker</label>
+    </div>
   </div>
 
   <div class="col-span-3 flex flex-col justify-center items-center">

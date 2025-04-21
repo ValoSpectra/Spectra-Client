@@ -115,7 +115,7 @@ export enum HotkeyType {
   TECH_PAUSE,
   LEFT_TIMEOUT,
   RIGHT_TIMEOUT,
-  DEV_TOOLS = 999,
+  DEV_TOOLS,
 }
 type Hotkey = {
   key: string;

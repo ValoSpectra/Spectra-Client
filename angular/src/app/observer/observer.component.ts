@@ -1,4 +1,4 @@
-import { Component } from "@angular/core";
+import { ChangeDetectorRef, Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { FloatLabelModule } from "primeng/floatlabel";
@@ -6,7 +6,7 @@ import { PasswordModule } from "primeng/password";
 import { SelectModule } from "primeng/select";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { ButtonModule } from "primeng/button";
-import { ElectronService } from "../services/electron.service";
+import { ElectronService, Status, StatusTypes } from "../services/electron.service";
 import { TagModule } from "primeng/tag";
 import { InputNumberModule } from "primeng/inputnumber";
 import { TeaminfoComponent } from "../teaminfo/teaminfo.component";
@@ -15,8 +15,13 @@ import { TournamentinfoComponent } from "../tournamentinfo/tournamentinfo.compon
 import { MapinfoComponent } from "../mapinfo/mapinfo.component";
 import { HotkeysComponent } from "../hotkeys/hotkeys.component";
 import { LocalstorageService } from "../services/localstorage.service";
-import { ObserverinfoComponent } from "./observerinfo/observerinfo.component";
+import { ObserverinfoComponent, ingestServerOptions } from "./observerinfo/observerinfo.component";
 import { SplitButtonModule } from "primeng/splitbutton";
+import { PopoverModule } from "primeng/popover";
+import { TitleCasePipe } from "@angular/common";
+import { RadiobuttonService } from "../services/radiobutton.service";
+import { BlockUIModule } from "primeng/blockui";
+import { BlockableDiv } from "../blockablediv/blockablediv.component";
 
 @Component({
   selector: "app-observer",
@@ -37,13 +42,21 @@ import { SplitButtonModule } from "primeng/splitbutton";
     HotkeysComponent,
     ObserverinfoComponent,
     SplitButtonModule,
+    PopoverModule,
+    TitleCasePipe,
+    BlockUIModule,
+    BlockableDiv,
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
 })
 export class ObserverComponent {
+  protected spectraStatus: Status = { message: "Initializing", statusType: StatusTypes.NEUTRAL };
+  protected gameStatus: Status = { message: "Waiting", statusType: StatusTypes.NEUTRAL };
   protected darkModeEnabled: boolean = false;
+  protected editable: boolean = true;
 
+  protected ingestServerOptions: string[] = ingestServerOptions;
   protected basicInfo: BasicInfo = {
     name: "",
     key: "",
@@ -108,6 +121,8 @@ export class ObserverComponent {
   constructor(
     protected electron: ElectronService,
     protected localStorageService: LocalstorageService,
+    protected changeDetectorRef: ChangeDetectorRef,
+    protected radiobuttonService: RadiobuttonService,
   ) {
     const loadedDarkModeEnabled = this.localStorageService.getItem<boolean>("darkMode");
     if (loadedDarkModeEnabled !== null) {
@@ -140,49 +155,55 @@ export class ObserverComponent {
     this.centerMap = this.localStorageService.getItem<MapInfo>("centerMap") || this.centerMap;
     this.rightMap = this.localStorageService.getItem<MapInfo>("rightMap") || this.rightMap;
     this.hotkeys = this.localStorageService.getItem<Hotkeys>("hotkeys") || this.hotkeys;
+
+    electron.spectraStatusMessage.subscribe((status: Status) => {
+      this.spectraStatus = status;
+      this.changeDetectorRef.detectChanges();
+    });
+
+    electron.gameStatusMessage.subscribe((status: Status) => {
+      this.gameStatus = status;
+      this.changeDetectorRef.detectChanges();
+    });
+
+    electron.inputAllowedMessage.subscribe((value: boolean) => {
+      this.editable = value;
+      this.changeDetectorRef.detectChanges();
+    });
   }
 
   protected onConnectClick() {
-    // const seriesInfo = {
-    //   needed: 1,
-    //   wonLeft: 0,
-    //   wonRight: 0,
-    //   mapInfo: [],
-    // };
-    // const seedingInfo = {
-    //   left: "",
-    //   right: "",
-    // };
-    // const emptyTournamentInfo = {
-    //   name: "",
-    //   logoUrl: "",
-    //   backdropUrl: "",
-    // };
-    // const hotkeys = {
-    //   spikePlanted: "F9",
-    //   techPause: "F10",
-    //   leftTimeout: "O",
-    //   rightTimeout: "P",
-    // };
-    // this.electron.processInputs(
-    //   this.ingestServerIp,
-    //   this.groupCode,
-    //   "Tiranthine",
-    //   {
-    //     ...this.leftTeamInfo,
-    //     attackStart: false,
-    //   },
-    //   {
-    //     ...this.rightTeamInfo,
-    //     attackStart: true,
-    //   },
-    //   this.key,
-    //   seriesInfo,
-    //   seedingInfo,
-    //   emptyTournamentInfo,
-    //   hotkeys,
-    //   60,
-    // );
+    this.electron.processInputs(
+      this.basicInfo.ingestIp,
+      this.basicInfo.groupCode,
+      this.basicInfo.name,
+      //left team info
+      {
+        ...this.leftTeamInfo,
+        attackStart: this.radiobuttonService.attackStart == "left",
+      },
+      //right team info
+      {
+        ...this.rightTeamInfo,
+        attackStart: this.radiobuttonService.attackStart == "right",
+      },
+      this.basicInfo.key,
+      //series info
+      {
+        ...this.seriesInfo,
+        mapInfo: this.tournamentInfo.showMappool
+          ? [this.leftMap, this.centerMap, this.rightMap]
+          : [],
+      },
+      //seeding info
+      {
+        left: this.seriesInfo.seedingLeft,
+        right: this.seriesInfo.seedingRight,
+      },
+      this.tournamentInfo,
+      this.hotkeys,
+      this.tournamentInfo.timeoutDuration,
+    );
 
     this.localStorageService.setItem("basicInfo", this.basicInfo);
     this.localStorageService.setItem("leftTeamInfo", this.leftTeamInfo);
@@ -195,8 +216,9 @@ export class ObserverComponent {
     this.localStorageService.setItem("hotkeys", this.hotkeys);
   }
 
-  onOpenExternalClick() {
-    console.log("Open external link clicked");
+  copyToClipboardClick() {
+    let link = `https://${this.basicInfo.ingestIp}/overlay?groupCode=${this.basicInfo.groupCode}`;
+    navigator.clipboard.writeText(link);
   }
 
   protected toggleDarkMode() {

@@ -71,8 +71,7 @@ const createWindow = () => {
   win = new BrowserWindow({
     width: 750, // 1300 for debug console
     height: !isAuxiliary ? 650 : 320,
-    backgroundColor: "#303338",
-    resizable: true,
+    resizable: isAuxiliary ? false : true,
     webPreferences: {
       preload: path.join(__dirname, "./preload.js"),
       webSecurity: true,
@@ -82,8 +81,15 @@ const createWindow = () => {
     icon: iconPath,
     title: "Spectra Client",
   });
-  win.setMinimumSize(750, !isAuxiliary ? 650 : 320);
-  win.setMaximumSize(1920, 1080);
+
+  if (isAuxiliary) {
+    win.setMinimumSize(750, 320);
+    win.setMaximumSize(750, 320);
+  }
+  else {
+    win.setMinimumSize(750, 650);
+    win.setMaximumSize(1920, 1080);
+  }
   win.menuBarVisible = false;
 
   ipcMain.on("process-inputs", processInputs);
@@ -91,6 +97,7 @@ const createWindow = () => {
   ipcMain.on("config-drop", processConfigDrop);
   ipcMain.on("process-log", processLog);
   ipcMain.on("set-tray-setting", setTraySetting);
+  ipcMain.on("open-external-link", openExternalLink);
 
   win.menuBarVisible = false;
 
@@ -292,7 +299,7 @@ function processInputs(
   log.info(
     `Received Observer Name ${obsName}, Group Code ${groupCode}, Key ${key}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`,
   );
-  win!.setTitle(`Spectra Client | Attempting to connect...`);
+  setSpectraStatus("Connecting", StatusTypes.YELLOW);
   connService.handleAuthProcess(
     ingestIp,
     obsName,
@@ -309,7 +316,7 @@ function processInputs(
 }
 
 function processAuxInputs(_event: any, ingestIp: string, name: string) {
-  win!.setTitle(`Spectra Client | Attempting to connect...`);
+  setSpectraStatus("Connecting", StatusTypes.YELLOW);
   connService.handleAuxAuthProcess(ingestIp, name, win);
 }
 
@@ -471,8 +478,19 @@ export function setInputAllowed(allowed: boolean) {
   win.webContents.send("set-input-allowed", allowed);
 }
 
-export function setStatus(newStatus: string) {
-  win.webContents.send("set-status", newStatus);
+export enum StatusTypes {
+  NEUTRAL = "info",
+  RED = "danger",
+  YELLOW = "warn",
+  GREEN = "success"
+}
+export function setSpectraStatus(message: string, type: StatusTypes = StatusTypes.NEUTRAL) {
+  win.webContents.send("set-spectra-status", {message: message, statusType: type});
+  win.setTitle(`Spectra Client | ${message}`);
+}
+
+export function setGameStatus(message: string, type: StatusTypes = StatusTypes.NEUTRAL) {
+  win.webContents.send("set-game-status", {message: message, statusType: type});
 }
 
 export function setLoadingStatus(loading: boolean) {
@@ -528,4 +546,8 @@ export function messageBox(
     type: type,
     buttons: buttons,
   });
+}
+
+function openExternalLink(event: any, link: string) {
+  shell.openExternal(link);
 }

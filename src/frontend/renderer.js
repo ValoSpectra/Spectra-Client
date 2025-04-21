@@ -336,7 +336,7 @@ window.electronAPI.loadConfig((config) => {
   }
 });
 
-window.electronAPI.setStatus((value) => {
+window.electronAPI.onStatusChange((value) => {
   document.getElementById("statusInput").value = value;
 });
 

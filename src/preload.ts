@@ -30,21 +30,18 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ),
   processAuxInputs: (ingestIp: any, name: any) =>
     ipcRenderer.send("process-aux-inputs", ingestIp, name),
-  processConfigDrop: (filePath: any) => ipcRenderer.send("config-drop", filePath),
   processLog: (toLog: any) => ipcRenderer.send("process-log", toLog),
   setTraySetting: (setting: any) => ipcRenderer.send("set-tray-setting", setting),
-  getHeartCategories: () => ipcRenderer.send("get-heart-categories"),
+  openExternalLink: (link: string) => ipcRenderer.send("open-external-link", link),
 
   setPlayerName: (callback: (arg0: any) => any) =>
     ipcRenderer.on("set-player-name", (_event: any, value: any) => callback(value)),
   setInputAllowed: (callback: (arg0: any) => any) =>
     ipcRenderer.on("set-input-allowed", (_event: any, value: any) => callback(value)),
-  loadConfig: (callback: (arg0: any) => any) =>
-    ipcRenderer.on("load-config", (_event: any, value: any) => callback(value)),
-  addLogLine: (callback: (arg0: any) => any) =>
-    ipcRenderer.on("add-log-line", (_event: any, value: any) => callback(value)),
-  setStatus: (callback: (arg0: any) => any) =>
-    ipcRenderer.on("set-status", (_event: any, value: any) => callback(value)),
+  onSpectraStatusChange: (callback: (arg0: any) => any) =>
+    ipcRenderer.on("set-spectra-status", (_event: any, value: any) => callback(value)),
+  onGameStatusChange: (callback: (arg0: any) => any) =>
+    ipcRenderer.on("set-game-status", (_event: any, value: any) => callback(value)),
   setLoadingStatus: (callback: (arg0: any) => any) =>
     ipcRenderer.on("set-loading-status", (_event: any, value: boolean) => callback(value)),
   setEventStatus: (callback: (arg0: any) => any) =>

@@ -40,7 +40,7 @@ window.electronAPI.setInputAllowed((value) => {
   document.getElementById("GroupCodeInput").disabled = disableInput;
 });
 
-window.electronAPI.setStatus((value) => {
+window.electronAPI.onStatusChange((value) => {
   document.getElementById("statusInput").value = value;
 });
 
