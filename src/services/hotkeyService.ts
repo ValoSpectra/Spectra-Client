@@ -1,7 +1,6 @@
-import { app, globalShortcut } from "electron/main";
+import { globalShortcut } from "electron/main";
 import { ConnectorService } from "./connectorService";
 import { DataTypes } from "./formattingService";
-import { openDevTools } from "../main";
 import log from "electron-log";
 
 export default class HotkeyService {
@@ -33,15 +32,6 @@ export default class HotkeyService {
       action: this._rightTimeoutHotkeyAction.bind(this),
       type: HotkeyType.RIGHT_TIMEOUT,
     };
-
-    if (!app.isPackaged) {
-      this.hotkeys[HotkeyType.DEV_TOOLS] = {
-        key: "CTRL+SHIFT+I",
-        action: openDevTools,
-        type: HotkeyType.DEV_TOOLS,
-      };
-      this.activateHotkey(HotkeyType.DEV_TOOLS);
-    }
   }
 
   public static getInstance(): HotkeyService {
@@ -71,7 +61,7 @@ export default class HotkeyService {
   public deactivateAllHotkeys() {
     try {
       for (const hotkey of this.hotkeys) {
-        if (hotkey.key == "" || hotkey.type === HotkeyType.DEV_TOOLS) continue;
+        if (hotkey.key == "") continue;
         globalShortcut.unregister(hotkey.key);
       }
       log.info("Deactivated all hotkeys");
@@ -115,7 +105,6 @@ export enum HotkeyType {
   TECH_PAUSE,
   LEFT_TIMEOUT,
   RIGHT_TIMEOUT,
-  DEV_TOOLS,
 }
 type Hotkey = {
   key: string;

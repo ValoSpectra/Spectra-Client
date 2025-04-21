@@ -62,8 +62,8 @@ const createWindow = () => {
   }
 
   let iconPath = "";
-  if (app.isPackaged) {
-    iconPath = path.join(__dirname, "./assets/icon.ico");
+  if (!isDev()) {
+    iconPath = path.join(__dirname, "./frontend/browser/assets/icon.ico");
   } else {
     iconPath = path.join(__dirname, "../build/icon.ico");
   }
@@ -75,6 +75,7 @@ const createWindow = () => {
     webPreferences: {
       preload: path.join(__dirname, "./preload.js"),
       webSecurity: true,
+      devTools: isDev(),
     },
     fullscreenable: false,
     titleBarOverlay: true,
@@ -98,10 +99,8 @@ const createWindow = () => {
   ipcMain.on("set-tray-setting", setTraySetting);
   ipcMain.on("open-external-link", openExternalLink);
 
-  win.menuBarVisible = false;
-
   if (!isAuxiliary) {
-    if (app.isPackaged) {
+    if (!isDev()) {
       win.loadFile("./app/frontend/browser/index.html");
     } else {
       win.setAlwaysOnTop(true, "screen-saver");
@@ -111,16 +110,17 @@ const createWindow = () => {
     createTray(iconPath);
     win.on("minimize", () => {
       if (traySetting) {
-        //only hide when setting says so
         win.hide();
       }
     });
 
-    if (app.isPackaged) {
-      win.loadFile("./app/frontend/browser/index.html/auxiliary");
+    if (!isDev()) {
+      win.loadFile("./app/frontend/browser/index.html", {
+        hash: "auxiliary",
+      });
     } else {
       win.setAlwaysOnTop(true, "screen-saver");
-      win.loadURL("http://localhost:4401/auxiliary");
+      win.loadURL("http://localhost:4401#auxiliary");
     }
   }
 };
@@ -143,7 +143,7 @@ app.whenReady().then(async () => {
   gepService = new GameEventsService(isAuxiliary);
   overwolfSetup();
 
-  // if (!app.isPackaged) {
+  // if (!isDev) {
   //   installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
   //     .then((ext: { name: any }) => {
   //       log.info(`Installed extension: ${ext.name}`);
@@ -542,6 +542,11 @@ function getTraySetting() {
     return retrieved.traySetting;
   }
 }
+
+export function isDev() {
+  return app.commandLine.hasSwitch("development");
+}
+
 export function openDevTools() {
   if (win) {
     win.webContents.openDevTools();

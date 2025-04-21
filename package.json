@@ -4,7 +4,7 @@
     "name": "Spectra Team",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.24",
+  "version": "0.2.25",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
@@ -17,8 +17,8 @@
     "angular"
   ],
   "scripts": {
-    "start": "rimraf app && npx tsc && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron .\" --kill-others",
-    "start-aux": "rimraf app && npx tsc && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron . --auxiliary\" --kill-others",
+    "start": "rimraf app && npx tsc && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron . --development\" --kill-others",
+    "start-aux": "rimraf app && npx tsc && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron . --auxiliary --development\" --kill-others",
     "build": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=never",
     "publish": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=always",
     "postinstall": "ow-electron-builder install-app-deps",
@@ -29,6 +29,11 @@
   "build": {
     "productName": "Spectra Client",
     "compression": "maximum",
+    "files": [
+      "app/**/*",
+      "package.json",
+      "LICENSE"
+    ],
     "nsisWeb": {
       "artifactName": "Spectra-Client-Setup.${ext}",
       "oneClick": false,
