@@ -31,9 +31,15 @@ if (!lock) {
   app.exit();
 } else {
   //we are the first instance
-  app.on("second-instance", () => {
+  app.on("second-instance", (_event: any, cli: any[]) => {
     if (win) {
       win.show();
+    }
+
+    for (const arg of cli) {
+      if (arg.startsWith("ps-spectra://")) {
+        messageBox("Spectra Client - Deeplink", "Deeplink received: " + arg, messageBoxType.INFO);
+      }
     }
   });
 }
@@ -142,6 +148,7 @@ app.whenReady().then(async () => {
 
   gepService = new GameEventsService(isAuxiliary);
   overwolfSetup();
+  deeplinkSetup();
 
   // if (!isDev) {
   //   installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
@@ -545,6 +552,18 @@ function getTraySetting() {
 
 export function isDev() {
   return app.commandLine.hasSwitch("development");
+}
+
+function deeplinkSetup() {
+  if (process.defaultApp) {
+    if (process.argv.length >= 2) {
+      app.setAsDefaultProtocolClient("ps-spectra", process.execPath, [
+        path.resolve(process.argv[1]),
+      ]);
+    }
+  } else {
+    app.setAsDefaultProtocolClient("ps-spectra");
+  }
 }
 
 export function openDevTools() {

@@ -67,13 +67,13 @@ export class ObserverComponent implements OnInit {
   protected leftTeamInfo: TeamInfo = {
     name: "",
     tricode: "",
-    logoUrl: "",
+    url: "",
   };
 
   protected rightTeamInfo: TeamInfo = {
     name: "",
     tricode: "",
-    logoUrl: "",
+    url: "",
   };
 
   protected tournamentInfo: TournamentInfo = {
@@ -175,6 +175,13 @@ export class ObserverComponent implements OnInit {
   }
 
   protected onConnectClick() {
+    const mapPool: MapInfoSend[] = [];
+    if (this.tournamentInfo.showMappool) {
+      mapPool.push(this.translateMapInfo(this.leftMap));
+      mapPool.push(this.translateMapInfo(this.centerMap));
+      mapPool.push(this.translateMapInfo(this.rightMap));
+    }
+
     this.electron.processInputs(
       this.basicInfo.ingestIp,
       this.basicInfo.groupCode,
@@ -193,9 +200,7 @@ export class ObserverComponent implements OnInit {
       //series info
       {
         ...this.seriesInfo,
-        mapInfo: this.tournamentInfo.showMappool
-          ? [this.leftMap, this.centerMap, this.rightMap]
-          : [],
+        mapInfo: mapPool,
       },
       //seeding info
       {
@@ -216,6 +221,33 @@ export class ObserverComponent implements OnInit {
     this.localStorageService.setItem("centerMap", this.centerMap);
     this.localStorageService.setItem("rightMap", this.rightMap);
     this.localStorageService.setItem("hotkeys", this.hotkeys);
+  }
+
+  private translateMapInfo(mapInfo: MapInfo): MapInfoSend {
+    const mapInfoSend: MapInfoSend = {
+      type: mapInfo.type.toLowerCase() as "past" | "present" | "future",
+    };
+
+    if (mapInfo.type === "Past" || mapInfo.type === "Future") {
+      mapInfoSend.map = mapInfo.map;
+    }
+
+    if (mapInfo.type === "Past") {
+      mapInfoSend.left = {
+        score: mapInfo.leftScore || -1,
+        logo: this.leftTeamInfo.url,
+      };
+      mapInfoSend.right = {
+        score: mapInfo.rightScore || -1,
+        logo: this.rightTeamInfo.url,
+      };
+    }
+
+    if (mapInfo.type === "Present" || mapInfo.type === "Future") {
+      mapInfoSend.logo = mapInfo.picker === "left" ? this.leftTeamInfo.url : this.rightTeamInfo.url;
+    }
+
+    return mapInfoSend;
   }
 
   copyToClipboardClick() {
@@ -241,7 +273,7 @@ export type BasicInfo = {
 export type TeamInfo = {
   name: string;
   tricode: string;
-  logoUrl: string;
+  url: string;
 };
 
 export type TournamentInfo = {
@@ -292,3 +324,21 @@ type FutureMapInfo = BaseMapInfo & {
 };
 
 export type MapInfo = PastMapInfo | PresentMapInfo | FutureMapInfo;
+
+type MapInfoSend = {
+  type: "past" | "present" | "future";
+  // Past, Future - map name
+  map?: string;
+  // Past - score
+  left?: {
+    score: number;
+    logo: string;
+  };
+  // Past - score
+  right?: {
+    score: number;
+    logo: string;
+  };
+  // Present, Future - picker
+  logo?: string;
+};

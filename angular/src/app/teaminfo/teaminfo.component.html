@@ -29,7 +29,7 @@
         [class.ng-dirty]="logoImageError"
         [class.ng-invalid]="logoImageError"
         pInputText
-        [(ngModel)]="teaminfo.logoUrl"
+        [(ngModel)]="teaminfo.url"
         id="TeamLogoInput"
         placeholder=""
         autocomplete="off"
@@ -37,23 +37,28 @@
       <label for="TeamLogoInput">Team Logo URL</label>
     </p-floatlabel>
     <div class="flex flex-row gap-2 content-center">
-      <p-radiobutton [inputId]="'attackStartRadioButton'+position" name="attackStart" [value]="position" [(ngModel)]="radiobuttonService.attackStart"/>
-      <label [for]="'attackStartRadioButton'+position">Starts as attacker</label>
+      <p-radiobutton
+        [inputId]="'attackStartRadioButton' + position"
+        name="attackStart"
+        [value]="position"
+        [(ngModel)]="radiobuttonService.attackStart"
+      />
+      <label [for]="'attackStartRadioButton' + position">Starts as attacker</label>
     </div>
   </div>
 
   <div class="col-span-3 flex flex-col justify-center items-center">
     <p class="text-sm italic mb-2">Logo preview</p>
     <img
-      [src]="teaminfo.logoUrl"
+      [src]="teaminfo.url"
       alt="Image link invalid"
       class="w-4/7 aspect-sqare justify-self-center rounded-xl border-surface border"
-      [hidden]="!teaminfo.logoUrl || logoImageError"
+      [hidden]="!teaminfo.url || logoImageError"
       (load)="onImageLoadSuccess()"
       (error)="onImageLoadError()"
     />
 
-    @if (!teaminfo.logoUrl || logoImageError) {
+    @if (!teaminfo.url || logoImageError) {
       <div
         class="w-4/7 aspect-sqare justify-self-center rounded-xl border-surface bg-emphasis border flex justify-center items-center"
       >
