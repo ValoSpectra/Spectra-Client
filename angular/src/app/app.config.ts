@@ -40,6 +40,32 @@ const theme = definePreset(Aura, {
       },
     },
   },
+  components: {
+    button: {
+      colorScheme: {
+        light: {
+          help: {
+            background: "{purple.400}",
+            hoverBackground: "{purple.500}",
+            activeBackground: "{purple.600}",
+            borderColor: "{purple.400}",
+            hoverBorderColor: "{purple.500}",
+            activeBorderColor: "{purple.600}",
+          },
+        },
+        dark: {
+          help: {
+            background: "{purple.500}",
+            hoverBackground: "{purple.400}",
+            activeBackground: "{purple.300}",
+            borderColor: "{purple.500}",
+            hoverBorderColor: "{purple.400}",
+            activeBorderColor: "{purple.300}",
+          },
+        },
+      },
+    },
+  },
 });
 
 export const appConfig: ApplicationConfig = {

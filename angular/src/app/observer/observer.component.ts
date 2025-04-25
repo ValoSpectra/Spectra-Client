@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit, viewChild } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { FloatLabelModule } from "primeng/floatlabel";
@@ -22,6 +22,9 @@ import { TitleCasePipe } from "@angular/common";
 import { RadiobuttonService } from "../services/radiobutton.service";
 import { BlockUIModule } from "primeng/blockui";
 import { BlockableDiv } from "../blockablediv/blockablediv.component";
+import { DrawerModule } from "primeng/drawer";
+import { PanelMenuModule } from "primeng/panelmenu";
+import { MenuItem, MenuItemCommandEvent } from "primeng/api";
 
 @Component({
   selector: "app-observer",
@@ -46,6 +49,8 @@ import { BlockableDiv } from "../blockablediv/blockablediv.component";
     TitleCasePipe,
     BlockUIModule,
     BlockableDiv,
+    DrawerModule,
+    PanelMenuModule
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
@@ -55,6 +60,62 @@ export class ObserverComponent implements OnInit {
   protected gameStatus: Status = { message: "Waiting", statusType: StatusTypes.NEUTRAL };
   protected darkModeEnabled: boolean = false;
   protected editable: boolean = true;
+
+  protected drawerVisible: boolean = false;
+  protected checklistItems: MenuItem[] = [
+    {
+      label: "General Info",
+      icon: "pi pi-check",
+      iconStyle: {
+        color: "green"
+      },
+      fragment: "observerinfoPanelId",
+      command: this.scrollToPanel.bind(this)
+    },
+    {
+      label: "Left Team",
+      icon: "pi pi-circle",
+      iconStyle: {
+        color: "lightblue"
+      },
+      fragment: "leftTeaminfoPanelId",
+      command: this.scrollToPanel.bind(this)
+    },
+    {
+      label: "Right Team",
+      icon: "pi pi-circle",
+      iconStyle: {
+        color: "lightblue"
+      },
+      fragment: "rightTeaminfoPanelId",
+      command: this.scrollToPanel.bind(this)
+    },
+    {
+      label: "Tournament Info",
+      icon: "pi pi-eye",
+      fragment: "tournamentinfoPanelId",
+      command: this.scrollToPanel.bind(this)
+    },
+    {
+      label: "Series Info",
+      icon: "pi pi-eye",
+      fragment: "seriesinfoPanelId",
+      command: this.scrollToPanel.bind(this)
+    },
+    {
+      label: "Mappool Info",
+      icon: "pi pi-eye",
+      fragment: "",
+      command: this.scrollToPanel.bind(this)
+    },
+    {
+      label: "Hotkey Settings",
+      icon: "pi pi-eye",
+      fragment: "hotkeySettingsId",
+      command: this.scrollToPanel.bind(this)
+    },
+  ]
+  
 
   protected ingestServerOptions: string[] = ingestServerOptions;
   protected basicInfo: BasicInfo = {
@@ -258,6 +319,27 @@ export class ObserverComponent implements OnInit {
     }
 
     return mapInfoSend;
+  }
+
+  private scrollToPanel(event: MenuItemCommandEvent) {
+    this.drawerVisible = false;
+    if (!event.item?.fragment) return;
+
+    const element = document.getElementById(event.item.fragment);
+    if (!element) return;
+
+    const box = element.getBoundingClientRect();
+    if (!box) return;
+    
+    window.scrollTo({
+      top: box.top + window.scrollY,
+      left: box.left + window.scrollX,
+      behavior: "smooth"
+    });
+    element.classList.add("animate-[pulse_0.5s_infinite]");
+    setTimeout(() => {
+      element.classList.remove("animate-[pulse_0.5s_infinite]");
+    }, 1500);
   }
 
   copyToClipboardClick() {

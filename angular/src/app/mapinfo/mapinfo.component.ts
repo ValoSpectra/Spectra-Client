@@ -46,11 +46,11 @@ export class MapinfoComponent {
 
   mapSuggestions: string[] = [
     "Bind",
-    "Breach",
     "Haven",
     "Split",
     "Ascent",
     "Icebox",
+    "Breeze",
     "Fracture",
     "Pearl",
     "Lotus",
