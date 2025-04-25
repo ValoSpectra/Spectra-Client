@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, viewChild } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { InputTextModule } from "primeng/inputtext";
 import { FloatLabelModule } from "primeng/floatlabel";
@@ -50,7 +50,7 @@ import { MenuItem, MenuItemCommandEvent } from "primeng/api";
     BlockUIModule,
     BlockableDiv,
     DrawerModule,
-    PanelMenuModule
+    PanelMenuModule,
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
@@ -67,55 +67,91 @@ export class ObserverComponent implements OnInit {
       label: "General Info",
       icon: "pi pi-check",
       iconStyle: {
-        color: "green"
+        color: "green",
       },
       fragment: "observerinfoPanelId",
-      command: this.scrollToPanel.bind(this)
+      command: this.scrollToPanel.bind(this),
     },
     {
       label: "Left Team",
       icon: "pi pi-circle",
       iconStyle: {
-        color: "lightblue"
+        color: "lightblue",
       },
       fragment: "leftTeaminfoPanelId",
-      command: this.scrollToPanel.bind(this)
+      command: this.scrollToPanel.bind(this),
     },
     {
       label: "Right Team",
       icon: "pi pi-circle",
       iconStyle: {
-        color: "lightblue"
+        color: "lightblue",
       },
       fragment: "rightTeaminfoPanelId",
-      command: this.scrollToPanel.bind(this)
+      command: this.scrollToPanel.bind(this),
     },
     {
       label: "Tournament Info",
-      icon: "pi pi-eye",
+      icon: "pi pi-circle",
+      iconStyle: {
+        color: "lightblue",
+      },
       fragment: "tournamentinfoPanelId",
-      command: this.scrollToPanel.bind(this)
+      command: this.scrollToPanel.bind(this),
     },
     {
       label: "Series Info",
-      icon: "pi pi-eye",
+      icon: "pi pi-circle",
+      iconStyle: {
+        color: "lightblue",
+      },
       fragment: "seriesinfoPanelId",
-      command: this.scrollToPanel.bind(this)
+      command: this.scrollToPanel.bind(this),
     },
     {
       label: "Mappool Info",
-      icon: "pi pi-eye",
-      fragment: "",
-      command: this.scrollToPanel.bind(this)
+      disabled: true,
+      expanded: true,
+      items: [
+        {
+          label: "Left Map",
+          icon: "pi pi-circle",
+          iconStyle: {
+            color: "lightblue",
+          },
+          fragment: "leftMapPanelId",
+          command: this.scrollToPanel.bind(this),
+        },
+        {
+          label: "Center Map",
+          icon: "pi pi-circle",
+          iconStyle: {
+            color: "lightblue",
+          },
+          fragment: "centerMapPanelId",
+          command: this.scrollToPanel.bind(this),
+        },
+        {
+          label: "Right Map",
+          icon: "pi pi-circle",
+          iconStyle: {
+            color: "lightblue",
+          },
+          fragment: "rightMapPanelId",
+          command: this.scrollToPanel.bind(this),
+        },
+      ],
     },
     {
       label: "Hotkey Settings",
-      icon: "pi pi-eye",
+      icon: "pi pi-circle",
+      iconStyle: {
+        color: "lightblue",
+      },
       fragment: "hotkeySettingsId",
-      command: this.scrollToPanel.bind(this)
+      command: this.scrollToPanel.bind(this),
     },
-  ]
-  
+  ];
 
   protected ingestServerOptions: string[] = ingestServerOptions;
   protected basicInfo: BasicInfo = {
@@ -322,7 +358,6 @@ export class ObserverComponent implements OnInit {
   }
 
   private scrollToPanel(event: MenuItemCommandEvent) {
-    this.drawerVisible = false;
     if (!event.item?.fragment) return;
 
     const element = document.getElementById(event.item.fragment);
@@ -330,11 +365,12 @@ export class ObserverComponent implements OnInit {
 
     const box = element.getBoundingClientRect();
     if (!box) return;
-    
+
+    this.drawerVisible = false;
     window.scrollTo({
       top: box.top + window.scrollY,
       left: box.left + window.scrollX,
-      behavior: "smooth"
+      behavior: "smooth",
     });
     element.classList.add("animate-[pulse_0.5s_infinite]");
     setTimeout(() => {
