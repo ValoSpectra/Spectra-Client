@@ -7,6 +7,7 @@ import { InputTextModule } from "primeng/inputtext";
 import { ToggleSwitchModule } from "primeng/toggleswitch";
 import { TournamentInfo } from "../observer/observer.component";
 import { Validatable, ValidationState } from "../services/validation.service";
+import { PopoverModule } from "primeng/popover";
 
 @Component({
   selector: "app-tournamentinfo",
@@ -17,6 +18,7 @@ import { Validatable, ValidationState } from "../services/validation.service";
     ToggleSwitchModule,
     InputNumberModule,
     BlockUIModule,
+    PopoverModule,
   ],
   templateUrl: "./tournamentinfo.component.html",
   styleUrl: "./tournamentinfo.component.css",
@@ -34,10 +36,34 @@ export class TournamentinfoComponent implements Validatable, AfterContentInit {
   runValidation() {
     let valid: boolean = true;
 
-    valid = this.data.logoUrl != "" && valid;
-    valid = this.data.backdropUrl != "" && valid;
+    valid = this.data.logoUrl != "" && this.logoImageError == false && valid;
+    valid = this.data.backdropUrl != "" && this.backdropImageError == false && valid;
     valid = this.data.timeoutDuration != null && valid;
 
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
+  }
+
+  protected logoImageError: boolean = false;
+
+  protected onLogoImageLoadError() {
+    this.logoImageError = true;
+    this.runValidation();
+  }
+
+  protected onLogoImageLoadSuccess() {
+    this.logoImageError = false;
+    this.runValidation();
+  }
+
+  protected backdropImageError: boolean = false;
+
+  protected onBackdropImageLoadError() {
+    this.backdropImageError = true;
+    this.runValidation();
+  }
+
+  protected onBackdropImageLoadSuccess() {
+    this.backdropImageError = false;
+    this.runValidation();
   }
 }

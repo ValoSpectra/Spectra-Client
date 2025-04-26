@@ -352,6 +352,15 @@ export class ObserverComponent implements OnInit {
     }, 1500);
   }
 
+  // Something about closing the drawer or scrolling closes items we want to always be expanded
+  public forceExpandPanelItems() {
+    for (const item of this.checklistItems) {
+      if (item.items) {
+        item.expanded = true;
+      }
+    }
+  }
+
   public onPanelValidationChanged(state: ValidationState, id: string) {
     let element;
     //finding the element in the 2-layered array
@@ -375,15 +384,15 @@ export class ObserverComponent implements OnInit {
     switch (state) {
       case ValidationState.VALID:
         element.icon = "pi pi-check";
-        element.iconStyle = {color: "green"};
+        element.iconStyle = { color: "green" };
         break;
       case ValidationState.INVALID:
         element.icon = "pi pi-times";
-        element.iconStyle = {color: "red"};
+        element.iconStyle = { color: "red" };
         break;
       case ValidationState.OPTIONAL:
         element.icon = "pi pi-circle";
-        element.iconStyle = {color: "white"};
+        element.iconStyle = { color: "white" };
         break;
     }
   }
