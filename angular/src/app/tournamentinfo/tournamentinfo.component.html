@@ -12,6 +12,7 @@
       type="text"
       maxlength="300"
       id="TournamentLogoInput"
+      (change)="runValidation()"
       [(ngModel)]="data.logoUrl"
     />
     <label for="TournamentLogoInput">Tournament logo URL</label>
@@ -24,6 +25,7 @@
       type="text"
       maxlength="50"
       id="TournamentBackdropInput"
+      (change)="runValidation()"
       [(ngModel)]="data.backdropUrl"
     />
     <label for="TournamentBackdropInput">Tournament backdrop URL (Round Win / Pauses)</label>
@@ -38,6 +40,7 @@
       inputId="horizontal"
       spinnerMode="horizontal"
       [(ngModel)]="data.timeoutDuration"
+      (onInput)="runValidation()"
       [step]="10"
       value="60"
       min="10"

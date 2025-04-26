@@ -25,6 +25,7 @@ import { BlockableDiv } from "../blockablediv/blockablediv.component";
 import { DrawerModule } from "primeng/drawer";
 import { PanelMenuModule } from "primeng/panelmenu";
 import { MenuItem, MenuItemCommandEvent } from "primeng/api";
+import { ValidationState } from "../services/validation.service";
 
 @Component({
   selector: "app-observer",
@@ -65,46 +66,33 @@ export class ObserverComponent implements OnInit {
   protected checklistItems: MenuItem[] = [
     {
       label: "General Info",
-      icon: "pi pi-check",
-      iconStyle: {
-        color: "green",
-      },
       fragment: "observerinfoPanelId",
       command: this.scrollToPanel.bind(this),
     },
     {
-      label: "Left Team",
-      icon: "pi pi-circle",
-      iconStyle: {
-        color: "lightblue",
-      },
-      fragment: "leftTeaminfoPanelId",
-      command: this.scrollToPanel.bind(this),
-    },
-    {
-      label: "Right Team",
-      icon: "pi pi-circle",
-      iconStyle: {
-        color: "lightblue",
-      },
-      fragment: "rightTeaminfoPanelId",
-      command: this.scrollToPanel.bind(this),
+      label: "Team Info",
+      disabled: true,
+      expanded: true,
+      items: [
+        {
+          label: "Left Team",
+          fragment: "leftTeaminfoPanelId",
+          command: this.scrollToPanel.bind(this),
+        },
+        {
+          label: "Right Team",
+          fragment: "rightTeaminfoPanelId",
+          command: this.scrollToPanel.bind(this),
+        },
+      ],
     },
     {
       label: "Tournament Info",
-      icon: "pi pi-circle",
-      iconStyle: {
-        color: "lightblue",
-      },
       fragment: "tournamentinfoPanelId",
       command: this.scrollToPanel.bind(this),
     },
     {
       label: "Series Info",
-      icon: "pi pi-circle",
-      iconStyle: {
-        color: "lightblue",
-      },
       fragment: "seriesinfoPanelId",
       command: this.scrollToPanel.bind(this),
     },
@@ -115,28 +103,16 @@ export class ObserverComponent implements OnInit {
       items: [
         {
           label: "Left Map",
-          icon: "pi pi-circle",
-          iconStyle: {
-            color: "lightblue",
-          },
           fragment: "leftMapPanelId",
           command: this.scrollToPanel.bind(this),
         },
         {
           label: "Center Map",
-          icon: "pi pi-circle",
-          iconStyle: {
-            color: "lightblue",
-          },
           fragment: "centerMapPanelId",
           command: this.scrollToPanel.bind(this),
         },
         {
           label: "Right Map",
-          icon: "pi pi-circle",
-          iconStyle: {
-            color: "lightblue",
-          },
           fragment: "rightMapPanelId",
           command: this.scrollToPanel.bind(this),
         },
@@ -144,15 +120,12 @@ export class ObserverComponent implements OnInit {
     },
     {
       label: "Hotkey Settings",
-      icon: "pi pi-circle",
-      iconStyle: {
-        color: "lightblue",
-      },
       fragment: "hotkeySettingsId",
       command: this.scrollToPanel.bind(this),
     },
   ];
 
+  //#region Data strucures definition
   protected ingestServerOptions: string[] = ingestServerOptions;
   protected basicInfo: BasicInfo = {
     name: "",
@@ -214,6 +187,7 @@ export class ObserverComponent implements OnInit {
     leftTimeout: "O",
     rightTimeout: "P",
   };
+  //#endregion
 
   constructor(
     protected electron: ElectronService,
@@ -376,6 +350,42 @@ export class ObserverComponent implements OnInit {
     setTimeout(() => {
       element.classList.remove("animate-[pulse_0.5s_infinite]");
     }, 1500);
+  }
+
+  public onPanelValidationChanged(state: ValidationState, id: string) {
+    let element;
+    //finding the element in the 2-layered array
+    for (const e of this.checklistItems) {
+      if (e.fragment == id) {
+        element = e;
+        break;
+      }
+      if (e.items) {
+        for (const e2 of e.items) {
+          if (e2.fragment == id) {
+            element = e2;
+            break;
+          }
+        }
+        if (element) break;
+      }
+    }
+    if (!element) return;
+
+    switch (state) {
+      case ValidationState.VALID:
+        element.icon = "pi pi-check";
+        element.iconStyle = {color: "green"};
+        break;
+      case ValidationState.INVALID:
+        element.icon = "pi pi-times";
+        element.iconStyle = {color: "red"};
+        break;
+      case ValidationState.OPTIONAL:
+        element.icon = "pi pi-circle";
+        element.iconStyle = {color: "white"};
+        break;
+    }
   }
 
   copyToClipboardClick() {

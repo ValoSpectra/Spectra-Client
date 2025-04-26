@@ -1,5 +1,5 @@
 import { TitleCasePipe } from "@angular/common";
-import { Component, Input } from "@angular/core";
+import { AfterContentInit, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BlockUIModule } from "primeng/blockui";
 import { FloatLabelModule } from "primeng/floatlabel";
@@ -10,6 +10,7 @@ import { RadioButtonModule } from "primeng/radiobutton";
 import { SelectModule } from "primeng/select";
 import { BlockableDiv } from "../blockablediv/blockablediv.component";
 import { MapInfo } from "../observer/observer.component";
+import { Validatable, ValidationState } from "../services/validation.service";
 
 @Component({
   selector: "app-mapinfo",
@@ -28,7 +29,7 @@ import { MapInfo } from "../observer/observer.component";
   templateUrl: "./mapinfo.component.html",
   styleUrl: "./mapinfo.component.css",
 })
-export class MapinfoComponent {
+export class MapinfoComponent implements Validatable, AfterContentInit, OnChanges {
   protected mapTimeOptions_left: string[] = ["Past", "Present"];
   protected mapTimeOptions_center: string[] = ["Past", "Present", "Future"];
   protected mapTimeOptions_right: string[] = ["Present", "Future"];
@@ -66,4 +67,25 @@ export class MapinfoComponent {
 
   @Input()
   blocked: boolean = false;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.runValidation();
+  }
+
+  ngAfterContentInit(): void {
+    this.runValidation();
+  }
+
+  @Output()
+  validationChanged = new EventEmitter<ValidationState>();
+  runValidation() {
+    let valid: boolean = true;
+
+    if (this.blocked) {
+      this.validationChanged.emit(ValidationState.OPTIONAL);
+      return;
+    }
+
+    this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
+  }
 }

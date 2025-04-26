@@ -3,28 +3,22 @@
     <p-panelmenu [model]="checklistItems" styleClass="w-full md:w-20rem" />
   </ng-template>
 </p-drawer>
-<button
-  pButton
+<button pButton
   class="-rotate-90 cursor-pointer border-b-1 border-x-1 border-surface fixed -translate-x-3/7 translate-y-4/1 px-3 pb-1 rounded-b-2xl font-normal"
-  (click)="drawerVisible = true"
-  severity="help"
->
+  (click)="drawerVisible = true" severity="help">
   Checklist
 </button>
 
 <div class="grid grid-cols-6 gap-4 m-4">
   <blockable-div class="col-span-3 h-full" #observerinfo_panel>
     <p-block-ui [target]="observerinfo_panel" [blocked]="!editable" />
-    <app-observerinfo id="observerinfoPanelId" class="" [data]="basicInfo"></app-observerinfo>
+    <app-observerinfo id="observerinfoPanelId" class="" [data]="basicInfo"
+      (validationChanged)="onPanelValidationChanged($event, 'observerinfoPanelId')"></app-observerinfo>
   </blockable-div>
 
   <div class="col-span-3 flex flex-col border border-surface rounded-lg p-5">
-    <p-button
-      class="w-10 h-10 self-end absolute"
-      severity="contrast"
-      [icon]="darkModeEnabled ? 'pi pi-sun' : 'pi pi-moon'"
-      (onClick)="toggleDarkMode()"
-    />
+    <p-button class="w-10 h-10 self-end absolute" severity="contrast"
+      [icon]="darkModeEnabled ? 'pi pi-sun' : 'pi pi-moon'" (onClick)="toggleDarkMode()" />
     <img class="h-40 self-center" src="assets/icon.webp" />
     <p class="text-md text-color my-2">
       Spectra Status:
@@ -35,83 +29,60 @@
       <p-tag [value]="gameStatus.message | titlecase" [severity]="gameStatus.statusType" />
     </p>
     <div class="flex flex-row gap-2 w-full">
-      <p-button
-        fluid
-        label="Connect"
-        class="w-full"
-        severity="primary"
-        [disabled]="!editable"
-        (onClick)="onConnectClick()"
-      />
+      <p-button fluid label="Connect" class="w-full" severity="primary" [disabled]="!editable"
+        (onClick)="onConnectClick()" />
       @if (basicInfo.ingestIp && ingestServerOptions.includes(basicInfo.ingestIp)) {
-        <p-button
-          fluid
-          icon="pi pi-clipboard"
-          styleClass="h-full"
-          severity="secondary"
-          [disabled]="basicInfo.groupCode == ''"
-          (onClick)="copyToClipboardClick(); copied_popover.toggle($event)"
-        >
-          <p-popover #copied_popover>
-            <p class="">Overlay link copied to clipboard!</p>
-          </p-popover>
-        </p-button>
+      <p-button fluid icon="pi pi-clipboard" styleClass="h-full" severity="secondary"
+        [disabled]="basicInfo.groupCode == ''" (onClick)="copyToClipboardClick(); copied_popover.toggle($event)">
+        <p-popover #copied_popover>
+          <p class="">Overlay link copied to clipboard!</p>
+        </p-popover>
+      </p-button>
       }
     </div>
   </div>
 
   <blockable-div class="col-span-6 lg:col-span-3" #teaminfo1_panel>
     <p-block-ui [target]="teaminfo1_panel" [blocked]="!editable" />
-    <app-teaminfo id="leftTeaminfoPanelId" position="left" [teaminfo]="leftTeamInfo"></app-teaminfo>
+    <app-teaminfo id="leftTeaminfoPanelId" position="left" [teaminfo]="leftTeamInfo"
+      (validationChanged)="onPanelValidationChanged($event, 'leftTeaminfoPanelId')"></app-teaminfo>
   </blockable-div>
   <blockable-div class="col-span-6 lg:col-span-3" #teaminfo2_panel>
     <p-block-ui [target]="teaminfo2_panel" [blocked]="!editable" />
-    <app-teaminfo
-      id="rightTeaminfoPanelId"
-      position="right"
-      [teaminfo]="rightTeamInfo"
-    ></app-teaminfo>
+    <app-teaminfo id="rightTeaminfoPanelId" position="right" [teaminfo]="rightTeamInfo"
+      (validationChanged)="onPanelValidationChanged($event, 'rightTeaminfoPanelId')"></app-teaminfo>
   </blockable-div>
 
   <blockable-div class="col-span-3" #tournamentinfo_panel>
     <p-block-ui [target]="tournamentinfo_panel" [blocked]="!editable" />
-    <app-tournamentinfo id="tournamentinfoPanelId" [data]="tournamentInfo"></app-tournamentinfo>
+    <app-tournamentinfo id="tournamentinfoPanelId" [data]="tournamentInfo"
+      (validationChanged)="onPanelValidationChanged($event, 'tournamentinfoPanelId')"></app-tournamentinfo>
   </blockable-div>
   <blockable-div class="col-span-3 h-full" #seriesinfo_panel>
     <p-block-ui [target]="seriesinfo_panel" [blocked]="!editable" />
-    <app-seriesinfo id="seriesinfoPanelId" [data]="seriesInfo"></app-seriesinfo>
+    <app-seriesinfo id="seriesinfoPanelId" [data]="seriesInfo"
+      (validationChanged)="onPanelValidationChanged($event, 'seriesinfoPanelId')"></app-seriesinfo>
   </blockable-div>
 
   <blockable-div class="col-span-6 lg:col-span-3" #mapinfo1_panel>
     <p-block-ui [target]="mapinfo1_panel" [blocked]="!editable" />
-    <app-mapinfo
-      id="leftMapPanelId"
-      [data]="leftMap"
-      position="left"
-      [blocked]="!tournamentInfo.showMappool"
-    ></app-mapinfo>
+    <app-mapinfo id="leftMapPanelId" [data]="leftMap" position="left" [blocked]="!tournamentInfo.showMappool"
+      (validationChanged)="onPanelValidationChanged($event, 'leftMapPanelId')"></app-mapinfo>
   </blockable-div>
   <blockable-div class="col-span-6 lg:col-span-3" #mapinfo2_panel>
     <p-block-ui [target]="mapinfo2_panel" [blocked]="!editable" />
-    <app-mapinfo
-      id="centerMapPanelId"
-      [data]="centerMap"
-      position="center"
-      [blocked]="!tournamentInfo.showMappool"
-    ></app-mapinfo>
+    <app-mapinfo id="centerMapPanelId" [data]="centerMap" position="center" [blocked]="!tournamentInfo.showMappool"
+      (validationChanged)="onPanelValidationChanged($event, 'centerMapPanelId')"></app-mapinfo>
   </blockable-div>
   <blockable-div class="col-span-6 lg:col-span-3" #mapinfo3_panel>
     <p-block-ui [target]="mapinfo3_panel" [blocked]="!editable" />
-    <app-mapinfo
-      id="rightMapPanelId"
-      [data]="rightMap"
-      position="right"
-      [blocked]="!tournamentInfo.showMappool"
-    ></app-mapinfo>
+    <app-mapinfo id="rightMapPanelId" [data]="rightMap" position="right" [blocked]="!tournamentInfo.showMappool"
+      (validationChanged)="onPanelValidationChanged($event, 'rightMapPanelId')"></app-mapinfo>
   </blockable-div>
 
   <blockable-div class="col-span-3" #hotkeys_panel>
     <p-block-ui [target]="hotkeys_panel" [blocked]="!editable" />
-    <app-hotkeys id="hotkeySettingsId" [data]="hotkeys" class="col-span-3"></app-hotkeys>
+    <app-hotkeys id="hotkeySettingsId" [data]="hotkeys" class="col-span-3"
+      (validationChanged)="onPanelValidationChanged($event, 'hotkeySettingsId')"></app-hotkeys>
   </blockable-div>
 </div>

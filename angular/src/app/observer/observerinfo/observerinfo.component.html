@@ -4,6 +4,7 @@
       class="w-full"
       pInputText
       [(ngModel)]="data.name"
+      (change)="runValidation()"
       disabled
       id="ValorantNameInput"
       autocomplete="off"
@@ -14,6 +15,7 @@
     <p-password
       fluid
       [(ngModel)]="data.key"
+      (change)="runValidation()"
       [feedback]="false"
       [toggleMask]="true"
       id="KeyInput"
@@ -30,6 +32,7 @@
       fluid
       [options]="ingestServerOptions"
       [(ngModel)]="data.ingestIp"
+      (change)="runValidation()"
       [editable]="true"
       [showClear]="true"
       id="IngestIpInput"
