@@ -16,7 +16,7 @@
           id="TournamentLogoInput"
           [class.ng-dirty]="logoImageError"
           [class.ng-invalid]="logoImageError"
-          (change)="runValidation()"
+          (ngModelChange)="runValidation()"
           [(ngModel)]="data.logoUrl"
         />
         <label for="TournamentLogoInput">Tournament logo URL</label>
@@ -31,7 +31,7 @@
           id="TournamentBackdropInput"
           [class.ng-dirty]="backdropImageError"
           [class.ng-invalid]="backdropImageError"
-          (change)="runValidation()"
+          (ngModelChange)="runValidation()"
           [(ngModel)]="data.backdropUrl"
         />
         <label for="TournamentBackdropInput">Tournament backdrop URL (Round Win / Pauses)</label>

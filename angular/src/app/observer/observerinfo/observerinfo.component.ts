@@ -48,9 +48,9 @@ export class ObserverinfoComponent implements OnInit, Validatable, AfterContentI
   validationChanged = new EventEmitter<ValidationState>();
   runValidation() {
     let valid: boolean = true;
-    valid = this.data.key != "" && valid;
+    valid = this.data.key != "";
     valid = this.data.groupCode != "" && valid;
-    valid = this.data.ingestIp != "" && valid;
+    valid = this.data.ingestIp != null && valid;
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
   }
 }

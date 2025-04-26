@@ -26,6 +26,7 @@ import { DrawerModule } from "primeng/drawer";
 import { PanelMenuModule } from "primeng/panelmenu";
 import { MenuItem, MenuItemCommandEvent } from "primeng/api";
 import { ValidationState } from "../services/validation.service";
+import { DialogModule } from "primeng/dialog";
 
 @Component({
   selector: "app-observer",
@@ -52,6 +53,7 @@ import { ValidationState } from "../services/validation.service";
     BlockableDiv,
     DrawerModule,
     PanelMenuModule,
+    DialogModule,
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
@@ -61,6 +63,7 @@ export class ObserverComponent implements OnInit {
   protected gameStatus: Status = { message: "Waiting", statusType: StatusTypes.NEUTRAL };
   protected darkModeEnabled: boolean = false;
   protected editable: boolean = true;
+  protected tryingToConnect: boolean = false;
 
   protected drawerVisible: boolean = false;
   protected checklistItems: MenuItem[] = [
@@ -124,6 +127,9 @@ export class ObserverComponent implements OnInit {
       command: this.scrollToPanel.bind(this),
     },
   ];
+
+  protected issueDialogVisible: boolean = false;
+  protected issueStore: Map<string, ValidationState> = new Map<string, ValidationState>();
 
   //#region Data strucures definition
   protected ingestServerOptions: string[] = ingestServerOptions;
@@ -241,11 +247,23 @@ export class ObserverComponent implements OnInit {
 
     this.electron.inputAllowedMessage.subscribe((value: boolean) => {
       this.editable = value;
+      this.tryingToConnect = false;
       this.changeDetectorRef.detectChanges();
     });
   }
 
   protected onConnectClick() {
+    const issueStates: ValidationState[] = Array.from(this.issueStore.values());
+    if (issueStates.includes(ValidationState.INVALID)) {
+      this.issueDialogVisible = true;
+      return;
+    }
+
+    this.tryingToConnect = true;
+    setTimeout(() => {
+      this.tryingToConnect = false;
+    }, 2000);
+
     const mapPool: MapInfoSend[] = [];
     if (this.tournamentInfo.showMappool) {
       mapPool.push(this.translateMapInfo(this.leftMap));
@@ -392,9 +410,11 @@ export class ObserverComponent implements OnInit {
         break;
       case ValidationState.OPTIONAL:
         element.icon = "pi pi-circle";
-        element.iconStyle = { color: "white" };
+        element.iconStyle = { color: "gray" };
         break;
     }
+
+    this.issueStore.set(id, state);
   }
 
   copyToClipboardClick() {

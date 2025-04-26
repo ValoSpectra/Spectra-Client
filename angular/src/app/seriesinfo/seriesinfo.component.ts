@@ -39,12 +39,16 @@ export class SeriesinfoComponent implements Validatable, AfterContentInit {
       this.validationChanged.emit(ValidationState.OPTIONAL);
       return;
     }
-    
+
     valid = this.data.needed != null && valid;
     valid = this.data.wonLeft != null && valid;
     valid = this.data.wonRight != null && valid;
-    valid = this.data.seedingLeft != "" && valid;
-    valid = this.data.seedingRight != "" && valid;
+
+    const seedingValid: boolean =
+      (this.data.seedingLeft != "" && this.data.seedingRight != "") ||
+      (this.data.seedingLeft == "" && this.data.seedingRight == "");
+
+    valid = seedingValid && valid;
 
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
   }

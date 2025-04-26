@@ -6,7 +6,7 @@
         class="w-full"
         pInputText
         [(ngModel)]="teaminfo.name"
-        (change)="runValidation()"
+        (ngModelChange)="runValidation()"
         id="TeamNameInput"
         placeholder=""
         autocomplete="off"
@@ -18,7 +18,7 @@
         class="w-full"
         pInputText
         [(ngModel)]="teaminfo.tricode"
-        (change)="runValidation()"
+        (ngModelChange)="runValidation()"
         id="TeamTricodeInput"
         placeholder=""
         autocomplete="off"
@@ -32,7 +32,7 @@
         [class.ng-invalid]="logoImageError"
         pInputText
         [(ngModel)]="teaminfo.url"
-        (change)="runValidation()"
+        (ngModelChange)="runValidation()"
         id="TeamLogoInput"
         placeholder=""
         autocomplete="off"

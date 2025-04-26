@@ -16,7 +16,7 @@
     <p-password
       fluid
       [(ngModel)]="data.key"
-      (change)="runValidation()"
+      (ngModelChange)="runValidation()"
       [feedback]="false"
       [toggleMask]="true"
       id="KeyInput"
@@ -29,7 +29,7 @@
       fluid
       pInputText
       [(ngModel)]="data.groupCode"
-      (change)="runValidation()"
+      (ngModelChange)="runValidation()"
       id="GroupCodeInput"
       autocomplete="off"
     />
@@ -40,7 +40,7 @@
       fluid
       [options]="ingestServerOptions"
       [(ngModel)]="data.ingestIp"
-      (change)="runValidation()"
+      (ngModelChange)="runValidation()"
       [editable]="true"
       [showClear]="true"
       id="IngestIpInput"

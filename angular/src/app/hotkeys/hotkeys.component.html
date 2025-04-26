@@ -6,7 +6,7 @@
       pInputText
       fluid
       [(ngModel)]="data.spikePlanted"
-      (change)="runValidation()"
+      (ngModelChange)="runValidation()"
       type="text"
       id="HotkeySpikeInput"
     />
@@ -18,7 +18,7 @@
       pInputText
       fluid
       [(ngModel)]="data.techPause"
-      (change)="runValidation()"
+      (ngModelChange)="runValidation()"
       type="text"
       pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
       id="TechPauseInput"
@@ -31,7 +31,7 @@
       pInputText
       fluid
       [(ngModel)]="data.leftTimeout"
-      (change)="runValidation()"
+      (ngModelChange)="runValidation()"
       type="text"
       pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
       id="LeftTimeoutInput"
@@ -44,7 +44,7 @@
       pInputText
       fluid
       [(ngModel)]="data.rightTimeout"
-      (change)="runValidation()"
+      (ngModelChange)="runValidation()"
       type="text"
       pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
       id="RightTimeoutInput"

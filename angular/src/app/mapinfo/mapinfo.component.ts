@@ -1,5 +1,5 @@
 import { TitleCasePipe } from "@angular/common";
-import { AfterContentInit, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from "@angular/core";
+import { AfterContentInit, Component, EventEmitter, Input, OnChanges, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BlockUIModule } from "primeng/blockui";
 import { FloatLabelModule } from "primeng/floatlabel";
@@ -68,7 +68,7 @@ export class MapinfoComponent implements Validatable, AfterContentInit, OnChange
   @Input()
   blocked: boolean = false;
 
-  ngOnChanges(changes: SimpleChanges): void {
+  ngOnChanges(): void {
     this.runValidation();
   }
 
@@ -84,6 +84,24 @@ export class MapinfoComponent implements Validatable, AfterContentInit, OnChange
     if (this.blocked) {
       this.validationChanged.emit(ValidationState.OPTIONAL);
       return;
+    }
+
+    switch (this.data.type) {
+      case "Past":
+        valid = this.data.map != null;
+        valid = valid && this.data.leftScore != null && this.data.rightScore != null;
+        break;
+      case "Present":
+        valid = ["left", "right"].includes(this.data.picker);
+        break;
+
+      case "Future":
+        valid = this.data.map != null;
+        valid = valid && ["left", "right", "decider"].includes(this.data.picker);
+        break;
+
+      default:
+        valid = false;
     }
 
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);

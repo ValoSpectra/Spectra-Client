@@ -10,6 +10,7 @@
             [options]="getMapTimeOptions()"
             id="MapTimeSelect"
             [(ngModel)]="data.type"
+            (ngModelChange)="runValidation()"
           ></p-select>
           <label for="MapTimeSelect">When is/was the match</label>
         </p-floatlabel>
@@ -24,6 +25,7 @@
             <p-select
               fluid
               [(ngModel)]="data.map"
+              (ngModelChange)="runValidation()"
               [options]="mapSuggestions"
               [editable]="true"
               [showClear]="true"
@@ -47,6 +49,7 @@
               inputId="horizontal"
               spinnerMode="horizontal"
               [(ngModel)]="data.leftScore"
+              (ngModelChange)="runValidation()"
               [step]="1"
               min="0"
             >
@@ -70,6 +73,7 @@
               inputId="horizontal"
               spinnerMode="horizontal"
               [(ngModel)]="data.rightScore"
+              (ngModelChange)="runValidation()"
               [step]="1"
               min="0"
             >
@@ -94,6 +98,7 @@
             name="picker-{{ position }}"
             value="left"
             [(ngModel)]="data.picker"
+            (ngModelChange)="runValidation()"
             inputId="MapLeftPicker-{{ position }}"
           />
           <label for="MapLeftPicker-{{ position }}" class="ml-2">Left Team</label>
@@ -104,6 +109,7 @@
               name="picker-{{ position }}"
               value="decider"
               [(ngModel)]="data.picker"
+              (ngModelChange)="runValidation()"
               inputId="MapDeciderPicker-{{ position }}"
             />
             <label for="MapDeciderPicker-{{ position }}" class="ml-2">Decider</label>
@@ -114,6 +120,7 @@
             name="picker-{{ position }}"
             value="right"
             [(ngModel)]="data.picker"
+            (ngModelChange)="runValidation()"
             inputId="MapRightPicker-{{ position }}"
           />
           <label for="MapRightPicker-{{ position }}" class="ml-2">Right Team</label>

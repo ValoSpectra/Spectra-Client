@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, EventEmitter, Injectable, Input, Output } from "@angular/core";
+import { AfterContentInit, Component, EventEmitter, Input, Output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { ImageModule } from "primeng/image";
@@ -21,7 +21,7 @@ import { Validatable, ValidationState } from "../services/validation.service";
     PopoverModule,
     TitleCasePipe,
     CheckboxModule,
-    RadioButtonModule
+    RadioButtonModule,
   ],
   templateUrl: "./teaminfo.component.html",
   styleUrl: "./teaminfo.component.css",
@@ -32,8 +32,8 @@ export class TeaminfoComponent implements Validatable, AfterContentInit {
 
   @Input()
   position: "left" | "right" = "left";
-  
-  constructor(protected radiobuttonService: RadiobuttonService){}
+
+  constructor(protected radiobuttonService: RadiobuttonService) {}
 
   ngAfterContentInit(): void {
     this.runValidation();
@@ -46,7 +46,7 @@ export class TeaminfoComponent implements Validatable, AfterContentInit {
 
     valid = this.teaminfo.name != "" && valid;
     valid = this.teaminfo.tricode != "" && valid;
-    
+
     valid = this.teaminfo.url != "" && valid;
     valid = !this.logoImageError && valid;
 

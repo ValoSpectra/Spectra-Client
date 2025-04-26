@@ -35,7 +35,6 @@ export class TournamentinfoComponent implements Validatable, AfterContentInit {
   validationChanged = new EventEmitter<ValidationState>();
   runValidation() {
     let valid: boolean = true;
-
     valid = this.logoImageError == false && valid;
     valid = this.backdropImageError == false && valid;
     valid = this.data.timeoutDuration != null && valid;
@@ -46,8 +45,9 @@ export class TournamentinfoComponent implements Validatable, AfterContentInit {
   protected logoImageError: boolean = false;
 
   protected onLogoImageLoadError() {
-    if (this.data.logoUrl == "") {
+    if (this.data.logoUrl == "" || this.data.logoUrl == null) {
       this.logoImageError = false;
+      this.runValidation();
       return;
     }
     this.logoImageError = true;
@@ -62,8 +62,9 @@ export class TournamentinfoComponent implements Validatable, AfterContentInit {
   protected backdropImageError: boolean = false;
 
   protected onBackdropImageLoadError() {
-    if (this.data.backdropUrl == "") {
+    if (this.data.backdropUrl == "" || this.data.backdropUrl == null) {
       this.backdropImageError = false;
+      this.runValidation();
       return;
     }
     this.backdropImageError = true;
