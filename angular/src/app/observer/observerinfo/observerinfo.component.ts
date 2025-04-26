@@ -1,4 +1,12 @@
-import { AfterContentInit, ChangeDetectorRef, Component, EventEmitter, Input, OnInit, Output } from "@angular/core";
+import {
+  AfterContentInit,
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from "@angular/core";
 import { FloatLabelModule } from "primeng/floatlabel";
 import { PasswordModule } from "primeng/password";
 import { SelectModule } from "primeng/select";

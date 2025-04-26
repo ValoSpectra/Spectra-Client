@@ -1,10 +1,11 @@
-<div class="col-span-3 h-full flex flex-col border border-surface rounded-lg p-5 gap-7 justify-around">
+<div
+  class="col-span-3 h-full flex flex-col border border-surface rounded-lg p-5 gap-7 justify-around"
+>
   <p-floatlabel variant="on">
     <input
       class="w-full"
       pInputText
       [(ngModel)]="data.name"
-      (change)="runValidation()"
       disabled
       id="ValorantNameInput"
       autocomplete="off"
@@ -24,7 +25,14 @@
     <label for="KeyInput">Organization Key</label>
   </p-floatlabel>
   <p-floatlabel variant="on">
-    <input fluid pInputText [(ngModel)]="data.groupCode" id="GroupCodeInput" autocomplete="off" />
+    <input
+      fluid
+      pInputText
+      [(ngModel)]="data.groupCode"
+      (change)="runValidation()"
+      id="GroupCodeInput"
+      autocomplete="off"
+    />
     <label for="GroupCodeInput">Group Code</label>
   </p-floatlabel>
   <p-floatlabel variant="on">
