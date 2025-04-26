@@ -13,7 +13,7 @@
       <p-inputnumber
         fluid
         [(ngModel)]="data.needed"
-        (onInput)="runValidation()"
+        (ngModelChange)="runValidation()"
         id="MapsNeededInput"
         [showButtons]="true"
         buttonLayout="horizontal"
@@ -40,13 +40,13 @@
             fluid
             id="MapsWonLeft"
             [(ngModel)]="data.wonLeft"
-            (onInput)="runValidation()"
+            (ngModelChange)="runValidation()"
             [showButtons]="true"
             buttonLayout="horizontal"
             inputId="horizontal"
             spinnerMode="horizontal"
             [step]="1"
-            min="1"
+            min="0"
             max="10"
           >
             <ng-template #incrementbuttonicon>
@@ -65,13 +65,13 @@
             fluid
             id="MapsWonRight"
             [(ngModel)]="data.wonRight"
-            (onInput)="runValidation()"
+            (ngModelChange)="runValidation()"
             [showButtons]="true"
             buttonLayout="horizontal"
             inputId="horizontal"
             spinnerMode="horizontal"
             [step]="1"
-            min="1"
+            min="0"
             max="10"
           >
             <ng-template #incrementbuttonicon>

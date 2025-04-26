@@ -46,7 +46,7 @@
           inputId="horizontal"
           spinnerMode="horizontal"
           [(ngModel)]="data.timeoutDuration"
-          (onInput)="runValidation()"
+          (ngModelChange)="runValidation()"
           [step]="10"
           value="60"
           min="10"
