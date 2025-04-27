@@ -1,9 +1,10 @@
 import { animate, style, transition, trigger } from "@angular/animations";
-import { ChangeDetectorRef, Component } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { ProgressBarModule } from "primeng/progressbar";
 import { isDevMode } from "@angular/core";
 import { MessageModule } from "primeng/message";
+import { ElectronService } from "./services/electron.service";
 
 @Component({
   selector: "app-root",
@@ -17,14 +18,17 @@ import { MessageModule } from "primeng/message";
     ]),
   ],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   loading: boolean = true;
   eventStatus: number = 1;
   isDevMode: boolean = isDevMode();
 
-  constructor(private changeDetectorRef: ChangeDetectorRef) {
-    window.electronAPI.setLoadingStatus(this.updateLoadingStatus.bind(this));
-    window.electronAPI.setEventStatus(this.updateEventStatus.bind(this));
+  constructor(private changeDetectorRef: ChangeDetectorRef, protected electron: ElectronService) {
+  }
+
+  ngOnInit(): void {
+    this.electron.loadingStatusMessage.subscribe(this.updateLoadingStatus.bind(this));
+    this.electron.eventStatusMessage.subscribe(this.updateEventStatus.bind(this));
   }
 
   updateLoadingStatus(value: boolean) {

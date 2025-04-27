@@ -18,6 +18,8 @@ export class ElectronService {
         this.api.fireConnect(this.receiveFireConnectEvent.bind(this));
         this.api.setPlayerName(this.changePlayername.bind(this));
         this.api.setInputAllowed(this.changeInputAllowed.bind(this));
+        this.api.setLoadingStatus(this.changeLoadingStatus.bind(this));
+        this.api.setEventStatus(this.changeEventStatus.bind(this));
     }
     
     public get api() : any {
@@ -96,6 +98,20 @@ export class ElectronService {
 
     protected changeInputAllowed(value: boolean) {
         this.inputAllowedMessageSource.next(value);
+    }
+
+    private loadingStatusMessageSource = new BehaviorSubject<boolean>(true);
+    public loadingStatusMessage = this.loadingStatusMessageSource.asObservable();
+
+    protected changeLoadingStatus(value: boolean) {
+        this.loadingStatusMessageSource.next(value);
+    }
+
+    private eventStatusMessageSource = new BehaviorSubject<number>(1);
+    public eventStatusMessage = this.eventStatusMessageSource.asObservable();
+
+    protected changeEventStatus(value: number) {
+        this.eventStatusMessageSource.next(value);
     }
 }
 
