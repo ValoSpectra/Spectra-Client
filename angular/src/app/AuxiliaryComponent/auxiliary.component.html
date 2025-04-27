@@ -16,7 +16,7 @@
         fluid
         [(ngModel)]="ingestServerIp"
         [options]="ingestServerOptions"
-        [editable]="editable"
+        [readonly]="!editable"
         id="IngestIpInput"
       ></p-select>
       <label for="IngestIpInput">Spectra Server</label>
