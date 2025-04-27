@@ -103,7 +103,7 @@
     ></app-teaminfo>
   </blockable-div>
 
-  <blockable-div class="col-span-3" #tournamentinfo_panel>
+  <blockable-div class="col-span-6" #tournamentinfo_panel>
     <p-block-ui [target]="tournamentinfo_panel" [blocked]="!editable" />
     <app-tournamentinfo
       id="tournamentinfoPanelId"
@@ -111,7 +111,7 @@
       (validationChanged)="onPanelValidationChanged($event, 'tournamentinfoPanelId')"
     ></app-tournamentinfo>
   </blockable-div>
-  <blockable-div class="col-span-3 h-full" #seriesinfo_panel>
+  <blockable-div class="col-span-6 h-full" #seriesinfo_panel>
     <p-block-ui [target]="seriesinfo_panel" [blocked]="!editable" />
     <app-seriesinfo
       id="seriesinfoPanelId"

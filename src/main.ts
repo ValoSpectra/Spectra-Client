@@ -116,7 +116,6 @@ const createWindow = () => {
     win.setMaximumSize(750, 320);
   } else {
     win.setMinimumSize(750, 650);
-    win.setMaximumSize(1920, 1080);
   }
 
   win.menuBarVisible = false;

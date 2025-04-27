@@ -55,7 +55,7 @@
     <img
       [src]="teaminfo.url"
       alt="Image link invalid"
-      class="w-4/6 aspect-sqare justify-self-center rounded-xl border-surface border object-contain"
+      class="w-4/6 aspect-square justify-self-center object-contain"
       [hidden]="!teaminfo.url || logoImageError"
       (load)="onImageLoadSuccess()"
       (error)="onImageLoadError()"
@@ -63,7 +63,7 @@
 
     @if (!teaminfo.url || logoImageError) {
       <div
-        class="w-4/6 aspect-sqare justify-self-center rounded-xl border-surface bg-emphasis border flex justify-center items-center"
+        class="w-4/6 aspect-square justify-self-center rounded-xl border-surface bg-emphasis border flex justify-center items-center"
       >
         <i
           class="text-md! rounded-full border size-min p-1 cursor-pointer pi pi-info"
