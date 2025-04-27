@@ -499,7 +499,7 @@ async function eventAvailabilityCheck() {
     if (status.state == 1) {
       return;
     } else if (status.disabled) {
-      win.webContents.send("set-event-status", 4);
+      win.webContents.send("set-event-status", GEPStates.disabled);
       log.info(`Event availability: disabled`);
       return;
     } else {

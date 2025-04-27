@@ -129,6 +129,7 @@ export class ObserverComponent implements OnInit {
   ];
 
   protected issueDialogVisible: boolean = false;
+  protected validationIssuesDetected: boolean = false;
   protected issueStore: Map<string, ValidationState> = new Map<string, ValidationState>();
 
   //#region Data strucures definition
@@ -250,19 +251,23 @@ export class ObserverComponent implements OnInit {
       this.tryingToConnect = false;
       this.changeDetectorRef.detectChanges();
     });
+
+    this.electron.fireConnect.subscribe(() => {
+      this.onConnectClick();
+    });
   }
 
   protected onConnectClick() {
-    const issueStates: ValidationState[] = Array.from(this.issueStore.values());
-    if (issueStates.includes(ValidationState.INVALID)) {
-      this.issueDialogVisible = true;
-      return;
-    }
+    if (this.tryingToConnect) return;
 
     this.tryingToConnect = true;
+    this.changeDetectorRef.detectChanges();
     setTimeout(() => {
       this.tryingToConnect = false;
-    }, 2000);
+      this.changeDetectorRef.detectChanges();
+    }, 2500);
+
+    this.drawerVisible = this.hasInputValidationErrors();
 
     const mapPool: MapInfoSend[] = [];
     if (this.tournamentInfo.showMappool) {
@@ -310,6 +315,14 @@ export class ObserverComponent implements OnInit {
     this.localStorageService.setItem("centerMap", this.centerMap);
     this.localStorageService.setItem("rightMap", this.rightMap);
     this.localStorageService.setItem("hotkeys", this.hotkeys);
+  }
+
+  private hasInputValidationErrors(): boolean {
+    const issueStates: ValidationState[] = Array.from(this.issueStore.values());
+    if (issueStates.includes(ValidationState.INVALID)) {
+      return true;
+    }
+    return false;
   }
 
   private translateMapInfo(mapInfo: MapInfo): MapInfoSend {
@@ -415,6 +428,8 @@ export class ObserverComponent implements OnInit {
     }
 
     this.issueStore.set(id, state);
+
+    this.validationIssuesDetected = this.hasInputValidationErrors();
   }
 
   copyToClipboardClick() {

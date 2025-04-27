@@ -367,4 +367,5 @@ export enum GEPStates {
   "green" = 1,
   "yellow" = 2,
   "red" = 3,
+  "disabled" = 4,
 }
