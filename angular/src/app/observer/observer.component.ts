@@ -27,6 +27,7 @@ import { PanelMenuModule } from "primeng/panelmenu";
 import { MenuItem, MenuItemCommandEvent } from "primeng/api";
 import { ValidationState } from "../services/validation.service";
 import { DialogModule } from "primeng/dialog";
+import { ToggleSwitchModule } from "primeng/toggleswitch";
 
 @Component({
   selector: "app-observer",
@@ -54,6 +55,7 @@ import { DialogModule } from "primeng/dialog";
     DrawerModule,
     PanelMenuModule,
     DialogModule,
+    ToggleSwitchModule
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
@@ -445,6 +447,7 @@ export class ObserverComponent implements OnInit {
   }
 }
 
+//#region Type definition
 export type BasicInfo = {
   name: string;
   key: string;
@@ -496,7 +499,7 @@ type PastMapInfo = BaseMapInfo & {
 
 type PresentMapInfo = BaseMapInfo & {
   type: "Present";
-  picker: "left" | "right";
+  picker: "left" | "right" | "decider";
 };
 
 type FutureMapInfo = BaseMapInfo & {
@@ -524,3 +527,4 @@ type MapInfoSend = {
   // Present, Future - picker
   logo?: string;
 };
+//#endregion

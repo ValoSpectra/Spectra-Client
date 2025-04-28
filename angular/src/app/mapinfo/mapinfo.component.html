@@ -1,17 +1,36 @@
-<div id="MappoolInfo" class="flex flex-col border border-surface rounded-lg p-5 gap-3">
-  <p-blockui [target]="toBlock" [blocked]="blocked"></p-blockui>
+<div id="MappoolInfo" class="flex flex-col rounded-lg p-2">
+  <!-- <p-blockui [target]="toBlock" [blocked]="blocked"></p-blockui> -->
   <blockable-div #toBlock class="flex flex-col gap-3">
-    <h2 class="text-xl text-color font-bold">{{ position | titlecase }} Map</h2>
+    <div class="grid grid-cols-2 justify-between">
+      <h2 class="text-xl text-color font-bold">{{ position | titlecase }} Map</h2>
+      <div class="flex flex-row gap-3 justify-center mt-1">
+        <div class="flex flex-row items-center justify-center text-center text-4 font-[Montserrat] font-extrabold text-white
+                    min-w-45 w-fit h-6 gap-2 py-0 px-2 preview-pill-background rounded-md border border-surface">
+          @if (data.type === "Past") {
+            {{data.map ? data.map : "Map"}}
+            <img [src]="teamdata[0].url ? teamdata[0].url : 'https://eu.valospectra.com/assets/misc/icon.webp'" class="py-0.5 max-w-5 max-h-5" />
+            {{data.leftScore ? data.leftScore : '0'}} - {{data.rightScore ? data.rightScore : '0'}}
+            <img [src]="teamdata[1].url ? teamdata[1].url : 'https://eu.valospectra.com/assets/misc/icon.webp'" class="py-0.5 max-w-5 max-h-5" />
+          }
+          @else if (data.type === "Present") {
+            Live: Map
+            <img [class.hidden]="data.picker === 'decider'" [src]="teamdata[data.picker === 'left' ? 0 : 1].url ? teamdata[data.picker === 'left' ? 0 : 1].url : 'https://eu.valospectra.com/assets/misc/icon.webp'" class="py-0.5 max-w-5 max-h-5" />
+          }
+          @else if (data.type === "Future" && data.picker !== "decider") {
+            Next: {{data.map ? data.map : "Map"}}
+            <img [src]="teamdata[data.picker === 'left' ? 0 : 1].url ? teamdata[data.picker === 'left' ? 0 : 1].url : 'https://eu.valospectra.com/assets/misc/icon.webp'" class="py-0.5 max-w-5 max-h-5" />
+          }
+          @else if (data.type === "Future" && data.picker === "decider") {
+            Decider: {{data.map ? data.map : "Map"}}
+          }
+        </div>
+      </div>
+    </div>
     <div class="flex flex-row gap-3">
       <div class="w-1/2">
         <p-floatlabel variant="on">
-          <p-select
-            fluid
-            [options]="getMapTimeOptions()"
-            id="MapTimeSelect"
-            [(ngModel)]="data.type"
-            (ngModelChange)="runValidation()"
-          ></p-select>
+          <p-select fluid [options]="getMapTimeOptions()" id="MapTimeSelect" [(ngModel)]="data.type"
+            (ngModelChange)="runValidation()"></p-select>
           <label for="MapTimeSelect">When is/was the match</label>
         </p-floatlabel>
       </div>
@@ -19,113 +38,71 @@
       <div class="w-1/2">
         <p-floatlabel variant="on">
           @if (data.type === "Present") {
-            <p-select fluid [disabled]="true" id="MapNameInput"></p-select>
-            <label for="MapNameInput">Map Name Automatic</label>
+          <p-select fluid [disabled]="true" id="MapNameInput"></p-select>
+          <label for="MapNameInput">Map Name Automatic</label>
           } @else {
-            <p-select
-              fluid
-              [(ngModel)]="data.map"
-              (ngModelChange)="runValidation()"
-              [options]="mapSuggestions"
-              [editable]="true"
-              [showClear]="true"
-              id="MapNameInput"
-            ></p-select>
-            <label for="MapNameInput">Map Name</label>
+          <p-select fluid [(ngModel)]="data.map" (ngModelChange)="runValidation()" [options]="mapSuggestions"
+            [editable]="true" [showClear]="true" id="MapNameInput"></p-select>
+          <label for="MapNameInput">Map Name</label>
           }
         </p-floatlabel>
       </div>
     </div>
 
     @if (data.type === "Past") {
-      <div class="flex flex-row gap-3">
-        <div class="w-1/2">
-          <p-floatlabel variant="on">
-            <p-inputnumber
-              fluid
-              id="MapLeftScore"
-              [showButtons]="true"
-              buttonLayout="horizontal"
-              inputId="horizontal"
-              spinnerMode="horizontal"
-              [(ngModel)]="data.leftScore"
-              (ngModelChange)="runValidation()"
-              [step]="1"
-              min="0"
-            >
-              <ng-template #incrementbuttonicon>
-                <span class="pi pi-plus"></span>
-              </ng-template>
-              <ng-template #decrementbuttonicon>
-                <span class="pi pi-minus"></span>
-              </ng-template>
-            </p-inputnumber>
-            <label for="MapLeftScore">Left Score</label>
-          </p-floatlabel>
-        </div>
-        <div class="w-1/2">
-          <p-floatlabel variant="on">
-            <p-inputnumber
-              fluid
-              id="MapRightScore"
-              [showButtons]="true"
-              buttonLayout="horizontal"
-              inputId="horizontal"
-              spinnerMode="horizontal"
-              [(ngModel)]="data.rightScore"
-              (ngModelChange)="runValidation()"
-              [step]="1"
-              min="0"
-            >
-              <ng-template #incrementbuttonicon>
-                <span class="pi pi-plus"></span>
-              </ng-template>
-              <ng-template #decrementbuttonicon>
-                <span class="pi pi-minus"></span>
-              </ng-template>
-            </p-inputnumber>
-            <label for="MapRightScore">Right Score</label>
-          </p-floatlabel>
-        </div>
+    <div class="flex flex-row gap-3">
+      <div class="w-1/2">
+        <p-floatlabel variant="on">
+          <p-inputnumber fluid id="MapLeftScore" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal"
+            spinnerMode="horizontal" [(ngModel)]="data.leftScore" (ngModelChange)="runValidation()" [step]="1" min="0">
+            <ng-template #incrementbuttonicon>
+              <span class="pi pi-plus"></span>
+            </ng-template>
+            <ng-template #decrementbuttonicon>
+              <span class="pi pi-minus"></span>
+            </ng-template>
+          </p-inputnumber>
+          <label for="MapLeftScore">Left Score</label>
+        </p-floatlabel>
       </div>
+      <div class="w-1/2">
+        <p-floatlabel variant="on">
+          <p-inputnumber fluid id="MapRightScore" [showButtons]="true" buttonLayout="horizontal" inputId="horizontal"
+            spinnerMode="horizontal" [(ngModel)]="data.rightScore" (ngModelChange)="runValidation()" [step]="1" min="0">
+            <ng-template #incrementbuttonicon>
+              <span class="pi pi-plus"></span>
+            </ng-template>
+            <ng-template #decrementbuttonicon>
+              <span class="pi pi-minus"></span>
+            </ng-template>
+          </p-inputnumber>
+          <label for="MapRightScore">Right Score</label>
+        </p-floatlabel>
+      </div>
+    </div>
     }
 
     @if (data.type !== "Past") {
-      <label class="self-center -mb-2">Map Picker</label>
-      <div class="flex justify-around">
-        <div>
-          <p-radiobutton
-            name="picker-{{ position }}"
-            value="left"
-            [(ngModel)]="data.picker"
-            (ngModelChange)="runValidation()"
-            inputId="MapLeftPicker-{{ position }}"
-          />
-          <label for="MapLeftPicker-{{ position }}" class="ml-2">Left Team</label>
-        </div>
-        @if (data.type === "Future") {
-          <div>
-            <p-radiobutton
-              name="picker-{{ position }}"
-              value="decider"
-              [(ngModel)]="data.picker"
-              (ngModelChange)="runValidation()"
-              inputId="MapDeciderPicker-{{ position }}"
-            />
-            <label for="MapDeciderPicker-{{ position }}" class="ml-2">Decider</label>
-          </div>
-        }
-        <div>
-          <p-radiobutton
-            name="picker-{{ position }}"
-            value="right"
-            [(ngModel)]="data.picker"
-            (ngModelChange)="runValidation()"
-            inputId="MapRightPicker-{{ position }}"
-          />
-          <label for="MapRightPicker-{{ position }}" class="ml-2">Right Team</label>
-        </div>
+    <label class="self-center -mb-2">Map Picker</label>
+    <div class="flex justify-around">
+      <div>
+        <p-radiobutton name="picker-{{ position }}" value="left" [(ngModel)]="data.picker"
+          (ngModelChange)="runValidation()" inputId="MapLeftPicker-{{ position }}" />
+        <label for="MapLeftPicker-{{ position }}" class="ml-2">Left Team</label>
       </div>
+      @if (data.type === "Future" || (data.type === "Present" && position === "right")) {
+      <div>
+        <p-radiobutton name="picker-{{ position }}" value="decider" [(ngModel)]="data.picker"
+          (ngModelChange)="runValidation()" inputId="MapDeciderPicker-{{ position }}" />
+        <label for="MapDeciderPicker-{{ position }}" class="ml-2">Decider</label>
+      </div>
+      }
+      <div>
+        <p-radiobutton name="picker-{{ position }}" value="right" [(ngModel)]="data.picker"
+          (ngModelChange)="runValidation()" inputId="MapRightPicker-{{ position }}" />
+        <label for="MapRightPicker-{{ position }}" class="ml-2">Right Team</label>
+      </div>
+    </div>
     }
   </blockable-div>
 </div>

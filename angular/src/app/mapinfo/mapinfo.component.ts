@@ -9,7 +9,7 @@ import { PanelModule } from "primeng/panel";
 import { RadioButtonModule } from "primeng/radiobutton";
 import { SelectModule } from "primeng/select";
 import { BlockableDiv } from "../blockablediv/blockablediv.component";
-import { MapInfo } from "../observer/observer.component";
+import { MapInfo, TeamInfo } from "../observer/observer.component";
 import { Validatable, ValidationState } from "../services/validation.service";
 
 @Component({
@@ -66,6 +66,9 @@ export class MapinfoComponent implements Validatable, AfterContentInit, OnChange
   position: "left" | "center" | "right" = "left";
 
   @Input()
+  teamdata!: TeamInfo[];
+
+  @Input()
   blocked: boolean = false;
 
   ngOnChanges(): void {
@@ -80,7 +83,7 @@ export class MapinfoComponent implements Validatable, AfterContentInit, OnChange
   validationChanged = new EventEmitter<ValidationState>();
   runValidation() {
     let valid: boolean = true;
-
+    
     if (this.blocked) {
       this.validationChanged.emit(ValidationState.OPTIONAL);
       return;
@@ -92,7 +95,12 @@ export class MapinfoComponent implements Validatable, AfterContentInit, OnChange
         valid = valid && this.data.leftScore != null && this.data.rightScore != null;
         break;
       case "Present":
-        valid = ["left", "right"].includes(this.data.picker);
+        if (this.position == "right") {
+          valid = ["left", "right", "decider"].includes(this.data.picker);
+        }
+        else {
+          valid = ["left", "right"].includes(this.data.picker);
+        }        
         break;
 
       case "Future":
