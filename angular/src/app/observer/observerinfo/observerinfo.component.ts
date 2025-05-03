@@ -15,10 +15,20 @@ import { BasicInfo } from "../observer.component";
 import { FormsModule } from "@angular/forms";
 import { ElectronService } from "../../services/electron.service";
 import { Validatable, ValidationState } from "../../services/validation.service";
+import { ButtonModule } from "primeng/button";
+import { TooltipModule } from "primeng/tooltip";
 
 @Component({
   selector: "app-observerinfo",
-  imports: [FormsModule, InputTextModule, FloatLabelModule, PasswordModule, SelectModule],
+  imports: [
+    FormsModule,
+    InputTextModule,
+    FloatLabelModule,
+    PasswordModule,
+    SelectModule,
+    ButtonModule,
+    TooltipModule,
+  ],
   templateUrl: "./observerinfo.component.html",
   styleUrl: "./observerinfo.component.css",
 })
@@ -53,6 +63,20 @@ export class ObserverinfoComponent implements OnInit, Validatable, AfterContentI
     valid = this.data.ingestIp != null && valid;
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
   }
+
+  randomizeGroupcode() {
+    let groupCode = "";
+    for (let i = 0; i < 6; i++) {
+      groupCode += validGroupcodeCharacters.charAt(
+        Math.floor(Math.random() * validGroupcodeCharacters.length),
+      );
+    }
+    this.data.groupCode = groupCode;
+    this.runValidation();
+  }
 }
 
 export const ingestServerOptions = ["eu.valospectra.com", "na.valospectra.com"];
+
+// Uppercase letters and digits, excluding I and O to avoid confusion with other characters
+const validGroupcodeCharacters = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789";

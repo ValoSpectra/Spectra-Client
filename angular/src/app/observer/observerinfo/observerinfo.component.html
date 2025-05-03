@@ -21,20 +21,34 @@
       [toggleMask]="true"
       id="KeyInput"
       autocomplete="off"
+      pTooltip="Using our official servers requires a key. You can get one on our Discord."
+      tooltipPosition="top"
+      showDelay="500"
     />
     <label for="KeyInput">Organization Key</label>
   </p-floatlabel>
-  <p-floatlabel variant="on">
-    <input
-      fluid
-      pInputText
-      [(ngModel)]="data.groupCode"
-      (ngModelChange)="runValidation()"
-      id="GroupCodeInput"
-      autocomplete="off"
-    />
-    <label for="GroupCodeInput">Group Code</label>
-  </p-floatlabel>
+  <div class="flex flex-row gap-2">
+    <p-floatlabel variant="on" class="w-full">
+      <input
+        fluid
+        pInputText
+        [(ngModel)]="data.groupCode"
+        (ngModelChange)="runValidation()"
+        id="GroupCodeInput"
+        autocomplete="off"
+        pTooltip="Arbitrary identifier. Does not need to be the same as the one displayed in game"
+        tooltipPosition="top"
+        showDelay="500"
+      />
+      <label for="GroupCodeInput">Group Code</label>
+    </p-floatlabel>
+    <p-button
+      icon="pi pi-refresh"
+      label="Random"
+      severity="secondary"
+      (onClick)="randomizeGroupcode()"
+    ></p-button>
+  </div>
   <p-floatlabel variant="on">
     <p-select
       fluid

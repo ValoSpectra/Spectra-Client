@@ -28,6 +28,7 @@ import { MenuItem, MenuItemCommandEvent } from "primeng/api";
 import { ValidationState } from "../services/validation.service";
 import { DialogModule } from "primeng/dialog";
 import { ToggleSwitchModule } from "primeng/toggleswitch";
+import { TooltipModule } from "primeng/tooltip";
 
 @Component({
   selector: "app-observer",
@@ -55,7 +56,8 @@ import { ToggleSwitchModule } from "primeng/toggleswitch";
     DrawerModule,
     PanelMenuModule,
     DialogModule,
-    ToggleSwitchModule
+    ToggleSwitchModule,
+    TooltipModule,
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
