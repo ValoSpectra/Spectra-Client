@@ -271,7 +271,12 @@ export class ObserverComponent implements OnInit {
       this.changeDetectorRef.detectChanges();
     }, 2500);
 
-    this.drawerVisible = this.hasInputValidationErrors();
+    const validationError = this.hasInputValidationErrors();
+    if (validationError) {
+      this.drawerVisible = true;
+      this.issueDialogVisible = true;
+      return;
+    }
 
     const mapPool: MapInfoSend[] = [];
     if (this.tournamentInfo.showMappool) {

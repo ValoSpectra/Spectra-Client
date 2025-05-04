@@ -278,6 +278,23 @@ function processInputs(
     }
   }
 
+  if (obsName == undefined || groupCode == undefined) {
+    if (leftTeam.name == undefined || leftTeam.tricode == undefined || leftTeam.url == undefined) {
+      if (
+        rightTeam.name == undefined ||
+        rightTeam.tricode == undefined ||
+        rightTeam.url == undefined
+      ) {
+        messageBox(
+          "Spectra Client - Error",
+          "Please input data into all fields!",
+          messageBoxType.ERROR,
+        );
+        return;
+      }
+    }
+  }
+
   if (seriesInfo.mapInfo!.length > 0) {
     let allow = true;
     for (const map of seriesInfo.mapInfo!) {
@@ -441,7 +458,7 @@ async function updateCheck(): Promise<boolean> {
   try {
     const releaseName = (
       await axios.get("https://api.github.com/repos/ValoSpectra/Spectra-Client/releases")
-    ).data[0].name;
+    ).data[0].tag_name.replace("v", "");
 
     const latestRelease = semver.valid(releaseName);
     const currentRelease = semver.valid(app.getVersion());
