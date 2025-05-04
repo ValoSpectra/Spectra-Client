@@ -4,7 +4,7 @@
     "name": "Spectra Team",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.25-beta.4",
+  "version": "0.2.25",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
