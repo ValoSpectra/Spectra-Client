@@ -58,34 +58,34 @@
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "@eslint/js": "^9.24.0",
+    "@eslint/js": "^9.26.0",
     "@overwolf/ow-electron": "34.4.1",
-    "@overwolf/ow-electron-builder": "24.13.10",
+    "@overwolf/ow-electron-builder": "26.0.11",
     "@overwolf/ow-electron-packages-types": "^0.0.13",
     "@overwolf/types": "^3.24.7",
     "@types/electron-json-storage": "^4.5.4",
-    "@types/node": "^22.15.2",
+    "@types/node": "^22.15.3",
     "@types/semver": "^7.7.0",
     "concurrently": "^9.1.2",
     "electron": "34.4.1",
     "electron-devtools-installer": "^4.0.0",
-    "eslint": "^9.25.1",
+    "eslint": "^9.26.0",
     "eslint-config-prettier": "^10.1.2",
     "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "rimraf": "^6.0.1",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.0",
+    "typescript-eslint": "^8.31.1",
     "wait-on": "^8.0.3"
   },
   "dependencies": {
-    "axios": "^1.8.4",
+    "axios": "^1.9.0",
     "bufferutil": "^4.0.9",
     "dotenv": "^16.5.0",
     "electron-json-storage": "^4.6.0",
-    "electron-log": "^5.3.4",
+    "electron-log": "^5.4.0",
     "semver": "^7.7.1",
     "socket.io-client": "^4.8.1"
   },
-  "packageManager": "yarn@4.8.1"
+  "packageManager": "yarn@4.9.1"
 }
