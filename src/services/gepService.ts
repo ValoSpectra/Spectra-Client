@@ -1,7 +1,7 @@
 import { overwolf } from "@overwolf/ow-electron";
 import { dialog, app as electronApp } from "electron";
 import log from "electron-log";
-import { fireConnect, setPlayerName, setStatus } from "../main";
+import { fireConnect, setGameStatus, setLoadingStatus, setPlayerName, setSpectraStatus, StatusTypes } from "../main";
 import { ConnectorService } from "./connectorService";
 import {
   DataTypes,
@@ -49,7 +49,7 @@ export class GameEventsService {
           break;
         }
         log.info(`GEP Updating... New version: ${pkg.version}`);
-        this.win?.setTitle("Spectra Client | GEP Updating...");
+        setSpectraStatus("GEP Updating", StatusTypes.YELLOW);
       }
     });
     auxiliary = isAuxiliary;
@@ -88,7 +88,11 @@ export class GameEventsService {
         return;
       }
       log.info(`GEP version ${version} ready!`);
-      this.win!.setTitle(`Spectra Client | Ready (GEP: ${version}, Spectra: ${app.getVersion()})`);
+      setSpectraStatus("Ready", StatusTypes.NEUTRAL);
+      setTimeout(() => {
+        this.win!.setTitle(`Spectra Client | Ready (GEP: ${version}, Spectra: ${app.getVersion()})`);
+        setLoadingStatus(false);
+      }, 300);
       this.gepVersion = version;
 
       this.onGameEventsPackageReady();
@@ -112,7 +116,7 @@ export class GameEventsService {
       if (this.isFirstDetection) {
         this.isFirstDetection = false;
       } else {
-        this.win!.setTitle(`Spectra Client | Valorant re-detected - Ready`);
+        setSpectraStatus("Ready", StatusTypes.NEUTRAL);
       }
 
       e.enable();
@@ -203,7 +207,7 @@ export class GameEventsService {
           this.connService.handleMatchEnd();
         }
 
-        setStatus(`Game Running - Round ${this.currRoundNumber}`);
+        setGameStatus(`Round ${this.currRoundNumber}`, StatusTypes.GREEN);
 
         break;
 
@@ -227,16 +231,16 @@ export class GameEventsService {
         switch (this.currScene) {
           case "CharacterSelectPersistentLevel":
             fireConnect();
-            setStatus("Character Select");
+            setGameStatus("Agent Select", StatusTypes.GREEN);
             break;
 
           case "MainMenu":
-            setStatus("Main Menu");
+            setGameStatus("Main Menu", StatusTypes.NEUTRAL);
             this.isObserver = false;
             break;
 
           case "Range":
-            setStatus("Practice Range");
+            setGameStatus("Practice Range", StatusTypes.NEUTRAL);
             break;
 
           default:
@@ -328,7 +332,7 @@ export class GameEventsService {
       case "match_start":
         toSend = { type: DataTypes.MATCH_START, data: this.currMatchId };
         this.connService.sendToIngest(toSend);
-        setStatus("Game Started");
+        setGameStatus("Game Started", StatusTypes.GREEN);
         break;
 
       case "spike_planted":

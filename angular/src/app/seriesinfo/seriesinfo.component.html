@@ -1,0 +1,120 @@
+<div class="flex flex-col border border-surface rounded-lg p-5 gap-3 h-full">
+  <div class="flex items-center gap-2">
+    <h1 class="text-xl text-color mb-2 font-bold">Series Info</h1>
+    <p-toggleswitch
+      id="ShowTournamentInfo"
+      [(ngModel)]="data.enable"
+      (ngModelChange)="runValidation()"
+    ></p-toggleswitch>
+  </div>
+  <p-blockui [target]="toBlock" [blocked]="!data.enable" />
+  <blockable-div #toBlock>
+    <p-floatlabel variant="on" class="mb-2">
+      <p-inputnumber
+        fluid
+        [(ngModel)]="data.needed"
+        (ngModelChange)="runValidation()"
+        id="MapsNeededInput"
+        [showButtons]="true"
+        buttonLayout="horizontal"
+        inputId="horizontal"
+        spinnerMode="horizontal"
+        [step]="1"
+        min="1"
+        max="10"
+      >
+        <ng-template #incrementbuttonicon>
+          <span class="pi pi-plus"></span>
+        </ng-template>
+        <ng-template #decrementbuttonicon>
+          <span class="pi pi-minus"></span>
+        </ng-template>
+      </p-inputnumber>
+      <label for="MapsNeededInput">Maps to Win Series</label>
+    </p-floatlabel>
+
+    <div class="flex flex-col lg:flex-row gap-2 w-full mb-2">
+      <div class="lg:w-1/2">
+        <p-floatlabel variant="on">
+          <p-inputnumber
+            fluid
+            id="MapsWonLeft"
+            [(ngModel)]="data.wonLeft"
+            (ngModelChange)="runValidation()"
+            [showButtons]="true"
+            buttonLayout="horizontal"
+            inputId="horizontal"
+            spinnerMode="horizontal"
+            [step]="1"
+            min="0"
+            max="10"
+          >
+            <ng-template #incrementbuttonicon>
+              <span class="pi pi-plus"></span>
+            </ng-template>
+            <ng-template #decrementbuttonicon>
+              <span class="pi pi-minus"></span>
+            </ng-template>
+          </p-inputnumber>
+          <label for="MapsWonLeft">Maps Won Left</label>
+        </p-floatlabel>
+      </div>
+      <div class="lg:w-1/2">
+        <p-floatlabel variant="on">
+          <p-inputnumber
+            fluid
+            id="MapsWonRight"
+            [(ngModel)]="data.wonRight"
+            (ngModelChange)="runValidation()"
+            [showButtons]="true"
+            buttonLayout="horizontal"
+            inputId="horizontal"
+            spinnerMode="horizontal"
+            [step]="1"
+            min="0"
+            max="10"
+          >
+            <ng-template #incrementbuttonicon>
+              <span class="pi pi-plus"></span>
+            </ng-template>
+            <ng-template #decrementbuttonicon>
+              <span class="pi pi-minus"></span>
+            </ng-template>
+          </p-inputnumber>
+          <label for="MapsWonRight">Maps Won Right</label>
+        </p-floatlabel>
+      </div>
+    </div>
+
+    <div class="flex flex-row gap-2 w-full">
+      <div class="w-1/2">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            fluid
+            [(ngModel)]="data.seedingLeft"
+            (ngModelChange)="runValidation()"
+            type="text"
+            maxlength="10"
+            id="SeedingLeft"
+          />
+          <label for="SeedingLeft">Seeding Left</label>
+        </p-floatlabel>
+      </div>
+      <div class="w-1/2">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            fluid
+            [(ngModel)]="data.seedingRight"
+            (ngModelChange)="runValidation()"
+            type="text"
+            maxlength="10"
+            id="SeedingRight"
+          />
+          <label for="SeedingRight">Seeding Right</label>
+        </p-floatlabel>
+      </div>
+    </div>
+  </blockable-div>
+</div>

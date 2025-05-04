@@ -1,0 +1,79 @@
+<div class="grid grid-cols-7 border border-surface rounded-lg p-5 gap-3">
+  <div class="col-span-4 flex flex-col gap-3 justify-around">
+    <h1 class="text-xl text-color font-bold">{{ position | titlecase }} Team</h1>
+    <p-floatlabel variant="on">
+      <input
+        class="w-full"
+        pInputText
+        [(ngModel)]="teaminfo.name"
+        (ngModelChange)="runValidation()"
+        id="TeamNameInput"
+        placeholder=""
+        autocomplete="off"
+      />
+      <label for="TeamNameInput">Team name</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+      <input
+        class="w-full"
+        pInputText
+        [(ngModel)]="teaminfo.tricode"
+        (ngModelChange)="runValidation()"
+        id="TeamTricodeInput"
+        placeholder=""
+        autocomplete="off"
+      />
+      <label for="TeamTricodeInput">Team tricode</label>
+    </p-floatlabel>
+    <p-floatlabel variant="on">
+      <input
+        class="w-full"
+        [class.ng-dirty]="logoImageError"
+        [class.ng-invalid]="logoImageError"
+        pInputText
+        [(ngModel)]="teaminfo.url"
+        (ngModelChange)="runValidation()"
+        id="TeamLogoInput"
+        placeholder=""
+        autocomplete="off"
+      />
+      <label for="TeamLogoInput">Team Logo URL</label>
+    </p-floatlabel>
+    <div class="flex flex-row gap-2 content-center">
+      <p-radiobutton
+        [inputId]="'attackStartRadioButton' + position"
+        name="attackStart"
+        [value]="position"
+        [(ngModel)]="radiobuttonService.attackStart"
+      />
+      <label [for]="'attackStartRadioButton' + position">Starts as attacker</label>
+    </div>
+  </div>
+
+  <div class="col-span-3 flex flex-col justify-center items-center">
+    <p class="text-sm italic mb-2">Logo preview</p>
+    <img
+      [src]="teaminfo.url"
+      alt="Image link invalid"
+      class="w-4/6 aspect-square justify-self-center object-contain"
+      [hidden]="!teaminfo.url || logoImageError"
+      (load)="onImageLoadSuccess()"
+      (error)="onImageLoadError()"
+    />
+
+    @if (!teaminfo.url || logoImageError) {
+      <div
+        class="w-4/6 aspect-square justify-self-center rounded-xl border-surface bg-emphasis border flex justify-center items-center"
+      >
+        <i
+          class="text-md! rounded-full border size-min p-1 cursor-pointer pi pi-info"
+          (click)="info_popover.toggle($event)"
+        ></i>
+        <p-popover #info_popover>
+          <p class="">Make sure the link points directly to the image.</p>
+          <p class="">Valid links usually end in .png or .jpg.</p>
+        </p-popover>
+      </div>
+    }
+  </div>
+</div>

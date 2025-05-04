@@ -347,3 +347,25 @@ export type MapPoolInfo =
   | ErrorMapPoolInfo;
 
 //#endregion
+
+export interface GEPStatus {
+  game_id: number;
+  state: 0 | 1 | 2 | 3;
+  disabled: boolean;
+  published: boolean;
+  is_vgep: boolean;
+  features: {
+    name: string;
+    state: 0 | 1 | 2 | 3;
+    published: boolean;
+    keys: [];
+  }[];
+}
+
+export enum GEPStates {
+  "unsupported" = 0,
+  "green" = 1,
+  "yellow" = 2,
+  "red" = 3,
+  "disabled" = 4,
+}

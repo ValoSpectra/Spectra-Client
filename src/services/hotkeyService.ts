@@ -15,18 +15,22 @@ export default class HotkeyService {
     this.hotkeys[HotkeyType.SPIKE_PLANTED] = {
       key: "",
       action: this._spikePlantedHotkeyAction.bind(this),
+      type: HotkeyType.SPIKE_PLANTED,
     };
     this.hotkeys[HotkeyType.TECH_PAUSE] = {
       key: "",
       action: this._techPauseHotkeyAction.bind(this),
+      type: HotkeyType.TECH_PAUSE,
     };
     this.hotkeys[HotkeyType.LEFT_TIMEOUT] = {
       key: "",
       action: this._leftTimeoutHotkeyAction.bind(this),
+      type: HotkeyType.LEFT_TIMEOUT,
     };
     this.hotkeys[HotkeyType.RIGHT_TIMEOUT] = {
       key: "",
       action: this._rightTimeoutHotkeyAction.bind(this),
+      type: HotkeyType.RIGHT_TIMEOUT,
     };
   }
 
@@ -57,6 +61,7 @@ export default class HotkeyService {
   public deactivateAllHotkeys() {
     try {
       for (const hotkey of this.hotkeys) {
+        if (hotkey.key == "") continue;
         globalShortcut.unregister(hotkey.key);
       }
       log.info("Deactivated all hotkeys");
@@ -104,4 +109,5 @@ export enum HotkeyType {
 type Hotkey = {
   key: string;
   action: () => void;
+  type: HotkeyType;
 };

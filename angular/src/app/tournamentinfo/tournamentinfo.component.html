@@ -1,0 +1,123 @@
+<div class="flex flex-col border border-surface rounded-lg p-5 gap-3">
+  <h1 class="text-xl text-color font-bold">Tournament Info</h1>
+
+  <div class="grid grid-cols-12">
+    <div class="col-span-5 flex flex-col justify-around">
+      <div class="flex gap-2 content-center">
+        <label for="ShowTournamentInfo">Round Win Box</label>
+        <p-toggleswitch id="ShowTournamentInfo" [(ngModel)]="data.name"></p-toggleswitch>
+      </div>
+      <p-floatlabel variant="on" class="mb-2">
+        <input
+          pInputText
+          fluid
+          type="text"
+          maxlength="300"
+          id="TournamentLogoInput"
+          [class.ng-dirty]="logoImageError"
+          [class.ng-invalid]="logoImageError"
+          (ngModelChange)="runValidation()"
+          [(ngModel)]="data.logoUrl"
+        />
+        <label for="TournamentLogoInput">Tournament logo URL</label>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on" class="mb-2">
+        <input
+          pInputText
+          fluid
+          type="text"
+          maxlength="300"
+          id="TournamentBackdropInput"
+          [class.ng-dirty]="backdropImageError"
+          [class.ng-invalid]="backdropImageError"
+          (ngModelChange)="runValidation()"
+          [(ngModel)]="data.backdropUrl"
+        />
+        <label for="TournamentBackdropInput">Tournament backdrop URL (Round Win / Pauses)</label>
+      </p-floatlabel>
+
+      <p-floatlabel variant="on" class="mb-2">
+        <p-inputnumber
+          fluid
+          id="timeoutDurationInput"
+          [showButtons]="true"
+          buttonLayout="horizontal"
+          inputId="horizontal"
+          spinnerMode="horizontal"
+          [(ngModel)]="data.timeoutDuration"
+          (ngModelChange)="runValidation()"
+          [step]="10"
+          value="60"
+          min="10"
+          max="600"
+        >
+          <ng-template #incrementbuttonicon>
+            <span class="pi pi-plus"></span>
+          </ng-template>
+          <ng-template #decrementbuttonicon>
+            <span class="pi pi-minus"></span>
+          </ng-template>
+        </p-inputnumber>
+        <label for="timeoutDurationInput">Timeout Duration (seconds)</label>
+      </p-floatlabel>
+    </div>
+
+    <!-- These are supposed to be visible, with the logo taking up 2/6 and the backdrop taking up 4/6 but I can't manage to make it work properly right now -->
+    <!-- So for now they're just here to provide image load error functionality -->
+    <div class="col-span-7 justify-center items-center grid grid-cols-6 ml-3" [hidden]="false">
+      <div class="col-span-2 flex-col content-center">
+        <p class="text-sm italic mb-2 justify-self-center">Logo preview</p>
+        <img
+          [src]="data.logoUrl"
+          alt="Image link invalid"
+          class="w-5/6 aspect-square justify-self-center object-contain"
+          [hidden]="!data.logoUrl || logoImageError"
+          (load)="onLogoImageLoadSuccess()"
+          (error)="onLogoImageLoadError()"
+        />
+
+        @if (!data.logoUrl || logoImageError) {
+          <div
+            class="w-5/6 aspect-square justify-self-center rounded-xl border-surface bg-emphasis border flex justify-center items-center"
+          >
+            <i
+              class="text-md! rounded-full border size-min p-1 cursor-pointer pi pi-info"
+              (click)="info_popover.toggle($event)"
+            ></i>
+            <p-popover #info_popover>
+              <p class="">Make sure the link points directly to the image.</p>
+              <p class="">Valid links usually end in .png or .jpg.</p>
+            </p-popover>
+          </div>
+        }
+      </div>
+      <div class="col-span-4 flex-col content-center">
+        <p class="text-sm italic mb-2 justify-self-center">Backdrop preview</p>
+        <img
+          [src]="data.backdropUrl"
+          alt="Image link invalid"
+          class="w-5/6 aspect-35/8 justify-self-center object-contain"
+          [hidden]="!data.backdropUrl || backdropImageError"
+          (load)="onBackdropImageLoadSuccess()"
+          (error)="onBackdropImageLoadError()"
+        />
+
+        @if (!data.backdropUrl || backdropImageError) {
+          <div
+            class="w-5/6 aspect-35/8 justify-self-center rounded-xl border-surface bg-emphasis border flex justify-center items-center"
+          >
+            <i
+              class="text-md! rounded-full border size-min p-1 cursor-pointer pi pi-info"
+              (click)="info_popover.toggle($event)"
+            ></i>
+            <p-popover #info_popover>
+              <p class="">Make sure the link points directly to the image.</p>
+              <p class="">Valid links usually end in .png or .jpg.</p>
+            </p-popover>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

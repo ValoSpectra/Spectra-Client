@@ -1,7 +1,7 @@
 import { app } from "electron";
 import log from "electron-log";
 import * as io from "socket.io-client";
-import { messageBox, messageBoxType, setInputAllowed, setStatus } from "../main";
+import { messageBox, messageBoxType, setGameStatus, setInputAllowed, setSpectraStatus, StatusTypes } from "../main";
 import {
   DataTypes,
   IAuthenticationData,
@@ -109,9 +109,8 @@ export class ConnectorService {
       if (json.type === DataTypes.AUTH) {
         if (json.value === true) {
           log.info("Authentication successful!");
-          this.win.setTitle(`Spectra Client | Connected with Group ID: ${this.GROUP_CODE}`);
+          setSpectraStatus("Connected", StatusTypes.GREEN);
           this.connected = true;
-          setStatus("Connected");
           HotkeyService.getInstance().activateAllHotkeys();
           setInputAllowed(false);
           this.websocketSetup();
@@ -122,10 +121,9 @@ export class ConnectorService {
             `Connection failed, reason: ${json.reason}`,
             messageBoxType.ERROR,
           );
-          this.win.setTitle(`Spectra Client | Connection failed`);
+          setSpectraStatus("Connection Failed", StatusTypes.RED);
           this.setDisconnected();
           this.ws?.disconnect();
-          setStatus(`Connection failed - ${json.reason}`);
         }
       }
     });
@@ -133,11 +131,13 @@ export class ConnectorService {
     this.ws.on("close", () => {
       log.info("Connection to spectra server closed");
       if (this.unreachable === true) {
-        this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
+        // this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
+        setSpectraStatus("Server Unreachable", StatusTypes.RED);
 
         messageBox("Spectra Client - Error", "Spectra server not reachable!", messageBoxType.ERROR);
       } else {
-        this.win.setTitle(`Spectra Client | Connection closed`);
+        // this.win.setTitle(`Spectra Client | Connection closed`);
+        setSpectraStatus("Connection Closed", StatusTypes.NEUTRAL);
       }
       this.setDisconnected();
       this.ws?.disconnect();
@@ -146,17 +146,20 @@ export class ConnectorService {
     this.ws.on("error", (e: any) => {
       log.info("Failed connection to spectra server - is it up?");
       if (e.code === "ECONNREFUSED") {
-        this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
+        // this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
+        setSpectraStatus("Server Unreachable", StatusTypes.RED);
         this.unreachable = true;
       } else {
-        this.win.setTitle(`Spectra Client | Connection failed`);
+        // this.win.setTitle(`Spectra Client | Connection failed`);
+        setSpectraStatus("Connection Closed", StatusTypes.NEUTRAL);
       }
       log.error(e);
     });
 
     this.ws.io.on("reconnect_attempt", (attempt: number) => {
       log.info(`Reconnecting to spectra server, attempt ${attempt}`);
-      this.win.setTitle(`Spectra Client | Connection lost, attempting reconnect...`);
+      // this.win.setTitle(`Spectra Client | Connection lost, attempting reconnect...`);
+      setSpectraStatus("Reconnecting", StatusTypes.YELLOW);
     });
 
     this.ws.io.on("reconnect", () => {
@@ -198,8 +201,7 @@ export class ConnectorService {
     log.info(`Attempting to connect to ${this.INGEST_SERVER_URL} for match ${this.MATCH_ID}`);
     if (this.MATCH_ID === "") {
       log.info("Match ID not set, cannot connect");
-      setStatus("No Match ID found, cannot connect");
-      this.win.setTitle(`Spectra Client | No Match ID found, cannot connect`);
+      setSpectraStatus("No Match ID", StatusTypes.RED);
       return;
     }
 
@@ -222,10 +224,9 @@ export class ConnectorService {
       if (json.type === DataTypes.AUX_AUTH) {
         if (json.value === true) {
           log.info("Authentication successful!");
-          this.win.setTitle(`Spectra Client | Connected, Auxiliary`);
+          setSpectraStatus("Connected", StatusTypes.GREEN);
           this.connected = true;
           this.IS_AUX = true;
-          setStatus("Connected, Auxiliary");
           setInputAllowed(false);
           this.websocketSetup();
           this.startAuxSendLoop();
@@ -237,10 +238,9 @@ export class ConnectorService {
             `Connection failed, reason: ${json.reason}`,
             messageBoxType.ERROR,
           );
-          this.win.setTitle(`Spectra Client | Connection failed`);
           this.setDisconnected();
           this.ws?.disconnect();
-          setStatus(`Connection failed - ${json.reason}`);
+          setSpectraStatus(`Connection Failed`, StatusTypes.RED);
         }
       }
     });
@@ -248,11 +248,12 @@ export class ConnectorService {
     this.ws.on("close", () => {
       log.info("Connection to spectra server closed");
       if (this.unreachable === true) {
-        this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
+        setSpectraStatus("Server Unreachable", StatusTypes.RED);
 
         messageBox("Spectra Client - Error", "Spectra server not reachable!", messageBoxType.ERROR);
       } else {
-        this.win.setTitle(`Spectra Client | Connection closed`);
+        // this.win.setTitle(`Spectra Client | Connection closed`);
+        setSpectraStatus("Connection Closed", StatusTypes.NEUTRAL);
       }
       this.setDisconnected();
       this.ws?.disconnect();
@@ -261,21 +262,25 @@ export class ConnectorService {
     this.ws.on("error", (e: any) => {
       log.info("Failed connection to spectra server - is it up?");
       if (e.code === "ECONNREFUSED") {
-        this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
+        // this.win.setTitle(`Spectra Client | Connection failed, server not reachable`);
+        setSpectraStatus("Server Unreachable", StatusTypes.RED);
         this.unreachable = true;
       } else {
-        this.win.setTitle(`Spectra Client | Connection failed`);
+        // this.win.setTitle(`Spectra Client | Connection failed`);
+        setSpectraStatus("Connection Failed", StatusTypes.RED);
       }
       log.error(e);
     });
 
     this.ws.io.on("reconnect_attempt", (attempt: number) => {
       log.info(`Reconnecting to spectra server, attempt ${attempt}`);
-      this.win.setTitle(`Spectra Client | Connection lost, attempting reconnect...`);
+      // this.win.setTitle(`Spectra Client | Connection lost, attempting reconnect...`);
+      setSpectraStatus("Reconnecting", StatusTypes.YELLOW);
     });
 
     this.ws.io.on("reconnect", () => {
-      log.info(`Spectra Client | Reconnected`);
+      // log.info(`Spectra Client | Reconnected`);
+      setSpectraStatus("Connected", StatusTypes.GREEN);
     });
 
     const logonData: IAuxAuthenticationData = {
@@ -344,13 +349,15 @@ export class ConnectorService {
       this.ws?.disconnect();
       this.setDisconnected();
     }
-    this.win.setTitle(`Spectra Client | Game ended, connection closed.`);
+    // this.win.setTitle(`Spectra Client | Game ended, connection closed.`);
+    setSpectraStatus("Connection Closed", StatusTypes.NEUTRAL);
+    setGameStatus("Game Ended", StatusTypes.NEUTRAL);
   }
 
   setDisconnected() {
     this.connected = false;
     setInputAllowed(true);
-    setStatus("Disconnected");
+    setSpectraStatus("Disconnected", StatusTypes.NEUTRAL);
     clearInterval(this.AUX_SEND_INTERVAL);
     this.LAST_HEALTH = 0;
     this.TEAMMATE_STORE_UPDATE = false;

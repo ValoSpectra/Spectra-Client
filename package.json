@@ -4,7 +4,7 @@
     "name": "Spectra Team",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.24",
+  "version": "0.2.25",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
@@ -13,34 +13,27 @@
       "gep"
     ]
   },
-  "scripts": {
-    "start": "rimraf app && npx tsc && copy-files-from-to && ow-electron .",
-    "start-aux": "rimraf app && npx tsc && copy-files-from-to && ow-electron . --auxiliary",
-    "start:live": "rimraf app && npx tsc && copy-files-from-to && ow-electron .",
-    "build": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=never",
-    "publish": "rimraf app && npx tsc && copy-files-from-to && rimraf dist && ow-electron-builder --publish=always",
-    "postinstall": "ow-electron-builder install-app-deps",
-    "lint": "eslint ./src",
-    "lint-fix": "eslint ./src --fix",
-    "format": "prettier --write ./src"
-  },
-  "copyFiles": [
-    {
-      "from": "src/frontend/*",
-      "to": "app/frontend/"
-    },
-    {
-      "from": "src/assets/*",
-      "to": "app/assets/"
-    },
-    {
-      "from": "src/preload.js",
-      "to": "app/preload.js"
-    }
+  "workspaces": [
+    "angular"
   ],
+  "scripts": {
+    "start": "rimraf app && npx tsc && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron . --development\" --kill-others",
+    "start-aux": "rimraf app && npx tsc && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron . --auxiliary --development\" --kill-others",
+    "build": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=never",
+    "publish": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=always",
+    "postinstall": "ow-electron-builder install-app-deps",
+    "lint": "eslint src/ angular/src",
+    "lint-fix": "eslint src/ angular/src --fix",
+    "format": "prettier src/ angular/src --write"
+  },
   "build": {
     "productName": "Spectra Client",
     "compression": "maximum",
+    "files": [
+      "app/**/*",
+      "package.json",
+      "LICENSE"
+    ],
     "nsisWeb": {
       "artifactName": "Spectra-Client-Setup.${ext}",
       "oneClick": false,
@@ -65,31 +58,34 @@
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "@eslint/js": "^9.23.0",
-    "@overwolf/ow-electron": "34.3.3",
-    "@overwolf/ow-electron-builder": "24.13.10",
+    "@eslint/js": "^9.26.0",
+    "@overwolf/ow-electron": "34.4.1",
+    "@overwolf/ow-electron-builder": "26.0.11",
     "@overwolf/ow-electron-packages-types": "^0.0.13",
     "@overwolf/types": "^3.24.7",
     "@types/electron-json-storage": "^4.5.4",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.15.3",
     "@types/semver": "^7.7.0",
-    "copy-files-from-to": "^3.12.1",
-    "electron": "34.3.3",
-    "eslint": "^9.23.0",
-    "eslint-config-prettier": "^10.1.1",
+    "concurrently": "^9.1.2",
+    "electron": "34.4.1",
+    "electron-devtools-installer": "^4.0.0",
+    "eslint": "^9.26.0",
+    "eslint-config-prettier": "^10.1.2",
+    "globals": "^16.0.0",
     "prettier": "^3.5.3",
     "rimraf": "^6.0.1",
-    "typescript": "^5.8.2",
-    "typescript-eslint": "^8.29.0"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.1",
+    "wait-on": "^8.0.3"
   },
   "dependencies": {
-    "axios": "^1.8.4",
+    "axios": "^1.9.0",
     "bufferutil": "^4.0.9",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.5.0",
     "electron-json-storage": "^4.6.0",
-    "electron-log": "^5.3.3",
+    "electron-log": "^5.4.0",
     "semver": "^7.7.1",
     "socket.io-client": "^4.8.1"
   },
-  "packageManager": "yarn@4.8.1"
+  "packageManager": "yarn@4.9.1"
 }

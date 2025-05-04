@@ -1,0 +1,64 @@
+<div
+  class="col-span-3 h-full flex flex-col border border-surface rounded-lg p-5 gap-7 justify-around"
+>
+  <p-floatlabel variant="on">
+    <input
+      class="w-full"
+      pInputText
+      [(ngModel)]="data.name"
+      disabled
+      id="ValorantNameInput"
+      autocomplete="off"
+    />
+    <label for="ValorantNameInput" class="text-sm">Please double-check your Valorant name</label>
+  </p-floatlabel>
+  <p-floatlabel variant="on">
+    <p-password
+      fluid
+      [(ngModel)]="data.key"
+      (ngModelChange)="runValidation()"
+      [feedback]="false"
+      [toggleMask]="true"
+      id="KeyInput"
+      autocomplete="off"
+      pTooltip="Using our official servers requires a key. You can get one on our Discord."
+      tooltipPosition="top"
+      showDelay="500"
+    />
+    <label for="KeyInput">Organization Key</label>
+  </p-floatlabel>
+  <div class="flex flex-row gap-2">
+    <p-floatlabel variant="on" class="w-full">
+      <input
+        fluid
+        pInputText
+        [(ngModel)]="data.groupCode"
+        (ngModelChange)="runValidation()"
+        id="GroupCodeInput"
+        autocomplete="off"
+        pTooltip="Arbitrary identifier. Does not need to be the same as the one displayed in game"
+        tooltipPosition="top"
+        showDelay="500"
+      />
+      <label for="GroupCodeInput">Group Code</label>
+    </p-floatlabel>
+    <p-button
+      icon="pi pi-refresh"
+      label="Random"
+      severity="secondary"
+      (onClick)="randomizeGroupcode()"
+    ></p-button>
+  </div>
+  <p-floatlabel variant="on">
+    <p-select
+      fluid
+      [options]="ingestServerOptions"
+      [(ngModel)]="data.ingestIp"
+      (ngModelChange)="runValidation()"
+      [editable]="true"
+      [showClear]="true"
+      id="IngestIpInput"
+    ></p-select>
+    <label for="IngestIpInput">Ingest Server IP</label>
+  </p-floatlabel>
+</div>

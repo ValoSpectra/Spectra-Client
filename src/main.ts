@@ -3,12 +3,14 @@ require("dotenv").config();
 import path from "path";
 import { GameEventsService } from "./services/gepService";
 import { ConnectorService } from "./services/connectorService";
-import { dialog, shell, Tray, Menu } from "electron";
+import { dialog, shell, Tray, Menu, Rectangle } from "electron";
 import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
 import {
   FormattingService,
+  GEPStates,
+  GEPStatus,
   ISeedingInfo,
   ISeriesInfo,
   ITournamentInfo,
@@ -16,6 +18,7 @@ import {
 import HotkeyService, { HotkeyType } from "./services/hotkeyService";
 import axios from "axios";
 import * as semver from "semver";
+// import { installExtension } from "electron-devtools-installer";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const storage = require("electron-json-storage");
@@ -28,9 +31,15 @@ if (!lock) {
   app.exit();
 } else {
   //we are the first instance
-  app.on("second-instance", () => {
+  app.on("second-instance", (_event: any, cli: any[]) => {
     if (win) {
       win.show();
+    }
+
+    for (const arg of cli) {
+      if (arg.startsWith("ps-spectra://")) {
+        messageBox("Spectra Client - Deeplink", "Deeplink received: " + arg, messageBoxType.INFO);
+      }
     }
   });
 }
@@ -58,40 +67,95 @@ const createWindow = () => {
     log.info("Starting in Auxiliary Mode");
   }
 
+  let iconPath = "";
+  if (!isDev()) {
+    iconPath = path.join(__dirname, "./frontend/browser/assets/icon.ico");
+  } else {
+    iconPath = path.join(__dirname, "../build/icon.ico");
+  }
+
+  const windowState = isAuxiliary ? { width: 750, height: 320, x: 0, y: 0 } : getWindowState();
+  const boundsSettings: { width: number; height: number; x?: number; y?: number } = {
+    width: 0,
+    height: 0,
+  };
+
+  if (!isAuxiliary) {
+    boundsSettings.width = clamp(windowState.width, 750, 1920);
+    boundsSettings.height = clamp(windowState.height, 650, 1080);
+    if (windowState.x != -999999) {
+      boundsSettings.x = windowState.x;
+      boundsSettings.y = windowState.y;
+    }
+  } else {
+    boundsSettings.width = windowState.width;
+    boundsSettings.height = windowState.height;
+  }
+
   win = new BrowserWindow({
-    width: 730, // 1300 for debug console
-    height: !isAuxiliary ? 650 : 300,
-    backgroundColor: "#303338",
-    resizable: false,
+    ...boundsSettings,
     webPreferences: {
       preload: path.join(__dirname, "./preload.js"),
       webSecurity: true,
+      devTools: isDev(),
     },
+    resizable: !isAuxiliary,
     fullscreenable: false,
     titleBarOverlay: true,
-    icon: path.join(__dirname, "./assets/icon.ico"),
+    icon: iconPath,
+    title: "Spectra Client",
+    show: false,
   });
+
+  win.once("ready-to-show", () => {
+    win.show();
+  });
+
+  if (isAuxiliary) {
+    win.setMinimumSize(750, 320);
+    win.setMaximumSize(750, 320);
+  } else {
+    win.setMinimumSize(750, 650);
+  }
+
+  win.menuBarVisible = false;
 
   ipcMain.on("process-inputs", processInputs);
   ipcMain.on("process-aux-inputs", processAuxInputs);
   ipcMain.on("config-drop", processConfigDrop);
   ipcMain.on("process-log", processLog);
   ipcMain.on("set-tray-setting", setTraySetting);
-
-  win.menuBarVisible = false;
+  ipcMain.on("open-external-link", openExternalLink);
 
   if (!isAuxiliary) {
-    win.loadFile("./src/frontend/index.html");
+    if (!isDev()) {
+      win.loadFile("./app/frontend/browser/index.html");
+    } else {
+      win.setAlwaysOnTop(true, "screen-saver");
+      win.loadURL("http://localhost:4401");
+    }
   } else {
-    createTray();
+    createTray(iconPath);
     win.on("minimize", () => {
       if (traySetting) {
-        //only hide when setting says so
         win.hide();
       }
     });
-    win.loadFile("./src/frontend/auxiliary.html");
+
+    if (!isDev()) {
+      win.loadFile("./app/frontend/browser/index.html", {
+        hash: "auxiliary",
+      });
+    } else {
+      win.setAlwaysOnTop(true, "screen-saver");
+      win.loadURL("http://localhost:4401#auxiliary");
+    }
   }
+
+  win.on("resized", storeWindowState);
+  win.on("moved", storeWindowState);
+  win.on("maximize", storeWindowState);
+  win.on("unmaximize", storeWindowState);
 };
 
 app.whenReady().then(async () => {
@@ -111,8 +175,17 @@ app.whenReady().then(async () => {
 
   gepService = new GameEventsService(isAuxiliary);
   overwolfSetup();
+  deeplinkSetup();
 
-  setStatus("Idle");
+  // if (!isDev()) {
+  //   installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
+  //     .then((ext: { name: any }) => {
+  //       log.info(`Installed extension: ${ext.name}`);
+  //     })
+  //     .catch((err: any) => {
+  //       log.error("Failed to install extension:", err);
+  //     });
+  // }
 });
 
 app.on("window-all-closed", () => {
@@ -127,8 +200,31 @@ app.on("before-quit", () => {
   connService.sendToIngest(formatted);
 });
 
-function createTray() {
-  tray = new Tray(path.join(__dirname, "./assets/icon.ico"));
+app.on("web-contents-created", (event: any, contents: any) => {
+  contents.on("will-attach-webview", (event: any, webPreferences: any) => {
+    // Strip away preload scripts if unused or verify their location is legitimate
+    delete webPreferences.preload;
+
+    // Disable Node.js integration
+    webPreferences.nodeIntegration = false;
+
+    // Verify URL being loaded
+    // if (!params.src.startsWith("https://example.com/")) {
+    event.preventDefault();
+    // }
+  });
+
+  contents.on("will-navigate", (event: any) => {
+    // const parsedUrl = new URL(navigationUrl);
+
+    // if (parsedUrl.origin !== 'https://example.com') {
+    event.preventDefault();
+    // }
+  });
+});
+
+function createTray(iconPath: string) {
+  tray = new Tray(iconPath);
   tray.setToolTip("Spectra Client");
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -259,7 +355,7 @@ function processInputs(
   log.info(
     `Received Observer Name ${obsName}, Group Code ${groupCode}, Key ${key}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`,
   );
-  win!.setTitle(`Spectra Client | Attempting to connect...`);
+  setSpectraStatus("Connecting", StatusTypes.YELLOW);
   connService.handleAuthProcess(
     ingestIp,
     obsName,
@@ -275,12 +371,12 @@ function processInputs(
   );
 }
 
-function processAuxInputs(event: any, ingestIp: string, name: string) {
-  win!.setTitle(`Spectra Client | Attempting to connect...`);
+function processAuxInputs(_event: any, ingestIp: string, name: string) {
+  setSpectraStatus("Connecting", StatusTypes.YELLOW);
   connService.handleAuxAuthProcess(ingestIp, name, win);
 }
 
-function processConfigDrop(event: any, filePath: string) {
+function processConfigDrop(_event: any, filePath: string) {
   log.info(`Reading config data from ${filePath}`);
   if (!filePath.endsWith(".scg")) {
     messageBox(
@@ -316,7 +412,7 @@ function processConfigDrop(event: any, filePath: string) {
   }
 }
 
-function processLog(event: any, message: string) {
+function processLog(_event: any, message: string) {
   log.info(message);
 }
 
@@ -334,6 +430,11 @@ function overwolfSetup() {
   gepService.registerWindow(win);
   gepService.registerGame(VALORANT_ID);
   gepService.registerOverwolfPackageManager();
+
+  // Wait to ensure renderer is ready
+  setTimeout(() => {
+    eventAvailabilityCheck();
+  }, 2500);
 }
 
 async function updateCheck(): Promise<boolean> {
@@ -388,6 +489,43 @@ async function updateCheck(): Promise<boolean> {
   }
 }
 
+async function eventAvailabilityCheck() {
+  try {
+    const status: GEPStatus = (
+      await axios.get(`https://game-events-status.overwolf.com/${VALORANT_ID}_prod.json`)
+    ).data;
+
+    if (status.state == 1) {
+      return;
+    } else if (status.disabled) {
+      win.webContents.send("set-event-status", GEPStates.disabled);
+      log.info(`Event availability: disabled`);
+      return;
+    } else {
+      let eventStatus = 1;
+
+      status.features.forEach((feature: any) => {
+        if (feature.name === "match_info") {
+          eventStatus = feature.state;
+        }
+      });
+
+      if (isAuxiliary) {
+        status.features.forEach((feature: any) => {
+          if (feature.name === "me") {
+            eventStatus = feature.state > eventStatus ? feature.state : eventStatus;
+          }
+        });
+      }
+
+      win.webContents.send("set-event-status", eventStatus);
+      log.info(`Event availability: ${GEPStates[eventStatus]}`);
+    }
+  } catch (error) {
+    log.error("Error fetching event availability:", error);
+  }
+}
+
 export function setPlayerName(name: string) {
   win.webContents.send("set-player-name", name);
 }
@@ -396,8 +534,23 @@ export function setInputAllowed(allowed: boolean) {
   win.webContents.send("set-input-allowed", allowed);
 }
 
-export function setStatus(newStatus: string) {
-  win.webContents.send("set-status", newStatus);
+export enum StatusTypes {
+  NEUTRAL = "info",
+  RED = "danger",
+  YELLOW = "warn",
+  GREEN = "success",
+}
+export function setSpectraStatus(message: string, type: StatusTypes = StatusTypes.NEUTRAL) {
+  win.webContents.send("set-spectra-status", { message: message, statusType: type });
+  win.setTitle(`Spectra Client | ${message}`);
+}
+
+export function setGameStatus(message: string, type: StatusTypes = StatusTypes.NEUTRAL) {
+  win.webContents.send("set-game-status", { message: message, statusType: type });
+}
+
+export function setLoadingStatus(loading: boolean) {
+  win.webContents.send("set-loading-status", loading);
 }
 
 export function fireConnect() {
@@ -406,7 +559,7 @@ export function fireConnect() {
   win.webContents.send("fire-connect");
 }
 
-function setTraySetting(event: any, setting: boolean) {
+function setTraySetting(_event: any, setting: boolean) {
   traySetting = setting;
   storage.set("traySetting", { traySetting: traySetting }, function (error: any) {
     if (error) log.error(error);
@@ -421,6 +574,49 @@ function getTraySetting() {
   } else {
     log.debug(`Retrieved tray setting: ${retrieved.traySetting}`);
     return retrieved.traySetting;
+  }
+}
+
+function storeWindowState() {
+  if (isAuxiliary) return;
+  const bounds = win.getBounds();
+  storage.set("windowState", { bounds: bounds }, function (error: any) {
+    if (error) log.error(error);
+  });
+}
+
+function getWindowState(): Rectangle {
+  const retrieved = storage.getSync("windowState");
+  if (retrieved == null || Object.keys(retrieved).length == 0) {
+    return { x: -999999, y: -999999, width: 1300, height: 670 };
+  } else {
+    return retrieved.bounds;
+  }
+}
+
+function clamp(value: number, min: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+export function isDev() {
+  return app.commandLine.hasSwitch("development");
+}
+
+function deeplinkSetup() {
+  if (process.defaultApp) {
+    if (process.argv.length >= 2) {
+      app.setAsDefaultProtocolClient("ps-spectra", process.execPath, [
+        path.resolve(process.argv[1]),
+      ]);
+    }
+  } else {
+    app.setAsDefaultProtocolClient("ps-spectra");
+  }
+}
+
+export function openDevTools() {
+  if (win) {
+    win.webContents.openDevTools();
   }
 }
 
@@ -444,4 +640,8 @@ export function messageBox(
     type: type,
     buttons: buttons,
   });
+}
+
+function openExternalLink(event: any, link: string) {
+  shell.openExternal(link);
 }
