@@ -588,7 +588,7 @@ function storeWindowState() {
 function getWindowState(): Rectangle {
   const retrieved = storage.getSync("windowState");
   if (retrieved == null || Object.keys(retrieved).length == 0) {
-    return { x: -999999, y: -999999, width: 1070, height: 670 };
+    return { x: -999999, y: -999999, width: 1300, height: 670 };
   } else {
     return retrieved.bounds;
   }
