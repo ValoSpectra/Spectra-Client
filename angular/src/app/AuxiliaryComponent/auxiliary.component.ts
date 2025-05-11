@@ -9,6 +9,8 @@ import { TagModule } from "primeng/tag";
 import { LocalstorageService } from "../services/localstorage.service";
 import { ButtonModule } from "primeng/button";
 import { TitleCasePipe } from "@angular/common";
+import { ToastModule } from "primeng/toast";
+import { MessageService } from "primeng/api";
 
 @Component({
   selector: "app-auxiliary",
@@ -20,19 +22,21 @@ import { TitleCasePipe } from "@angular/common";
     ToggleSwitchModule,
     TagModule,
     ButtonModule,
-    TitleCasePipe
+    TitleCasePipe,
+    ToastModule,
   ],
   templateUrl: "./auxiliary.component.html",
   styleUrl: "./auxiliary.component.css",
 })
 export class AuxiliaryComponent implements OnInit {
-  protected spectraStatus: Status = {message: "Initializing", statusType: StatusTypes.NEUTRAL};
+  protected spectraStatus: Status = { message: "Initializing", statusType: StatusTypes.NEUTRAL };
   protected darkModeEnabled: boolean = false;
 
   constructor(
     protected electron: ElectronService,
     protected localStorageService: LocalstorageService,
-    protected changeDetectorRef: ChangeDetectorRef
+    protected changeDetectorRef: ChangeDetectorRef,
+    protected messageService: MessageService,
   ) {
     const loadedDarkModeEnabled = this.localStorageService.getItem<boolean>("darkMode");
     if (loadedDarkModeEnabled !== null) {
@@ -45,15 +49,17 @@ export class AuxiliaryComponent implements OnInit {
       element!.classList.add("dark");
     }
 
-    const minimizedToTraySettingLoaded = this.localStorageService.getItem<boolean>("auxMinimizedToTraySetting");
+    this.ingestServerIp =
+      this.localStorageService.getItem<string>("auxIngestServerIp") ?? undefined;
+
+    const minimizedToTraySettingLoaded = this.localStorageService.getItem<boolean>(
+      "auxMinimizedToTraySetting",
+    );
     if (minimizedToTraySettingLoaded !== null) {
       this.minimizedToTraySetting = minimizedToTraySettingLoaded;
-    } 
-    else {
+    } else {
       this.minimizedToTraySetting = true;
     }
-
-    
   }
 
   ngOnInit(): void {
@@ -86,17 +92,26 @@ export class AuxiliaryComponent implements OnInit {
 
   protected connect() {
     if (!this.ingestServerIp) {
-      console.log("No server ip given");
+      this.messageService.add({
+        closable: true,
+        sticky: true,
+        severity: "error",
+        summary: "Connection Error",
+        detail: "No server ip selected/entered",
+      });
+      this.localStorageService.setItem("auxIngestServerIp", this.ingestServerIp);
       return;
     }
+
     let ingestIp = this.ingestServerIp;
     if (ingestIp == this.ingestServerOptions[0]) {
       ingestIp = "eu.valospectra.com";
-    }
-    else if (ingestIp == this.ingestServerOptions[1]) {
+    } else if (ingestIp == this.ingestServerOptions[1]) {
       ingestIp = "na.valospectra.com";
     }
     this.electron.processAuxInputs(ingestIp, this.playername);
+
+    this.localStorageService.setItem("auxIngestServerIp", this.ingestServerIp);
   }
 
   protected toggleDarkMode() {

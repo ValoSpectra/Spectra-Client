@@ -5,6 +5,7 @@ import Aura from "@primeng/themes/aura";
 import { provideAnimationsAsync } from "@angular/platform-browser/animations/async";
 import { definePreset } from "@primeng/themes";
 import { routes } from "./app.routes";
+import { MessageService } from "primeng/api";
 
 const theme = definePreset(Aura, {
   primitive: {
@@ -85,5 +86,6 @@ export const appConfig: ApplicationConfig = {
         },
       },
     }),
+    MessageService,
   ],
 };
