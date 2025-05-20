@@ -19,6 +19,7 @@ export class ElectronService {
     this.api.setInputAllowed(this.changeInputAllowed.bind(this));
     this.api.setLoadingStatus(this.changeLoadingStatus.bind(this));
     this.api.setEventStatus(this.changeEventStatus.bind(this));
+    this.api.onDiscordInfo(this.changeDiscordInfo.bind(this));
   }
 
   public get api(): any {
@@ -117,6 +118,10 @@ export class ElectronService {
 
   protected changeEventStatus(value: number) {
     this.eventStatusMessageSource.next(value);
+  }
+
+  protected changeDiscordInfo(value: any) {
+    localStorage.setItem("discordInfo", JSON.stringify(value));
   }
 }
 

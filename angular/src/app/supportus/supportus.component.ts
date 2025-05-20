@@ -1,6 +1,6 @@
 import { CurrencyPipe, TitleCasePipe } from "@angular/common";
 import { HttpClient } from "@angular/common/http";
-import { Component } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { MessageService } from "primeng/api";
 import { ButtonModule } from "primeng/button";
@@ -10,6 +10,8 @@ import { PasswordModule } from "primeng/password";
 import { ProgressSpinnerModule } from "primeng/progressspinner";
 import { ToastModule } from "primeng/toast";
 import { ElectronService } from "../services/electron.service";
+import { LocalstorageService } from "../services/localstorage.service";
+import { AvatarModule } from "primeng/avatar";
 
 @Component({
   selector: "app-supportus",
@@ -23,16 +25,22 @@ import { ElectronService } from "../services/electron.service";
     TitleCasePipe,
     CurrencyPipe,
     CardModule,
+    AvatarModule,
   ],
   templateUrl: "./supportus.component.html",
   styleUrl: "./supportus.component.css",
 })
-export class SupportusComponent {
+export class SupportusComponent implements OnInit {
   protected key: string = "";
 
   protected loading: boolean = false;
   protected loggedIn: boolean = false;
   protected loggedInOrg: OrgInfo = { id: "", name: "Loading..." };
+  protected loggedInDiscord: DiscordInfo = {
+    userId: "",
+    username: "Not logged in",
+    avatarHash: "",
+  };
   protected packagesReady: boolean = false;
 
   protected sortedPackages: Map<string, Package[]> = new Map<string, Package[]>();
@@ -41,7 +49,24 @@ export class SupportusComponent {
     protected http: HttpClient,
     protected messageService: MessageService,
     protected electronService: ElectronService,
+    protected localstorageService: LocalstorageService,
   ) {}
+
+  ngOnInit(): void {
+    this.getPackages();
+    window.addEventListener("storage", (event) => {
+      if (event.key === "discordInfo") {
+        if (event.newValue != null) {
+          this.loggedInDiscord = JSON.parse(event.newValue);
+        }
+      }
+    });
+    this.loggedInDiscord = this.localstorageService.getItem<DiscordInfo>("discordInfo") || {
+      userId: "",
+      username: "Not logged in",
+      avatarHash: "",
+    };
+  }
 
   protected tryLogIn() {
     if (!this.key || this.key.length < 1) {
@@ -73,16 +98,10 @@ export class SupportusComponent {
       })
       .subscribe({
         next: (orgInfo) => {
-          // this.messageService.add({
-          //   severity: "success",
-          //   summary: "Login",
-          //   detail: `Login successful for ${orgInfo.name}`,
-          //   life: 3000,
-          // });
           this.loading = false;
           this.loggedIn = true;
           this.loggedInOrg = orgInfo;
-          this.getPackages();
+          this.loggedInOrg.isSupporting = true;
         },
         error: () => {
           this.messageService.add({
@@ -121,7 +140,11 @@ export class SupportusComponent {
       pkg.description = pkg.description.replaceAll("<p>", "");
       pkg.description = pkg.description.replaceAll("</p>", "");
       pkg.checkoutUrl += `&userId=${this.loggedInOrg.id}`;
-      // pkg.description = pkg.description.replaceAll("<br />", "");
+
+      if (this.loggedInDiscord.userId && this.loggedInDiscord.userId != "") {
+        pkg.checkoutUrl += `&discordId=${this.loggedInDiscord.userId}`;
+      }
+
       this.sortedPackages.get(pkg.category.name)?.push(pkg);
     });
     this.packagesReady = true;
@@ -133,6 +156,30 @@ export class SupportusComponent {
 
   protected openCheckout(pkg: Package) {
     this.electronService.openExternalLink(pkg.checkoutUrl);
+  }
+
+  protected orgLogout() {
+    this.loggedIn = false;
+    this.loggedInOrg = { id: "", name: "Loading..." };
+  }
+
+  protected discordLogin() {
+    this.loading = true;
+    this.electronService.openExternalLink(
+      "https://discord.com/oauth2/authorize?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5101%2Fclient%2Foauth-callback&scope=identify&client_id=1296902430503604264",
+    );
+    setTimeout(() => {
+      this.loading = false;
+    }, 2000);
+  }
+
+  protected clearDiscordLogin() {
+    this.localstorageService.removeItem("discordInfo");
+    this.loggedInDiscord = {
+      userId: "",
+      username: "Not logged in",
+      avatarHash: "",
+    };
   }
 }
 
@@ -167,4 +214,10 @@ export interface Package {
   order: number;
   // We add this on the server
   checkoutUrl: string;
+}
+
+export interface DiscordInfo {
+  userId: string;
+  username: string;
+  avatarHash: string;
 }

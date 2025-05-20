@@ -39,7 +39,7 @@ if (!lock) {
 
     for (const arg of cli) {
       if (arg.startsWith("ps-spectra://")) {
-        messageBox("Spectra Client - Deeplink", "Deeplink received: " + arg, messageBoxType.INFO);
+        handleDeeplink(_event, arg);
       }
     }
   });
@@ -685,6 +685,20 @@ function deeplinkSetup() {
     }
   } else {
     app.setAsDefaultProtocolClient("ps-spectra");
+  }
+}
+
+function handleDeeplink(event: any, arg: string) {
+  if (arg.includes("discord-info")) {
+    const params = new URL(arg).searchParams;
+    const userId = params.get("userId");
+    const username = params.get("username");
+    const avatarHash = params.get("avatar");
+
+    log.info(
+      `Received deeplink with userId: ${userId}, username: ${username}, avatarHash: ${avatarHash}`,
+    );
+    win.webContents.send("set-discord-info", { userId, username, avatarHash });
   }
 }
 

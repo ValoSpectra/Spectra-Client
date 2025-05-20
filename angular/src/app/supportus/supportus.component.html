@@ -1,14 +1,20 @@
 <p-toast />
 @if (!loggedIn) {
-  <div class="w-screen h-screen flex flex-row justify-center">
-    <div class="items-center justify-center self-center content-center flex flex-row gap-2">
+  <div class="w-full flex flex-col justify-center mb-10">
+    <div class="text-2xl font-bold text-color self-center mt-2 p-2">
+      You're currently not logged in to any organization.
+    </div>
+    <div class="text-md text-color self-center">
+      In order to receive benefits in Spectra, please log in with your organization key.
+    </div>
+    <div class="items-center justify-center self-center content-center flex flex-row gap-2 mt-4">
       <p-floatlabel variant="on">
         <p-password [(ngModel)]="key" [feedback]="false" [toggleMask]="true" id="KeyInput" />
         <label for="KeyInput">Organization Key</label>
       </p-floatlabel>
       <p-button
         icon="pi pi-sign-in"
-        label="Log In"
+        label="Organization Login"
         severity="primary"
         (onClick)="tryLogIn()"
         [loading]="loading"
@@ -18,7 +24,7 @@
 } @else {
   <div class="p-2 m-2 flex flex-col gap-1 items-center">
     <div class="text-2xl font-bold text-color">
-      You're currently logged in for {{ loggedInOrg.name }}
+      You're currently logged in to {{ loggedInOrg.name }}
     </div>
     @if (loggedInOrg.isSupporting) {
       <div class="text-primary font-bold text-xl">Thank you for supporting Spectra!</div>
@@ -40,68 +46,126 @@
         ></p-button>
       </div>
     } @else {
-      <p class="font-bold text-md mb-6">Thank you for being interested in supporting Spectra!</p>
+      <p class="font-bold text-md mb-2">Thank you for being interested in supporting Spectra!</p>
     }
-    <div class="flex flex-row gap-1 items-center">
-      <div class="flex flex-col gap-1 items-center border border-primary rounded-lg p-4">
-        <p>Here's a list of the current benefits you get by supporting us:</p>
-        <ul class="list-disc">
-          <li class="font-bold">No Spectra ad in the Overlay</li>
-          <li>Priority Support</li>
-          <li>Access to the Supporter Discord channel...</li>
-          <li>... including sneak peeks of upcoming updates</li>
-          <li class="italic">And more to come!</li>
-        </ul>
-      </div>
-      <div class="flex flex-col gap-1 items-center border border-purple-500 rounded-lg p-7">
-        <p>And here's what your support does for us:</p>
-        <ul class="list-disc">
-          <li>Helps us pay for our servers and other costs</li>
-          <li>Allows us to keep Spectra free for everyone</li>
-          <li>Improves quality of future updates</li>
-          <li class="italic">Prioritizes our requests with Overwolf</li>
-        </ul>
-      </div>
-    </div>
+    <p-button
+      icon="pi pi-sign-in"
+      label="Log Out"
+      severity="secondary"
+      (onClick)="orgLogout()"
+      [loading]="loading"
+    ></p-button>
   </div>
-  <div class="p-2 flex flex-col gap-1 items-center">
-    <p>All Spectra Plus Tiers grant you the same benefits.</p>
-    <p class="italic">
-      We ask that larger organizations support at a higher tier, but don't pay more than you can.
-    </p>
-    <p class="text-xl font-bold">We currently offer the following packages:</p>
-  </div>
+}
 
-  @if (!packagesReady) {
-    <div class="w-full h-full flex flex-row justify-center">
-      <p-progressSpinner strokeWidth="6" animationDuration="2s"></p-progressSpinner>
-    </div>
-  } @else {
-    @for (category of sortedPackages.keys(); track $index) {
-      <div class="p-5 m-2">
-        <h1 class="text-2xl text-color font-bold">{{ category | titlecase }}</h1>
-        <div class="grid grid-cols-2 gap-2">
-          @for (package of sortedPackages.get(category); track $index) {
-            <div class="flex flex-col col-span-1 border border-surface rounded-lg p-2 m-1">
-              <p-button
-                class="self-end absolute"
-                icon="pi pi-check"
-                label="Choose"
-                [disabled]="loggedInOrg.isSupporting"
-                severity="primary"
-                (onClick)="openCheckout(package)"
-              ></p-button>
-              <div class="mt-1 ml-2 mb-3">
-                <p class="text-lg text-color">Charged {{ package.name }}</p>
-                <p class="text-md text-color">
-                  {{ package.total_price | currency: package.currency }}
-                </p>
-              </div>
-              <p class="ml-2 mb-1 text-sm text-color" [innerHTML]="package.description"></p>
-            </div>
-          }
-        </div>
+@if (!loggedInOrg.isSupporting) {
+  <div class="w-full flex flex-col justify-center mb-6">
+    @if (loggedIn) {
+      <div class="text-md text-color self-center -mb-2">
+        You can also log in with Discord to receive the Supporter role on our Discord server.
+      </div>
+    } @else {
+      <div class="text-md font-bold text-color self-center">
+        You can also support us as an individual by only logging in with Discord.
+      </div>
+      <div class="text-sm italic text-color self-center -mb-2">
+        Please note that you will not receive benefits outside of Discord without later linking your
+        organization through us.
       </div>
     }
+    <div class="items-center justify-center self-center content-center flex flex-row gap-2 mt-4">
+      Currently logged in as:
+      <div class="flex flex-row gap-2 items-center border border-surface rounded-lg p-1">
+        @if (loggedInDiscord.userId != "") {
+          <p-avatar
+            image="https://cdn.discordapp.com/avatars/{{ loggedInDiscord.userId }}/{{
+              loggedInDiscord.avatarHash
+            }}.webp"
+            shape="circle"
+            size="normal"
+            class="-mr-1"
+          ></p-avatar>
+        }
+        <p class="text-md font-bold">{{ loggedInDiscord.username }}</p>
+      </div>
+      @if (loggedInDiscord.userId == "") {
+        <p-button
+          icon="pi pi-discord"
+          label="Discord Login"
+          severity="primary"
+          (onClick)="discordLogin()"
+          [loading]="loading"
+        ></p-button>
+      } @else {
+        <p-button
+          icon="pi pi-discord"
+          label="Log out"
+          severity="secondary"
+          (onClick)="clearDiscordLogin()"
+        ></p-button>
+      }
+    </div>
+  </div>
+}
+
+<div class="flex flex-row gap-1 items-center justify-center">
+  <div class="flex flex-col gap-1 items-center border border-primary rounded-lg p-4">
+    <p>Here's a list of the current benefits you get by supporting us:</p>
+    <ul class="list-disc">
+      <li class="font-bold">No Spectra ad in the Overlay</li>
+      <li>Priority Support</li>
+      <li>Access to the Supporter Discord channel...</li>
+      <li>... including sneak peeks of upcoming updates</li>
+      <li class="italic">And more to come!</li>
+    </ul>
+  </div>
+  <div class="flex flex-col gap-1 items-center border border-purple-500 rounded-lg p-7">
+    <p>And here's what your support does for us:</p>
+    <ul class="list-disc">
+      <li>Helps us pay for our servers and other costs</li>
+      <li>Allows us to keep Spectra free for everyone</li>
+      <li>Improves quality of future updates</li>
+      <li class="italic">Prioritizes our requests with Overwolf</li>
+    </ul>
+  </div>
+</div>
+<div class="p-2 flex flex-col gap-1 items-center">
+  <p class="text-lg">All Spectra Plus Tiers grant the same benefits.</p>
+  <p class="italic">
+    We ask that larger organizations support at a higher tier, but don't pay more than you can.
+  </p>
+  <p class="text-xl font-bold">We currently offer the following packages:</p>
+</div>
+
+@if (!packagesReady) {
+  <div class="w-full h-full flex flex-row justify-center">
+    <p-progressSpinner strokeWidth="6" animationDuration="2s"></p-progressSpinner>
+  </div>
+} @else {
+  @for (category of sortedPackages.keys(); track $index) {
+    <div class="p-5 m-2">
+      <h1 class="text-2xl text-color font-bold">{{ category | titlecase }}</h1>
+      <div class="grid grid-cols-2 gap-2">
+        @for (package of sortedPackages.get(category); track $index) {
+          <div class="flex flex-col col-span-1 border border-surface rounded-lg p-2 m-1">
+            <p-button
+              class="self-end absolute"
+              icon="pi pi-check"
+              label="Choose"
+              [disabled]="loggedInOrg.isSupporting || (!loggedIn && loggedInDiscord.userId == '')"
+              severity="primary"
+              (onClick)="openCheckout(package)"
+            ></p-button>
+            <div class="mt-1 ml-2 mb-3">
+              <p class="text-lg text-color">Charged {{ package.name }}</p>
+              <p class="text-md text-color">
+                {{ package.total_price | currency: package.currency }}
+              </p>
+            </div>
+            <p class="ml-2 mb-1 text-sm text-color" [innerHTML]="package.description"></p>
+          </div>
+        }
+      </div>
+    </div>
   }
 }
