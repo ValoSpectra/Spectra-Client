@@ -1,0 +1,107 @@
+<p-toast />
+@if (!loggedIn) {
+  <div class="w-screen h-screen flex flex-row justify-center">
+    <div class="items-center justify-center self-center content-center flex flex-row gap-2">
+      <p-floatlabel variant="on">
+        <p-password [(ngModel)]="key" [feedback]="false" [toggleMask]="true" id="KeyInput" />
+        <label for="KeyInput">Organization Key</label>
+      </p-floatlabel>
+      <p-button
+        icon="pi pi-sign-in"
+        label="Log In"
+        severity="primary"
+        (onClick)="tryLogIn()"
+        [loading]="loading"
+      ></p-button>
+    </div>
+  </div>
+} @else {
+  <div class="p-2 m-2 flex flex-col gap-1 items-center">
+    <div class="text-2xl font-bold text-color">
+      You're currently logged in for {{ loggedInOrg.name }}
+    </div>
+    @if (loggedInOrg.isSupporting) {
+      <div class="text-primary font-bold text-xl">Thank you for supporting Spectra!</div>
+
+      <div
+        class="p-4 m-2 flex flex-col gap-1 items-center text-md rounded-lg bg-[var(--p-button-success-background)]/70"
+      >
+        <p class="italic">
+          Please note that you cannot change your subscription here while you have an active
+          subscription.
+        </p>
+        If you want to manage your subsciption, please click on the button below.
+        <p-button
+          class="mt-3"
+          icon="pi pi-refresh"
+          label="Manage Subscription"
+          severity="primary"
+          (onClick)="manageSubscription()"
+        ></p-button>
+      </div>
+    } @else {
+      <p class="font-bold text-md mb-6">Thank you for being interested in supporting Spectra!</p>
+    }
+    <div class="flex flex-row gap-1 items-center">
+      <div class="flex flex-col gap-1 items-center border border-primary rounded-lg p-4">
+        <p>Here's a list of the current benefits you get by supporting us:</p>
+        <ul class="list-disc">
+          <li class="font-bold">No Spectra ad in the Overlay</li>
+          <li>Priority Support</li>
+          <li>Access to the Supporter Discord channel...</li>
+          <li>... including sneak peeks of upcoming updates</li>
+          <li class="italic">And more to come!</li>
+        </ul>
+      </div>
+      <div class="flex flex-col gap-1 items-center border border-purple-500 rounded-lg p-7">
+        <p>And here's what your support does for us:</p>
+        <ul class="list-disc">
+          <li>Helps us pay for our servers and other costs</li>
+          <li>Allows us to keep Spectra free for everyone</li>
+          <li>Improves quality of future updates</li>
+          <li class="italic">Prioritizes our requests with Overwolf</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="p-2 flex flex-col gap-1 items-center">
+    <p>All Spectra Plus Tiers grant you the same benefits.</p>
+    <p class="italic">
+      We ask that larger organizations support at a higher tier, but don't pay more than you can.
+    </p>
+    <p class="text-xl font-bold">We currently offer the following packages:</p>
+  </div>
+
+  @if (!packagesReady) {
+    <div class="w-full h-full flex flex-row justify-center">
+      <p-progressSpinner strokeWidth="6" animationDuration="2s"></p-progressSpinner>
+    </div>
+  } @else {
+    @for (category of sortedPackages.keys(); track $index) {
+      <div class="p-5 m-2">
+        <h1 class="text-2xl text-color font-bold">{{ category | titlecase }}</h1>
+        <div class="grid grid-cols-2 gap-2">
+          @for (package of sortedPackages.get(category); track $index) {
+            <div class="flex flex-col col-span-1 border border-surface rounded-lg p-2 m-1">
+              <p-button
+                class="self-end absolute"
+                icon="pi pi-check"
+                label="Choose"
+                [disabled]="loggedInOrg.isSupporting"
+                severity="primary"
+                (onClick)="openCheckout(package)"
+              ></p-button>
+              <div class="mt-1 ml-2 mb-3">
+                <p class="text-lg text-color">Charged {{ package.name }}</p>
+                <p class="text-md text-color">
+                  {{ package.total_price | currency: package.currency }}
+                </p>
+              </div>
+              <p class="ml-2 mb-1 text-sm text-color" [innerHTML]="package.description"></p>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  }
+}

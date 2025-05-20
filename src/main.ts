@@ -102,7 +102,6 @@ const createWindow = () => {
     },
     resizable: !isAuxiliary,
     fullscreenable: false,
-    titleBarOverlay: true,
     icon: iconPath,
     title: "Spectra Client",
     show: false,
@@ -157,6 +156,69 @@ const createWindow = () => {
   win.on("moved", storeWindowState);
   win.on("maximize", storeWindowState);
   win.on("unmaximize", storeWindowState);
+
+  // Trying to load the support page in a new window resulted in loading about:blank all of the time, so we do this hacky workaround
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith("https://valospectra.com/support")) {
+      const supportWindow = new BrowserWindow({
+        webPreferences: {
+          preload: path.join(__dirname, "./preload.js"),
+          webSecurity: true,
+          devTools: isDev(),
+        },
+        fullscreenable: false,
+        autoHideMenuBar: true,
+        icon: iconPath,
+        title: "Support Spectra",
+        show: false,
+      });
+
+      supportWindow.menuBarVisible = false;
+      supportWindow.setMinimumSize(900, 650);
+
+      if (isDev()) {
+        supportWindow.setAlwaysOnTop(true, "screen-saver");
+        supportWindow.loadURL("http://localhost:4401#support");
+      } else {
+        supportWindow.loadFile("./app/frontend/browser/index.html", {
+          hash: "support",
+        });
+      }
+
+      if (url.includes("dark=true")) {
+        supportWindow.webContents.executeJavaScript(
+          `document.documentElement.classList.add('dark');`,
+        );
+      }
+
+      supportWindow.once("ready-to-show", () => {
+        supportWindow.show();
+      });
+
+      return { action: "deny" };
+    }
+
+    if (url.startsWith("https://")) {
+      shell.openExternal(url);
+      return { action: "deny" };
+    }
+
+    return { action: "deny" };
+    // return {
+    //   action: "allow",
+    //   overrideBrowserWindowOptions: {
+    //     webPreferences: {
+    //       preload: path.join(__dirname, "./preload.js"),
+    //       webSecurity: true,
+    //       devTools: isDev(),
+    //     },
+    //     fullscreenable: false,
+    //     autoHideMenuBar: true,
+    //     icon: iconPath,
+    //     title: "Support Spectra",
+    //   },
+    // };
+  });
 };
 
 app.whenReady().then(async () => {

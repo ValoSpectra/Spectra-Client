@@ -91,7 +91,16 @@
 
   <div class="border-surface col-span-3 flex flex-col rounded-lg border p-5">
     <p-button
-      class="absolute h-10 w-10 self-end"
+      class="w-10 h-10 self-start absolute"
+      severity="success"
+      icon="pi pi-heart-fill"
+      (onClick)="openSupportUs()"
+      pTooltip="Support us!"
+      tooltipPosition="right"
+      showDelay="500"
+    />
+    <p-button
+      class="w-10 h-10 self-end absolute"
       severity="contrast"
       [icon]="darkModeEnabled ? 'pi pi-sun' : 'pi pi-moon'"
       (onClick)="toggleDarkMode()"

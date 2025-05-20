@@ -614,6 +614,10 @@ export class ObserverComponent implements OnInit {
     this.darkModeEnabled = !this.darkModeEnabled;
     this.localStorageService.setItem("darkMode", this.darkModeEnabled);
   }
+
+  protected openSupportUs() {
+    window.open(`https://valospectra.com/support?dark=${this.darkModeEnabled}`, "_blank");
+  }
 }
 
 //#region Type definition

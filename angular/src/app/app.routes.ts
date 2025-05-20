@@ -1,6 +1,7 @@
 import { Routes } from "@angular/router";
 import { ObserverComponent } from "./observer/observer.component";
 import { AuxiliaryComponent } from "./AuxiliaryComponent/auxiliary.component";
+import { SupportusComponent } from "./supportus/supportus.component";
 
 export const routes: Routes = [
   {
@@ -10,5 +11,9 @@ export const routes: Routes = [
   {
     path: "auxiliary",
     component: AuxiliaryComponent,
+  },
+  {
+    path: "support",
+    component: SupportusComponent,
   },
 ];
