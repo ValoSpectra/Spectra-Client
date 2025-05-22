@@ -115,7 +115,7 @@ const createWindow = () => {
     win.setMinimumSize(750, 320);
     win.setMaximumSize(750, 320);
   } else {
-    win.setMinimumSize(750, 650);
+    win.setMinimumSize(830, 650);
   }
 
   win.menuBarVisible = false;
@@ -326,44 +326,21 @@ function processInputs(
     }
   }
 
-  //regex check hotkeys
-  const regex = /^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$/g;
-  if (hotkeys.spikePlanted.match(regex)) {
-    HotkeyService.getInstance().setKeyForHotkey(HotkeyType.SPIKE_PLANTED, hotkeys.spikePlanted);
-  } else {
+
+  //setting hotkeys
+  //regex check happens inside
+  const hotkeyService = HotkeyService.getInstance();
+  console.log(hotkeys);
+  
+  try {
+    hotkeyService.setKeyForHotkey(HotkeyType.SPIKE_PLANTED, hotkeys.spikePlanted, hotkeys.enabled.spikePlanted);
+    hotkeyService.setKeyForHotkey(HotkeyType.TECH_PAUSE, hotkeys.techPause, hotkeys.enabled.techPause);
+    hotkeyService.setKeyForHotkey(HotkeyType.LEFT_TIMEOUT, hotkeys.leftTimeout, hotkeys.enabled.leftTimeout);
+    hotkeyService.setKeyForHotkey(HotkeyType.RIGHT_TIMEOUT, hotkeys.rightTimeout, hotkeys.enabled.rightTimeout);
+  } catch (error: any) {
     messageBox(
       "Spectra Client - Error",
-      "The hotkey for 'Spike planted' is invalid!",
-      messageBoxType.ERROR,
-    );
-    return;
-  }
-  if (hotkeys.techPause.match(regex)) {
-    HotkeyService.getInstance().setKeyForHotkey(HotkeyType.TECH_PAUSE, hotkeys.techPause);
-  } else {
-    messageBox(
-      "Spectra Client - Error",
-      "The hotkey for 'Tech pause' is invalid!",
-      messageBoxType.ERROR,
-    );
-    return;
-  }
-  if (hotkeys.leftTimeout.match(regex)) {
-    HotkeyService.getInstance().setKeyForHotkey(HotkeyType.LEFT_TIMEOUT, hotkeys.leftTimeout);
-  } else {
-    messageBox(
-      "Spectra Client - Error",
-      "The hotkey for 'Left timeout' is invalid!",
-      messageBoxType.ERROR,
-    );
-    return;
-  }
-  if (hotkeys.rightTimeout.match(regex)) {
-    HotkeyService.getInstance().setKeyForHotkey(HotkeyType.RIGHT_TIMEOUT, hotkeys.rightTimeout);
-  } else {
-    messageBox(
-      "Spectra Client - Error",
-      "The hotkey for 'Right timeout' is invalid!",
+      error.message,
       messageBoxType.ERROR,
     );
     return;

@@ -197,6 +197,12 @@ export class ObserverComponent implements OnInit {
     techPause: "F10",
     leftTimeout: "O",
     rightTimeout: "P",
+    enabled: {
+      spikePlanted: false,
+      techPause: true,
+      leftTimeout: true,
+      rightTimeout: true
+    }
   };
   //#endregion
 
@@ -237,6 +243,14 @@ export class ObserverComponent implements OnInit {
     this.centerMap = this.localStorageService.getItem<MapInfo>("centerMap") || this.centerMap;
     this.rightMap = this.localStorageService.getItem<MapInfo>("rightMap") || this.rightMap;
     this.hotkeys = this.localStorageService.getItem<Hotkeys>("hotkeys") || this.hotkeys;
+    if (!this.hotkeys.enabled) {
+      this.hotkeys.enabled = {
+        spikePlanted: false,
+        techPause: true,
+        leftTimeout: true,
+        rightTimeout: true,
+      }
+    }
   }
 
   ngOnInit() {
@@ -491,6 +505,12 @@ export type Hotkeys = {
   techPause: string;
   leftTimeout: string;
   rightTimeout: string;
+  enabled: {
+    spikePlanted: boolean;
+    techPause: boolean;
+    leftTimeout: boolean;
+    rightTimeout: boolean;
+  }
 };
 
 type BaseMapInfo = {

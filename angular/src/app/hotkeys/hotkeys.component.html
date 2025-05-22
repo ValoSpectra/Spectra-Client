@@ -1,54 +1,69 @@
 <div class="flex flex-col border border-surface rounded-lg p-5 gap-3">
   <h1 class="text-xl text-color font-bold">Hotkeys</h1>
 
+  <p-popover #change_popover (onHide)="stopCapturing()">
+    <p class="">Press your key combination</p>
+  </p-popover>
+
   <p-floatlabel variant="on">
-    <input
-      pInputText
-      fluid
-      [(ngModel)]="data.spikePlanted"
-      (ngModelChange)="runValidation()"
-      type="text"
-      id="HotkeySpikeInput"
-    />
+    <p-inputgroup>
+      <input pInputText fluid [(ngModel)]="data.spikePlanted" (ngModelChange)="runValidation()" type="text"
+        id="HotkeySpikeInput" disabled [class.ng-dirty]="!valid.spikePlanted"
+        [class.ng-invalid]="!valid.spikePlanted" />
+      <p-inputgroup-addon>
+        <p-togglebutton onLabel="Enabled" offLabel="Disabled" [(ngModel)]="data.enabled.spikePlanted"
+          (ngModelChange)="runValidation()"
+          styleClass="w-24 border-r-[var(--p-form-field-border-color)] rounded-none" />
+        <p-button label="Change" severity="primary" variant="text" (onClick)="changeKeybind($event, 'spike')"
+          [disabled]="isCapturing" />
+      </p-inputgroup-addon>
+    </p-inputgroup>
     <label for="HotkeySpikeInput">Spike planted</label>
   </p-floatlabel>
 
   <p-floatlabel variant="on">
-    <input
-      pInputText
-      fluid
-      [(ngModel)]="data.techPause"
-      (ngModelChange)="runValidation()"
-      type="text"
-      pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
-      id="TechPauseInput"
-    />
+    <p-inputgroup>
+      <input pInputText fluid [(ngModel)]="data.techPause" (ngModelChange)="runValidation()" type="text"
+        id="TechPauseInput" disabled [class.ng-dirty]="!valid.techPause" [class.ng-invalid]="!valid.techPause" />
+      <p-inputgroup-addon>
+        <p-togglebutton onLabel="Enabled" offLabel="Disabled" [(ngModel)]="data.enabled.techPause"
+          (ngModelChange)="runValidation()"
+          styleClass="w-24 border-r-[var(--p-form-field-border-color)] rounded-none" />
+        <p-button label="Change" severity="primary" variant="text" (onClick)="changeKeybind($event, 'techPause')"
+          [disabled]="isCapturing" />
+      </p-inputgroup-addon>
+    </p-inputgroup>
     <label for="TechPauseInput">Tech Pause</label>
   </p-floatlabel>
 
   <p-floatlabel variant="on">
-    <input
-      pInputText
-      fluid
-      [(ngModel)]="data.leftTimeout"
-      (ngModelChange)="runValidation()"
-      type="text"
-      pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
-      id="LeftTimeoutInput"
-    />
+    <p-inputgroup>
+      <input pInputText fluid [(ngModel)]="data.leftTimeout" (ngModelChange)="runValidation()" type="text"
+        id="LeftTimeoutInput" disabled [class.ng-dirty]="!valid.leftTimeout" [class.ng-invalid]="!valid.leftTimeout" />
+      <p-inputgroup-addon>
+        <p-togglebutton onLabel="Enabled" offLabel="Disabled" [(ngModel)]="data.enabled.leftTimeout"
+          (ngModelChange)="runValidation()"
+          styleClass="w-24 border-r-[var(--p-form-field-border-color)] rounded-none" />
+        <p-button label="Change" severity="primary" variant="text" (onClick)="changeKeybind($event, 'timeLeft')"
+          [disabled]="isCapturing" />
+      </p-inputgroup-addon>
+    </p-inputgroup>
     <label for="LeftTimeoutInput">Left Team Timeout</label>
   </p-floatlabel>
 
   <p-floatlabel variant="on">
-    <input
-      pInputText
-      fluid
-      [(ngModel)]="data.rightTimeout"
-      (ngModelChange)="runValidation()"
-      type="text"
-      pattern="^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$"
-      id="RightTimeoutInput"
-    />
+    <p-inputgroup>
+      <input pInputText fluid [(ngModel)]="data.rightTimeout" (ngModelChange)="runValidation()" type="text"
+        id="RightTimeoutInput" disabled [class.ng-dirty]="!valid.rightTimeout"
+        [class.ng-invalid]="!valid.rightTimeout" />
+      <p-inputgroup-addon>
+        <p-togglebutton onLabel="Enabled" offLabel="Disabled" [(ngModel)]="data.enabled.rightTimeout"
+          (ngModelChange)="runValidation()"
+          styleClass="w-24 border-r-[var(--p-form-field-border-color)] rounded-none" />
+        <p-button label="Change" severity="primary" variant="text" (onClick)="changeKeybind($event, 'timeRight')"
+          [disabled]="isCapturing" />
+      </p-inputgroup-addon>
+    </p-inputgroup>
     <label for="RightTimeoutInput">Right Team Timeout</label>
   </p-floatlabel>
 </div>

@@ -16,21 +16,25 @@ export default class HotkeyService {
       key: "",
       action: this._spikePlantedHotkeyAction.bind(this),
       type: HotkeyType.SPIKE_PLANTED,
+      enabled: false,
     };
     this.hotkeys[HotkeyType.TECH_PAUSE] = {
       key: "",
       action: this._techPauseHotkeyAction.bind(this),
       type: HotkeyType.TECH_PAUSE,
+      enabled: true,
     };
     this.hotkeys[HotkeyType.LEFT_TIMEOUT] = {
       key: "",
       action: this._leftTimeoutHotkeyAction.bind(this),
       type: HotkeyType.LEFT_TIMEOUT,
+      enabled: true,
     };
     this.hotkeys[HotkeyType.RIGHT_TIMEOUT] = {
       key: "",
       action: this._rightTimeoutHotkeyAction.bind(this),
       type: HotkeyType.RIGHT_TIMEOUT,
+      enabled: true,
     };
   }
 
@@ -39,13 +43,18 @@ export default class HotkeyService {
     return HotkeyService.instance;
   }
 
-  public activateHotkey(key: HotkeyType) {
+  protected activateHotkey(key: HotkeyType) {
     const hotkey = this.hotkeys[key];
-    globalShortcut.register(hotkey.key, hotkey.action);
-    log.info("Activated hotkey on key " + hotkey.key);
+    if (hotkey.enabled) {
+      globalShortcut.register(hotkey.key, hotkey.action);
+      log.info("Activated hotkey on key " + hotkey.key);
+    }
+    else {
+      log.info("Skipped activating hotkey on key " + hotkey.key + ", as its not enabled");
+    }
   }
 
-  public deactivateHotkey(key: HotkeyType) {
+  protected deactivateHotkey(key: HotkeyType) {
     const hotkey = this.hotkeys[key];
     globalShortcut.unregister(hotkey.key);
     log.info("Deactivated hotkey on key " + hotkey.key);
@@ -53,7 +62,7 @@ export default class HotkeyService {
 
   public activateAllHotkeys() {
     for (const hotkey of this.hotkeys) {
-      globalShortcut.register(hotkey.key, hotkey.action);
+      this.activateHotkey(hotkey.type);
     }
     log.info("Activated all hotkeys");
   }
@@ -74,8 +83,15 @@ export default class HotkeyService {
     this.currentRoundPhase = phase;
   }
 
-  public setKeyForHotkey(hotkey: HotkeyType, key: string) {
-    this.hotkeys[hotkey].key = key;
+  public setKeyForHotkey(hotkey: HotkeyType, key: string, enabled: boolean = true) {
+    const regex = /^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$/g;
+    if (key.match(regex) || !enabled) {
+      this.hotkeys[hotkey].key = key;
+      this.hotkeys[hotkey].enabled = enabled;
+    }
+    else {
+      throw new Error(`The hotkey on ${key} is invalid!`);
+    }
   }
 
   private _spikePlantedHotkeyAction() {
@@ -110,4 +126,5 @@ type Hotkey = {
   key: string;
   action: () => void;
   type: HotkeyType;
+  enabled: boolean;
 };
