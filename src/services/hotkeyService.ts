@@ -47,24 +47,21 @@ export default class HotkeyService {
     const hotkey = this.hotkeys[key];
     if (hotkey.enabled) {
       globalShortcut.register(hotkey.key, hotkey.action);
-      log.info("Activated hotkey on key " + hotkey.key);
-    }
-    else {
-      log.info("Skipped activating hotkey on key " + hotkey.key + ", as its not enabled");
+      log.info(`Activated hotkey ${HotkeyType[hotkey.type]} on key ${hotkey.key}`);
     }
   }
 
   protected deactivateHotkey(key: HotkeyType) {
     const hotkey = this.hotkeys[key];
     globalShortcut.unregister(hotkey.key);
-    log.info("Deactivated hotkey on key " + hotkey.key);
+    log.info(`Deactivated hotkey ${HotkeyType[hotkey.type]} on key ${hotkey.key}`);
   }
 
   public activateAllHotkeys() {
     for (const hotkey of this.hotkeys) {
       this.activateHotkey(hotkey.type);
     }
-    log.info("Activated all hotkeys");
+    log.info("Activated all enabled hotkeys");
   }
 
   public deactivateAllHotkeys() {
@@ -88,8 +85,7 @@ export default class HotkeyService {
     if (key.match(regex) || !enabled) {
       this.hotkeys[hotkey].key = key;
       this.hotkeys[hotkey].enabled = enabled;
-    }
-    else {
+    } else {
       throw new Error(`The hotkey on ${key} is invalid!`);
     }
   }

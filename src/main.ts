@@ -326,23 +326,33 @@ function processInputs(
     }
   }
 
-
   //setting hotkeys
   //regex check happens inside
   const hotkeyService = HotkeyService.getInstance();
-  console.log(hotkeys);
-  
+
   try {
-    hotkeyService.setKeyForHotkey(HotkeyType.SPIKE_PLANTED, hotkeys.spikePlanted, hotkeys.enabled.spikePlanted);
-    hotkeyService.setKeyForHotkey(HotkeyType.TECH_PAUSE, hotkeys.techPause, hotkeys.enabled.techPause);
-    hotkeyService.setKeyForHotkey(HotkeyType.LEFT_TIMEOUT, hotkeys.leftTimeout, hotkeys.enabled.leftTimeout);
-    hotkeyService.setKeyForHotkey(HotkeyType.RIGHT_TIMEOUT, hotkeys.rightTimeout, hotkeys.enabled.rightTimeout);
-  } catch (error: any) {
-    messageBox(
-      "Spectra Client - Error",
-      error.message,
-      messageBoxType.ERROR,
+    hotkeyService.setKeyForHotkey(
+      HotkeyType.SPIKE_PLANTED,
+      hotkeys.spikePlanted,
+      hotkeys.enabled.spikePlanted,
     );
+    hotkeyService.setKeyForHotkey(
+      HotkeyType.TECH_PAUSE,
+      hotkeys.techPause,
+      hotkeys.enabled.techPause,
+    );
+    hotkeyService.setKeyForHotkey(
+      HotkeyType.LEFT_TIMEOUT,
+      hotkeys.leftTimeout,
+      hotkeys.enabled.leftTimeout,
+    );
+    hotkeyService.setKeyForHotkey(
+      HotkeyType.RIGHT_TIMEOUT,
+      hotkeys.rightTimeout,
+      hotkeys.enabled.rightTimeout,
+    );
+  } catch (error: any) {
+    messageBox("Spectra Client - Error", error.message, messageBoxType.ERROR);
     return;
   }
 
