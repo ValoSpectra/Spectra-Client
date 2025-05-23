@@ -443,11 +443,13 @@ function overwolfSetup() {
 
 async function updateCheck(): Promise<boolean> {
   try {
-    const releaseName = (
+    const versionData = (
       await axios.get("https://api.github.com/repos/ValoSpectra/Spectra-Client/releases")
-    ).data[0].tag_name.replace("v", "");
+    ).data[0];
+    const releaseVersion = versionData.tag_name.replace("v", "");
+    const releaseName = versionData.name;
 
-    const latestRelease = semver.valid(releaseName);
+    const latestRelease = semver.valid(releaseVersion);
     const currentRelease = semver.valid(app.getVersion());
 
     if (!latestRelease || !currentRelease) {
@@ -468,7 +470,7 @@ async function updateCheck(): Promise<boolean> {
       log.info(`New client version available: ${latestRelease} (current: ${currentRelease})`);
       const button = messageBox(
         "Spectra Client - Update Available",
-        `A new version of the Spectra Client is available. Please update to the latest version.`,
+        `A new version of the Spectra Client is available. Please update to the latest version.\n\nCurrent version: ${currentRelease}\nLatest version: ${releaseName}`,
         messageBoxType.WARNING,
         ["Update"],
       );
