@@ -214,7 +214,7 @@ export class ObserverComponent implements OnInit {
 
   protected sponsorInfo: SponsorInfo = {
     enabled: false,
-    duration: 5,
+    duration: 5000,
     sponsors: [],
   };
   //#endregion
