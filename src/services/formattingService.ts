@@ -288,6 +288,7 @@ export interface IToolsData {
   seedingInfo: ISeedingInfo;
   tournamentInfo: ITournamentInfo;
   timeoutDuration: number;
+  sponsorInfo: SponsorInfo;
 }
 
 export type ISeriesInfo = {
@@ -306,6 +307,13 @@ export type ITournamentInfo = {
   name: string;
   logoUrl: string;
   backdropUrl: string;
+  timeoutDuration: number;
+};
+
+export type SponsorInfo = {
+  enabled: boolean;
+  duration: number;
+  sponsors: string[];
 };
 
 type BaseMapPoolInfo = {

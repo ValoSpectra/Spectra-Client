@@ -14,11 +14,12 @@ import {
   ISeedingInfo,
   ISeriesInfo,
   ITournamentInfo,
+  SponsorInfo,
 } from "./services/formattingService";
 import HotkeyService, { HotkeyType } from "./services/hotkeyService";
 import axios from "axios";
 import * as semver from "semver";
-// import { installExtension } from "electron-devtools-installer";
+import { installExtension } from "electron-devtools-installer";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const storage = require("electron-json-storage");
@@ -177,15 +178,16 @@ app.whenReady().then(async () => {
   overwolfSetup();
   deeplinkSetup();
 
-  // if (!isDev()) {
-  //   installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
-  //     .then((ext: { name: any }) => {
-  //       log.info(`Installed extension: ${ext.name}`);
-  //     })
-  //     .catch((err: any) => {
-  //       log.error("Failed to install extension:", err);
-  //     });
-  // }
+  if (isDev()) {
+    // Install Angular DevTools
+    installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
+      .then((ext: { name: any }) => {
+        log.info(`Installed extension: ${ext.name}`);
+      })
+      .catch((err: any) => {
+        log.error("Failed to install extension:", err);
+      });
+  }
 });
 
 app.on("window-all-closed", () => {
@@ -260,7 +262,7 @@ function processInputs(
   seedingInfo: ISeedingInfo,
   tournamentInfo: ITournamentInfo,
   hotkeys: any,
-  timeoutDuration: number,
+  sponsorInfo: SponsorInfo,
 ) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
@@ -356,6 +358,10 @@ function processInputs(
     return;
   }
 
+  if (!sponsorInfo.enabled) {
+    sponsorInfo.sponsors = [];
+  }
+
   log.info(
     `Received Observer Name ${obsName}, Group Code ${groupCode}, Key ${key}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`,
   );
@@ -370,7 +376,7 @@ function processInputs(
     seriesInfo,
     seedingInfo,
     tournamentInfo,
-    timeoutDuration,
+    sponsorInfo,
     win,
   );
 }

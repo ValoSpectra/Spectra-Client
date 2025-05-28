@@ -29,6 +29,7 @@ import { ValidationState } from "../services/validation.service";
 import { DialogModule } from "primeng/dialog";
 import { ToggleSwitchModule } from "primeng/toggleswitch";
 import { TooltipModule } from "primeng/tooltip";
+import { SponsorComponent } from "../sponsor/sponsor.component";
 
 @Component({
   selector: "app-observer",
@@ -58,6 +59,7 @@ import { TooltipModule } from "primeng/tooltip";
     DialogModule,
     ToggleSwitchModule,
     TooltipModule,
+    SponsorComponent,
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
@@ -104,6 +106,11 @@ export class ObserverComponent implements OnInit {
       command: this.scrollToPanel.bind(this),
     },
     {
+      label: "Hotkey Settings",
+      fragment: "hotkeySettingsId",
+      command: this.scrollToPanel.bind(this),
+    },
+    {
       label: "Mappool Info",
       disabled: true,
       expanded: true,
@@ -126,8 +133,8 @@ export class ObserverComponent implements OnInit {
       ],
     },
     {
-      label: "Hotkey Settings",
-      fragment: "hotkeySettingsId",
+      label: "Sponsors",
+      fragment: "sponsorPanelId",
       command: this.scrollToPanel.bind(this),
     },
   ];
@@ -201,8 +208,14 @@ export class ObserverComponent implements OnInit {
       spikePlanted: false,
       techPause: true,
       leftTimeout: true,
-      rightTimeout: true
-    }
+      rightTimeout: true,
+    },
+  };
+
+  protected sponsorInfo: SponsorInfo = {
+    enabled: false,
+    duration: 5,
+    sponsors: [],
   };
   //#endregion
 
@@ -249,8 +262,11 @@ export class ObserverComponent implements OnInit {
         techPause: true,
         leftTimeout: true,
         rightTimeout: true,
-      }
+      };
     }
+
+    this.sponsorInfo =
+      this.localStorageService.getItem<SponsorInfo>("sponsors") || this.sponsorInfo;
   }
 
   ngOnInit() {
@@ -326,7 +342,7 @@ export class ObserverComponent implements OnInit {
       },
       this.tournamentInfo,
       this.hotkeys,
-      this.tournamentInfo.timeoutDuration,
+      this.sponsorInfo,
     );
 
     this.localStorageService.setItem("basicInfo", this.basicInfo);
@@ -338,6 +354,7 @@ export class ObserverComponent implements OnInit {
     this.localStorageService.setItem("centerMap", this.centerMap);
     this.localStorageService.setItem("rightMap", this.rightMap);
     this.localStorageService.setItem("hotkeys", this.hotkeys);
+    this.localStorageService.setItem("sponsors", this.sponsorInfo);
   }
 
   private hasInputValidationErrors(): boolean {
@@ -510,7 +527,13 @@ export type Hotkeys = {
     techPause: boolean;
     leftTimeout: boolean;
     rightTimeout: boolean;
-  }
+  };
+};
+
+export type SponsorInfo = {
+  enabled: boolean;
+  duration: number;
+  sponsors: string[];
 };
 
 type BaseMapInfo = {

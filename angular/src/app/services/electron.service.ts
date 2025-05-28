@@ -2,126 +2,131 @@ import { EventEmitter, Injectable, Output } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 
 declare global {
-    interface Window {
-      electronAPI: any
-    }
+  interface Window {
+    electronAPI: any;
+  }
 }
 
 @Injectable({
-    providedIn: "root"
+  providedIn: "root",
 })
 export class ElectronService {
+  constructor() {
+    this.api.onSpectraStatusChange(this.changeSpectraStatus.bind(this));
+    this.api.onGameStatusChange(this.changeGameStatus.bind(this));
+    this.api.fireConnect(this.receiveFireConnectEvent.bind(this));
+    this.api.setPlayerName(this.changePlayername.bind(this));
+    this.api.setInputAllowed(this.changeInputAllowed.bind(this));
+    this.api.setLoadingStatus(this.changeLoadingStatus.bind(this));
+    this.api.setEventStatus(this.changeEventStatus.bind(this));
+  }
 
-    constructor() {
-        this.api.onSpectraStatusChange(this.changeSpectraStatus.bind(this));
-        this.api.onGameStatusChange(this.changeGameStatus.bind(this));
-        this.api.fireConnect(this.receiveFireConnectEvent.bind(this));
-        this.api.setPlayerName(this.changePlayername.bind(this));
-        this.api.setInputAllowed(this.changeInputAllowed.bind(this));
-        this.api.setLoadingStatus(this.changeLoadingStatus.bind(this));
-        this.api.setEventStatus(this.changeEventStatus.bind(this));
-    }
-    
-    public get api() : any {
-        return window.electronAPI;
-    }
-    
-    public processInputs(
-        ingestIp: any,
-        groupId: any,
-        obsName: any,
-        leftTeam: any,
-        rightTeam: any,
-        key: any,
-        seriesInfo: any,
-        seedingInfo: any,
-        tournamentInfo: any,
-        hotkeys: any,
-        timeoutDuration: any
-    ) {
-        this.api.processInputs(
-            ingestIp,
-            groupId,
-            obsName,
-            leftTeam,
-            rightTeam,
-            key,
-            seriesInfo,
-            seedingInfo,
-            tournamentInfo,
-            hotkeys,
-            timeoutDuration
-        )
-    }
+  public get api(): any {
+    return window.electronAPI;
+  }
 
-    public openExternalLink(link: string) {
-        this.api.openExternalLink(link);
-    }
+  public processInputs(
+    ingestIp: any,
+    groupId: any,
+    obsName: any,
+    leftTeam: any,
+    rightTeam: any,
+    key: any,
+    seriesInfo: any,
+    seedingInfo: any,
+    tournamentInfo: any,
+    hotkeys: any,
+    sponsorInfo: any,
+  ) {
+    this.api.processInputs(
+      ingestIp,
+      groupId,
+      obsName,
+      leftTeam,
+      rightTeam,
+      key,
+      seriesInfo,
+      seedingInfo,
+      tournamentInfo,
+      hotkeys,
+      sponsorInfo,
+    );
+  }
 
-    private spectraStatusMessageSource = new BehaviorSubject<Status>({statusType: StatusTypes.NEUTRAL, message: "Initializing"});
-    public spectraStatusMessage = this.spectraStatusMessageSource.asObservable();
+  public openExternalLink(link: string) {
+    this.api.openExternalLink(link);
+  }
 
-    protected changeSpectraStatus(status: Status) {
-        this.spectraStatusMessageSource.next(status);
-    }
+  private spectraStatusMessageSource = new BehaviorSubject<Status>({
+    statusType: StatusTypes.NEUTRAL,
+    message: "Initializing",
+  });
+  public spectraStatusMessage = this.spectraStatusMessageSource.asObservable();
 
-    private gameStatusMessageSource = new BehaviorSubject<Status>({statusType: StatusTypes.NEUTRAL, message: "Waiting"});
-    public gameStatusMessage = this.gameStatusMessageSource.asObservable();
+  protected changeSpectraStatus(status: Status) {
+    this.spectraStatusMessageSource.next(status);
+  }
 
-    protected changeGameStatus(status: Status) {
-        this.gameStatusMessageSource.next(status);
-    }
+  private gameStatusMessageSource = new BehaviorSubject<Status>({
+    statusType: StatusTypes.NEUTRAL,
+    message: "Waiting",
+  });
+  public gameStatusMessage = this.gameStatusMessageSource.asObservable();
 
-    @Output()
-    fireConnect = new EventEmitter<void>();
-    protected receiveFireConnectEvent(value: any) {
-        this.fireConnect.emit(value);
-    }
+  protected changeGameStatus(status: Status) {
+    this.gameStatusMessageSource.next(status);
+  }
 
-    public processAuxInputs(serverIp: string, observerName: string) {
-        this.api.processAuxInputs(serverIp, observerName);
-    }
+  @Output()
+  fireConnect = new EventEmitter<void>();
+  protected receiveFireConnectEvent(value: any) {
+    this.fireConnect.emit(value);
+  }
 
-    private playernameMessageSource = new BehaviorSubject<string>("");
-    public playernameMessage = this.playernameMessageSource.asObservable();
+  public processAuxInputs(serverIp: string, observerName: string) {
+    this.api.processAuxInputs(serverIp, observerName);
+  }
 
-    protected changePlayername(name: string) {
-        this.playernameMessageSource.next(name);
-    }
+  private playernameMessageSource = new BehaviorSubject<string>("");
+  public playernameMessage = this.playernameMessageSource.asObservable();
 
-    public setTraySetting(setting: boolean) {
-        this.api.setTraySetting(setting);
-    }
+  protected changePlayername(name: string) {
+    this.playernameMessageSource.next(name);
+  }
 
-    private inputAllowedMessageSource = new BehaviorSubject<boolean>(true);
-    public inputAllowedMessage = this.inputAllowedMessageSource.asObservable();
+  public setTraySetting(setting: boolean) {
+    this.api.setTraySetting(setting);
+  }
 
-    protected changeInputAllowed(value: boolean) {
-        this.inputAllowedMessageSource.next(value);
-    }
+  private inputAllowedMessageSource = new BehaviorSubject<boolean>(true);
+  public inputAllowedMessage = this.inputAllowedMessageSource.asObservable();
 
-    private loadingStatusMessageSource = new BehaviorSubject<boolean>(true);
-    public loadingStatusMessage = this.loadingStatusMessageSource.asObservable();
+  protected changeInputAllowed(value: boolean) {
+    this.inputAllowedMessageSource.next(value);
+  }
 
-    protected changeLoadingStatus(value: boolean) {
-        this.loadingStatusMessageSource.next(value);
-    }
+  private loadingStatusMessageSource = new BehaviorSubject<boolean>(true);
+  public loadingStatusMessage = this.loadingStatusMessageSource.asObservable();
 
-    private eventStatusMessageSource = new BehaviorSubject<number>(1);
-    public eventStatusMessage = this.eventStatusMessageSource.asObservable();
+  protected changeLoadingStatus(value: boolean) {
+    this.loadingStatusMessageSource.next(value);
+  }
 
-    protected changeEventStatus(value: number) {
-        this.eventStatusMessageSource.next(value);
-    }
+  private eventStatusMessageSource = new BehaviorSubject<number>(1);
+  public eventStatusMessage = this.eventStatusMessageSource.asObservable();
+
+  protected changeEventStatus(value: number) {
+    this.eventStatusMessageSource.next(value);
+  }
 }
 
 export enum StatusTypes {
-    NEUTRAL = "info",
-    RED = "danger",
-    YELLOW = "warn",
-    GREEN = "success"
+  NEUTRAL = "info",
+  RED = "danger",
+  YELLOW = "warn",
+  GREEN = "success",
 }
 export type Status = {
-    statusType: StatusTypes,
-    message: string,
-}
+  statusType: StatusTypes;
+  message: string;
+};

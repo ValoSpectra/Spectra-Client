@@ -1,0 +1,119 @@
+<div class="border-surface flex flex-col gap-3 rounded-lg border p-5">
+  <div class="flex items-center gap-2">
+    <h1 class="text-color text-xl font-bold">Sponsors</h1>
+    <p-toggleswitch
+      id="ShowTournamentInfo"
+      [(ngModel)]="data.enabled"
+      (ngModelChange)="runValidation()"
+    ></p-toggleswitch>
+  </div>
+
+  <p-blockui [target]="toBlock" [blocked]="!data.enabled" />
+  <blockable-div #toBlock>
+    <div class="flex flex-row gap-3">
+      <div class="flex w-1/2 flex-col gap-3">
+        <p-floatlabel variant="on" class="mb-4">
+          <p-inputnumber
+            fluid
+            [(ngModel)]="data.duration"
+            (ngModelChange)="runValidation()"
+            id="MapsNeededInput"
+            inputId="horizontal"
+            spinnerMode="horizontal"
+            [step]="1"
+            min="3000"
+            max="30000"
+          >
+            <ng-template #incrementbuttonicon>
+              <span class="pi pi-plus"></span>
+            </ng-template>
+            <ng-template #decrementbuttonicon>
+              <span class="pi pi-minus"></span>
+            </ng-template>
+          </p-inputnumber>
+          <label for="SponsorTimeInput">Sponsor Display Duration (milliseconds)</label>
+        </p-floatlabel>
+        @for (i of numSequence(data.sponsors.length + 1); track $index) {
+          <div class="flex flex-row gap-2">
+            @if ($index < data.sponsors.length) {
+              <p-button
+                icon="pi pi-arrow-up"
+                severity="primary"
+                styleClass="h-full"
+                [disabled]="$index == 0"
+                (click)="moveUp($index)"
+              ></p-button>
+            }
+            <div class="w-full">
+              <p-floatlabel variant="on">
+                <input
+                  pInputText
+                  fluid
+                  [(ngModel)]="data.sponsors[$index]"
+                  (ngModelChange)="runValidation()"
+                  [class.ng-dirty]="sponsorImageError[$index]"
+                  [class.ng-invalid]="sponsorImageError[$index]"
+                  type="url"
+                  id="SponsorInput{{ $index + 1 }}"
+                />
+                <label for="SponsorInput{{ $index + 1 }}">Sponsor {{ $index + 1 }}</label>
+              </p-floatlabel>
+            </div>
+            @if ($index < data.sponsors.length) {
+              <p-button
+                icon="pi pi-arrow-down"
+                severity="primary"
+                styleClass="h-full"
+                [disabled]="$index >= data.sponsors.length - 1"
+                (click)="moveDown($index)"
+              ></p-button>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="grid h-full w-1/2 grid-cols-2 items-center justify-center gap-4">
+        @if (data.sponsors.length > 0 && data.enabled) {
+          @for (item of data.sponsors; track $index) {
+            <div
+              class="border-surface col-span-1 flex h-22 w-60 items-center justify-center border"
+            >
+              @if (sponsorImageError[$index]) {
+                <i
+                  class="text-md! pi pi-info size-min cursor-pointer rounded-full border p-1"
+                  (click)="info_popover.toggle($event)"
+                ></i>
+                <p-popover #info_popover>
+                  <p class="">Make sure the link points directly to the image.</p>
+                  <p class="">Valid links usually end in .png or .jpg.</p>
+                </p-popover>
+              }
+              <img
+                class="aspect-square h-4/5 w-13/20 justify-self-center object-contain"
+                [src]="item"
+                (load)="onSponsorImageLoadSuccess($index)"
+                (error)="onSponsorImageLoadError($index)"
+                [hidden]="sponsorImageError[$index]"
+              />
+            </div>
+          }
+        } @else {
+          <div class="col-span-2 w-full text-center font-bold">
+            You can preview sponsor logos here.
+          </div>
+        }
+        <!-- Spectra Logo is down here so it loads on init and doesn't lag the client when you enter your first sponsor -->
+        <div
+          class="border-surface col-span-1 flex h-22 w-60 items-center justify-center border"
+          [class]="data.sponsors.length > 0 && data.enabled ? '' : 'hidden'"
+        >
+          <img
+            class="aspect-square h-4/5 w-13/20 justify-self-center object-contain"
+            src="https://auto.valospectra.com/assets/misc/logo.webp"
+            load="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  </blockable-div>
+</div>

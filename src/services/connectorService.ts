@@ -1,7 +1,14 @@
 import { app } from "electron";
 import log from "electron-log";
 import * as io from "socket.io-client";
-import { messageBox, messageBoxType, setGameStatus, setInputAllowed, setSpectraStatus, StatusTypes } from "../main";
+import {
+  messageBox,
+  messageBoxType,
+  setGameStatus,
+  setInputAllowed,
+  setSpectraStatus,
+  StatusTypes,
+} from "../main";
 import {
   DataTypes,
   IAuthenticationData,
@@ -12,6 +19,7 @@ import {
   ISeriesInfo,
   ITournamentInfo,
   SocketChannels,
+  SponsorInfo,
 } from "./formattingService";
 import HotkeyService from "./hotkeyService";
 const storage = require("electron-json-storage");
@@ -72,7 +80,7 @@ export class ConnectorService {
     seriesInfo: ISeriesInfo,
     seedingInfo: ISeedingInfo,
     tournamentInfo: ITournamentInfo,
-    timeoutDuration: number,
+    sponsorInfo: SponsorInfo,
     win: Electron.Main.BrowserWindow,
   ) {
     if (RegExp("(http|https)://[^/]+:[0-9]+").test(ingestIp)) {
@@ -178,10 +186,10 @@ export class ConnectorService {
         seriesInfo: seriesInfo,
         seedingInfo: seedingInfo,
         tournamentInfo: tournamentInfo,
-        timeoutDuration: timeoutDuration,
+        timeoutDuration: tournamentInfo.timeoutDuration,
+        sponsorInfo: sponsorInfo,
       },
     };
-
     this.ws.emit(SocketChannels.OBSERVER_LOGON, JSON.stringify(logonData));
   }
 

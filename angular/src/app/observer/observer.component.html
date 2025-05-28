@@ -19,7 +19,7 @@
 </p-dialog>
 <button
   pButton
-  class="-rotate-90 cursor-pointer border-b-1 border-x-1 border-surface fixed -translate-x-3/7 translate-y-4/1 px-3 pb-1 rounded-b-2xl font-normal z-1050"
+  class="border-surface fixed z-1050 -translate-x-3/7 translate-y-4/1 -rotate-90 cursor-pointer rounded-b-2xl border-x-1 border-b-1 px-3 pb-1 font-normal"
   icon="pi pi-list-check"
   [hidden]="!editable"
   (click)="drawerVisible = true"
@@ -29,7 +29,7 @@
   Checklist
 </button>
 
-<div class="grid grid-cols-6 gap-4 m-4">
+<div class="m-4 grid grid-cols-6 gap-4">
   <blockable-div class="col-span-3 h-full" #observerinfo_panel>
     <p-block-ui [target]="observerinfo_panel" [blocked]="!editable" />
     <app-observerinfo
@@ -40,9 +40,9 @@
     ></app-observerinfo>
   </blockable-div>
 
-  <div class="col-span-3 flex flex-col border border-surface rounded-lg p-5">
+  <div class="border-surface col-span-3 flex flex-col rounded-lg border p-5">
     <p-button
-      class="w-10 h-10 self-end absolute"
+      class="absolute h-10 w-10 self-end"
       severity="contrast"
       [icon]="darkModeEnabled ? 'pi pi-sun' : 'pi pi-moon'"
       (onClick)="toggleDarkMode()"
@@ -59,7 +59,7 @@
       Game Status:
       <p-tag [value]="gameStatus.message | titlecase" [severity]="gameStatus.statusType" />
     </p>
-    <div class="flex flex-row gap-2 w-full">
+    <div class="flex w-full flex-row gap-2">
       <p-button
         fluid
         label="Connect"
@@ -126,22 +126,6 @@
     ></app-seriesinfo>
   </blockable-div>
 
-  <!-- <blockable-div class="col-span-6 lg:col-span-3" #mapinfo1_panel>
-    <p-block-ui [target]="mapinfo1_panel" [blocked]="!editable" />
-    <app-mapinfo id="leftMapPanelId" [data]="leftMap" position="left" [blocked]="!tournamentInfo.showMappool"
-      (validationChanged)="onPanelValidationChanged($event, 'leftMapPanelId')"></app-mapinfo>
-  </blockable-div>
-  <blockable-div class="col-span-6 lg:col-span-3" #mapinfo2_panel>
-    <p-block-ui [target]="mapinfo2_panel" [blocked]="!editable" />
-    <app-mapinfo id="centerMapPanelId" [data]="centerMap" position="center" [blocked]="!tournamentInfo.showMappool"
-      (validationChanged)="onPanelValidationChanged($event, 'centerMapPanelId')"></app-mapinfo>
-  </blockable-div>
-  <blockable-div class="col-span-6 lg:col-span-3" #mapinfo3_panel>
-    <p-block-ui [target]="mapinfo3_panel" [blocked]="!editable" />
-    <app-mapinfo id="rightMapPanelId" [data]="rightMap" position="right" [blocked]="!tournamentInfo.showMappool"
-      (validationChanged)="onPanelValidationChanged($event, 'rightMapPanelId')"></app-mapinfo>
-  </blockable-div> -->
-
   <blockable-div class="col-span-3" #hotkeys_panel>
     <p-block-ui [target]="hotkeys_panel" [blocked]="!editable" />
     <app-hotkeys
@@ -155,9 +139,9 @@
   <blockable-div class="col-span-6" #mapinfo_panel>
     <p-block-ui [target]="mapinfo_panel" [blocked]="!editable" />
     <p-block-ui [target]="mapinfo_inputs" [blocked]="!tournamentInfo.showMappool" />
-    <div class="flex flex-col border border-surface rounded-lg p-5 gap-3">
+    <div class="border-surface flex flex-col gap-3 rounded-lg border p-5">
       <div class="flex items-center gap-2">
-        <h1 class="text-xl text-color mb-2 font-bold">Mappool</h1>
+        <h1 class="text-color mb-2 text-xl font-bold">Mappool</h1>
         <p-toggleswitch
           id="ShowTournamentInfo"
           [(ngModel)]="tournamentInfo.showMappool"
@@ -166,7 +150,7 @@
       <blockable-div #mapinfo_inputs>
         <div class="grid grid-cols-3 gap-3">
           <app-mapinfo
-            class="xl:col-span-1 col-span-3 border-surface xl:border-r xl:pr-3"
+            class="border-surface col-span-3 xl:col-span-1 xl:border-r xl:pr-3"
             id="leftMapPanelId"
             [data]="leftMap"
             position="left"
@@ -174,9 +158,9 @@
             [teamdata]="[leftTeamInfo, rightTeamInfo]"
             (validationChanged)="onPanelValidationChanged($event, 'leftMapPanelId')"
           ></app-mapinfo>
-          <hr class="col-span-full border-surface xl:hidden" />
+          <hr class="border-surface col-span-full xl:hidden" />
           <app-mapinfo
-            class="xl:col-span-1 col-span-3 border-surface xl:border-r xl:pr-3"
+            class="border-surface col-span-3 xl:col-span-1 xl:border-r xl:pr-3"
             id="centerMapPanelId"
             [data]="centerMap"
             position="center"
@@ -184,9 +168,9 @@
             [teamdata]="[leftTeamInfo, rightTeamInfo]"
             (validationChanged)="onPanelValidationChanged($event, 'centerMapPanelId')"
           ></app-mapinfo>
-          <hr class="col-span-full border-surface xl:hidden" />
+          <hr class="border-surface col-span-full xl:hidden" />
           <app-mapinfo
-            class="xl:col-span-1 col-span-3"
+            class="col-span-3 xl:col-span-1"
             id="rightMapPanelId"
             [data]="rightMap"
             position="right"
@@ -197,5 +181,15 @@
         </div>
       </blockable-div>
     </div>
+  </blockable-div>
+
+  <blockable-div class="col-span-6" #sponsor_panel>
+    <p-block-ui [target]="sponsor_panel" [blocked]="!editable" />
+    <app-sponsor
+      id="sponsorPanelId"
+      [data]="sponsorInfo"
+      class="col-span-6"
+      (validationChanged)="onPanelValidationChanged($event, 'sponsorPanelId')"
+    ></app-sponsor>
   </blockable-div>
 </div>
