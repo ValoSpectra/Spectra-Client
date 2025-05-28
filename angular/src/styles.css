@@ -4,7 +4,6 @@
 @plugin "tailwindcss-primeui";
 @import "primeicons/primeicons.css";
 
-
 @custom-variant dark (&:where(.dark, .dark *));
 
 ::-webkit-scrollbar {

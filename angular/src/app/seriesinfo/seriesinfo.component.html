@@ -1,6 +1,6 @@
-<div class="flex flex-col border border-surface rounded-lg p-5 gap-3 h-full">
+<div class="border-surface flex h-full flex-col gap-3 rounded-lg border p-5">
   <div class="flex items-center gap-2">
-    <h1 class="text-xl text-color mb-2 font-bold">Series Info</h1>
+    <h1 class="text-color mb-2 text-xl font-bold">Series Info</h1>
     <p-toggleswitch
       id="ShowTournamentInfo"
       [(ngModel)]="data.enable"
@@ -33,7 +33,7 @@
       <label for="MapsNeededInput">Maps to Win Series</label>
     </p-floatlabel>
 
-    <div class="flex flex-col lg:flex-row gap-2 w-full mb-2">
+    <div class="mb-2 flex w-full flex-col gap-2 lg:flex-row">
       <div class="lg:w-1/2">
         <p-floatlabel variant="on">
           <p-inputnumber
@@ -86,7 +86,7 @@
       </div>
     </div>
 
-    <div class="flex flex-row gap-2 w-full">
+    <div class="flex w-full flex-row gap-2">
       <div class="w-1/2">
         <p-floatlabel variant="on">
           <input

@@ -83,7 +83,7 @@ export class MapinfoComponent implements Validatable, AfterContentInit, OnChange
   validationChanged = new EventEmitter<ValidationState>();
   runValidation() {
     let valid: boolean = true;
-    
+
     if (this.blocked) {
       this.validationChanged.emit(ValidationState.OPTIONAL);
       return;
@@ -97,10 +97,9 @@ export class MapinfoComponent implements Validatable, AfterContentInit, OnChange
       case "Present":
         if (this.position == "right") {
           valid = ["left", "right", "decider"].includes(this.data.picker);
-        }
-        else {
+        } else {
           valid = ["left", "right"].includes(this.data.picker);
-        }        
+        }
         break;
 
       case "Future":

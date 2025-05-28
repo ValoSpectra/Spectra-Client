@@ -1,6 +1,6 @@
-<div class="grid grid-cols-7 border border-surface rounded-lg p-5 gap-3">
-  <div class="col-span-4 flex flex-col gap-3 justify-around">
-    <h1 class="text-xl text-color font-bold">{{ position | titlecase }} Team</h1>
+<div class="border-surface grid grid-cols-7 gap-3 rounded-lg border p-5">
+  <div class="col-span-4 flex flex-col justify-around gap-3">
+    <h1 class="text-color text-xl font-bold">{{ position | titlecase }} Team</h1>
     <p-floatlabel variant="on">
       <input
         class="w-full"
@@ -39,7 +39,7 @@
       />
       <label for="TeamLogoInput">Team Logo URL</label>
     </p-floatlabel>
-    <div class="flex flex-row gap-2 content-center">
+    <div class="flex flex-row content-center gap-2">
       <p-radiobutton
         [inputId]="'attackStartRadioButton' + position"
         name="attackStart"
@@ -50,12 +50,12 @@
     </div>
   </div>
 
-  <div class="col-span-3 flex flex-col justify-center items-center">
-    <p class="text-sm italic mb-2">Logo preview</p>
+  <div class="col-span-3 flex flex-col items-center justify-center">
+    <p class="mb-2 text-sm italic">Logo preview</p>
     <img
       [src]="teaminfo.url"
       alt="Image link invalid"
-      class="w-4/6 aspect-square justify-self-center object-contain"
+      class="aspect-square w-4/6 justify-self-center object-contain"
       [hidden]="!teaminfo.url || logoImageError"
       (load)="onImageLoadSuccess()"
       (error)="onImageLoadError()"
@@ -63,10 +63,10 @@
 
     @if (!teaminfo.url || logoImageError) {
       <div
-        class="w-4/6 aspect-square justify-self-center rounded-xl border-surface bg-emphasis border flex justify-center items-center"
+        class="border-surface bg-emphasis flex aspect-square w-4/6 items-center justify-center justify-self-center rounded-xl border"
       >
         <i
-          class="text-md! rounded-full border size-min p-1 cursor-pointer pi pi-info"
+          class="text-md! pi pi-info size-min cursor-pointer rounded-full border p-1"
           (click)="info_popover.toggle($event)"
         ></i>
         <p-popover #info_popover>

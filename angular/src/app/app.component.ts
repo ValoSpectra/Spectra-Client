@@ -23,8 +23,10 @@ export class AppComponent implements OnInit {
   eventStatus: number = 1;
   isDevMode: boolean = isDevMode();
 
-  constructor(private changeDetectorRef: ChangeDetectorRef, protected electron: ElectronService) {
-  }
+  constructor(
+    private changeDetectorRef: ChangeDetectorRef,
+    protected electron: ElectronService,
+  ) {}
 
   ngOnInit(): void {
     this.electron.loadingStatusMessage.subscribe(this.updateLoadingStatus.bind(this));

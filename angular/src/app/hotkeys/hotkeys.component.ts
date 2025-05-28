@@ -32,7 +32,7 @@ import { ToggleSwitchModule } from "primeng/toggleswitch";
     PopoverModule,
     ToggleButtonModule,
     CheckboxModule,
-    ToggleSwitchModule
+    ToggleSwitchModule,
   ],
   templateUrl: "./hotkeys.component.html",
   styleUrl: "./hotkeys.component.css",
@@ -55,12 +55,11 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
 
   @HostListener("window:keyup", ["$event"])
   onKeyUp(event: KeyboardEvent) {
-    
     if (event.key == "Shift" || event.key == "Control" || event.key == "Alt") {
       this.onKeyDown(event);
       return;
     }
-    
+
     this.stopCapturing();
   }
 
@@ -75,7 +74,7 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
   onKeyDown(event: KeyboardEvent) {
     if (!this.isCapturing) return;
     if (event.key == "Escape") {
-      this.stopCapturing(); 
+      this.stopCapturing();
       return;
     }
     let keyString = "";
@@ -117,10 +116,14 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
     let valid: boolean = true;
     const hotkeyRegex = /^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$/g;
 
-    this.valid.spikePlanted = !this.data.enabled.spikePlanted || this.data.spikePlanted.match(hotkeyRegex) != null;
-    this.valid.techPause = !this.data.enabled.techPause || this.data.techPause.match(hotkeyRegex) != null;
-    this.valid.leftTimeout = !this.data.enabled.leftTimeout || this.data.leftTimeout.match(hotkeyRegex) != null;
-    this.valid.rightTimeout = !this.data.enabled.rightTimeout || this.data.rightTimeout.match(hotkeyRegex) != null;
+    this.valid.spikePlanted =
+      !this.data.enabled.spikePlanted || this.data.spikePlanted.match(hotkeyRegex) != null;
+    this.valid.techPause =
+      !this.data.enabled.techPause || this.data.techPause.match(hotkeyRegex) != null;
+    this.valid.leftTimeout =
+      !this.data.enabled.leftTimeout || this.data.leftTimeout.match(hotkeyRegex) != null;
+    this.valid.rightTimeout =
+      !this.data.enabled.rightTimeout || this.data.rightTimeout.match(hotkeyRegex) != null;
 
     valid =
       this.valid.spikePlanted &&

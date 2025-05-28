@@ -1,7 +1,14 @@
 import { overwolf } from "@overwolf/ow-electron";
 import { dialog, app as electronApp } from "electron";
 import log from "electron-log";
-import { fireConnect, setGameStatus, setLoadingStatus, setPlayerName, setSpectraStatus, StatusTypes } from "../main";
+import {
+  fireConnect,
+  setGameStatus,
+  setLoadingStatus,
+  setPlayerName,
+  setSpectraStatus,
+  StatusTypes,
+} from "../main";
 import { ConnectorService } from "./connectorService";
 import {
   DataTypes,
@@ -90,7 +97,9 @@ export class GameEventsService {
       log.info(`GEP version ${version} ready!`);
       setSpectraStatus("Ready", StatusTypes.NEUTRAL);
       setTimeout(() => {
-        this.win!.setTitle(`Spectra Client | Ready (GEP: ${version}, Spectra: ${app.getVersion()})`);
+        this.win!.setTitle(
+          `Spectra Client | Ready (GEP: ${version}, Spectra: ${app.getVersion()})`,
+        );
         setLoadingStatus(false);
       }, 300);
       this.gepVersion = version;
