@@ -19,7 +19,7 @@ import {
 import HotkeyService, { HotkeyType } from "./services/hotkeyService";
 import axios from "axios";
 import * as semver from "semver";
-import { installExtension } from "electron-devtools-installer";
+// import { installExtension } from "electron-devtools-installer";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
 const storage = require("electron-json-storage");
@@ -178,16 +178,16 @@ app.whenReady().then(async () => {
   overwolfSetup();
   deeplinkSetup();
 
-  if (isDev()) {
-    // Install Angular DevTools
-    installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
-      .then((ext: { name: any }) => {
-        log.info(`Installed extension: ${ext.name}`);
-      })
-      .catch((err: any) => {
-        log.error("Failed to install extension:", err);
-      });
-  }
+  // if (isDev()) {
+  //   // Install Angular DevTools
+  //   installExtension("ienfalfjdbdpebioblfackkekamfmbnh")
+  //     .then((ext: { name: any }) => {
+  //       log.info(`Installed extension: ${ext.name}`);
+  //     })
+  //     .catch((err: any) => {
+  //       log.error("Failed to install extension:", err);
+  //     });
+  // }
 });
 
 app.on("window-all-closed", () => {
