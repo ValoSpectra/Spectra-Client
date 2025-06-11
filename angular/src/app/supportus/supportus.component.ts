@@ -12,6 +12,7 @@ import { ToastModule } from "primeng/toast";
 import { ElectronService } from "../services/electron.service";
 import { LocalstorageService } from "../services/localstorage.service";
 import { AvatarModule } from "primeng/avatar";
+import { DialogModule } from "primeng/dialog";
 
 @Component({
   selector: "app-supportus",
@@ -26,6 +27,7 @@ import { AvatarModule } from "primeng/avatar";
     CurrencyPipe,
     CardModule,
     AvatarModule,
+    DialogModule,
   ],
   templateUrl: "./supportus.component.html",
   styleUrl: "./supportus.component.css",
@@ -42,6 +44,7 @@ export class SupportusComponent implements OnInit {
     avatarHash: "",
   };
   protected packagesReady: boolean = false;
+  protected displayCloseTab: boolean = false;
 
   protected sortedPackages: Map<string, Package[]> = new Map<string, Package[]>();
 
@@ -58,6 +61,7 @@ export class SupportusComponent implements OnInit {
       if (event.key === "discordInfo") {
         if (event.newValue != null) {
           this.loggedInDiscord = JSON.parse(event.newValue);
+          this.displayCloseTab = true;
         }
       }
     });
@@ -101,7 +105,7 @@ export class SupportusComponent implements OnInit {
           this.loading = false;
           this.loggedIn = true;
           this.loggedInOrg = orgInfo;
-          this.loggedInOrg.isSupporting = true;
+          this.loggedInOrg.isSupporting = false;
         },
         error: () => {
           this.messageService.add({
@@ -139,11 +143,6 @@ export class SupportusComponent implements OnInit {
       }
       pkg.description = pkg.description.replaceAll("<p>", "");
       pkg.description = pkg.description.replaceAll("</p>", "");
-      pkg.checkoutUrl += `&userId=${this.loggedInOrg.id}`;
-
-      if (this.loggedInDiscord.userId && this.loggedInDiscord.userId != "") {
-        pkg.checkoutUrl += `&discordId=${this.loggedInDiscord.userId}`;
-      }
 
       this.sortedPackages.get(pkg.category.name)?.push(pkg);
     });
@@ -155,6 +154,13 @@ export class SupportusComponent implements OnInit {
   }
 
   protected openCheckout(pkg: Package) {
+    const userId = this.loggedInOrg.id || `user-${this.loggedInDiscord.userId}`;
+    pkg.checkoutUrl += `&userId=${userId}`;
+    if (this.loggedInDiscord.userId && this.loggedInDiscord.userId != "") {
+      pkg.checkoutUrl += `&discordId=${this.loggedInDiscord.userId}`;
+    }
+
+    console.log(pkg.checkoutUrl);
     this.electronService.openExternalLink(pkg.checkoutUrl);
   }
 
