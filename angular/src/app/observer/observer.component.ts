@@ -30,6 +30,7 @@ import { DialogModule } from "primeng/dialog";
 import { ToggleSwitchModule } from "primeng/toggleswitch";
 import { TooltipModule } from "primeng/tooltip";
 import { SponsorComponent } from "../sponsor/sponsor.component";
+import { HttpClient } from "@angular/common/http";
 
 @Component({
   selector: "app-observer",
@@ -140,8 +141,10 @@ export class ObserverComponent implements OnInit {
   ];
 
   protected issueDialogVisible: boolean = false;
-  protected validationIssuesDetected: boolean = false;
+  validationIssuesDetected: boolean = false;
   protected issueStore: Map<string, ValidationState> = new Map<string, ValidationState>();
+
+  protected extrasDialogVisible: boolean = false;
 
   //#region Data strucures definition
   protected ingestServerOptions: string[] = ingestServerOptions;
@@ -224,6 +227,7 @@ export class ObserverComponent implements OnInit {
     protected localStorageService: LocalstorageService,
     protected changeDetectorRef: ChangeDetectorRef,
     protected radiobuttonService: RadiobuttonService,
+    protected http: HttpClient,
   ) {
     const loadedDarkModeEnabled = this.localStorageService.getItem<boolean>("darkMode");
     if (loadedDarkModeEnabled !== null) {
@@ -355,6 +359,70 @@ export class ObserverComponent implements OnInit {
     this.localStorageService.setItem("rightMap", this.rightMap);
     this.localStorageService.setItem("hotkeys", this.hotkeys);
     this.localStorageService.setItem("sponsors", this.sponsorInfo);
+  }
+
+  protected onExtrasClick() {
+    this.extrasDialogVisible = true;
+  }
+
+  previewCode: string = "";
+  protected onPreviewClick() {
+    this.tryingToConnect = true;
+    this.changeDetectorRef.detectChanges();
+    setTimeout(() => {
+      this.tryingToConnect = false;
+      this.changeDetectorRef.detectChanges();
+    }, 2500);
+    const mapPool: MapInfoSend[] = [];
+    if (this.tournamentInfo.showMappool) {
+      mapPool.push(this.translateMapInfo(this.leftMap));
+      mapPool.push(this.translateMapInfo(this.centerMap));
+      mapPool.push(this.translateMapInfo(this.rightMap));
+    }
+    this.http
+      // .put(`https://auto.valospectra.com:5101/createPreview`, {
+      .put(`http://localhost:5101/createPreview`, {
+        type: "preview",
+        clientVersion: "1.0.0",
+        key: this.basicInfo.key,
+        previewCode: this.previewCode,
+        leftTeam: this.leftTeamInfo,
+        rightTeam: this.rightTeamInfo,
+        toolsData: {
+          seriesInfo: {
+            needed: this.seriesInfo.needed,
+            wonLeft: this.seriesInfo.wonLeft,
+            wonRight: this.seriesInfo.wonRight,
+            mapInfo: mapPool,
+          },
+          seedingInfo: {
+            left: this.seriesInfo.seedingLeft,
+            right: this.seriesInfo.seedingRight,
+          },
+          tournamentInfo: this.tournamentInfo,
+          timeoutDuration: this.tournamentInfo.timeoutDuration,
+          sponsorInfo: this.sponsorInfo,
+        },
+      })
+      .subscribe({
+        next: (response: any) => {
+          if (response) {
+            this.tryingToConnect = false;
+            this.changeDetectorRef.detectChanges();
+            this.previewCode = response.previewCode;
+            console.log("Preview code created successfully:", this.previewCode);
+            this.electron.openExternalLink(
+              // `http://auto.valospectra.com/testing?previewCode=${this.previewCode}`,
+              `http://localhost:4200/testing?previewCode=${this.previewCode}`,
+            );
+          } else {
+            console.error("Failed to create preview code:", response);
+          }
+        },
+        error: (error) => {
+          console.error("Error creating preview code:", error);
+        },
+      });
   }
 
   private hasInputValidationErrors(): boolean {
