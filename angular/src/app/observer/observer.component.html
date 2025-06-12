@@ -27,6 +27,7 @@
   [dismissableMask]="true"
 >
   <div class="flex flex-col gap-3">
+    <p class="text-md text-center text-red-400">{{ extrasIssueMessage }}</p>
     @if (basicInfo.ingestIp && ingestServerOptions.includes(basicInfo.ingestIp)) {
       <p-button
         fluid

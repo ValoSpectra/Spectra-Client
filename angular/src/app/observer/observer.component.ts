@@ -145,6 +145,7 @@ export class ObserverComponent implements OnInit {
   protected issueStore: Map<string, ValidationState> = new Map<string, ValidationState>();
 
   protected extrasDialogVisible: boolean = false;
+  protected extrasIssueMessage: string = "";
 
   //#region Data strucures definition
   protected ingestServerOptions: string[] = ingestServerOptions;
@@ -373,15 +374,17 @@ export class ObserverComponent implements OnInit {
       this.tryingToConnect = false;
       this.changeDetectorRef.detectChanges();
     }, 2500);
+
     const mapPool: MapInfoSend[] = [];
     if (this.tournamentInfo.showMappool) {
       mapPool.push(this.translateMapInfo(this.leftMap));
       mapPool.push(this.translateMapInfo(this.centerMap));
       mapPool.push(this.translateMapInfo(this.rightMap));
     }
+
     this.http
-      // .put(`https://auto.valospectra.com:5101/createPreview`, {
-      .put(`http://localhost:5101/createPreview`, {
+      .put(`http://eu.valospectra.com:5101/createPreview`, {
+        // .put(`http://localhost:5101/createPreview`, {
         type: "preview",
         clientVersion: "1.0.0",
         key: this.basicInfo.key,
@@ -408,18 +411,27 @@ export class ObserverComponent implements OnInit {
         next: (response: any) => {
           if (response) {
             this.tryingToConnect = false;
+            this.extrasIssueMessage = "";
             this.changeDetectorRef.detectChanges();
             this.previewCode = response.previewCode;
             console.log("Preview code created successfully:", this.previewCode);
             this.electron.openExternalLink(
-              // `http://auto.valospectra.com/testing?previewCode=${this.previewCode}`,
-              `http://localhost:4200/testing?previewCode=${this.previewCode}`,
+              `https://eu.valospectra.com/testing?previewCode=${this.previewCode}`,
+              // `http://localhost:4200/testing?previewCode=${this.previewCode}`,
             );
           } else {
+            this.extrasIssueMessage =
+              "Failed to create preview. Please check your inputs and try again.";
             console.error("Failed to create preview code:", response);
           }
         },
         error: (error) => {
+          if (error.status === 0) {
+            this.extrasIssueMessage = "Failed to create preview. Couldn't reach Spectra server.";
+          } else {
+            this.extrasIssueMessage =
+              "Failed to create preview. Please check your inputs and try again.";
+          }
           console.error("Error creating preview code:", error);
         },
       });
