@@ -416,7 +416,7 @@ export class ObserverComponent implements OnInit {
             this.previewCode = response.previewCode;
             console.log("Preview code created successfully:", this.previewCode);
             this.electron.openExternalLink(
-              `https://eu.valospectra.com/testing?previewCode=${this.previewCode}`,
+              `https://auto.valospectra.com/testing?previewCode=${this.previewCode}`,
               // `http://localhost:4200/testing?previewCode=${this.previewCode}`,
             );
           } else {
