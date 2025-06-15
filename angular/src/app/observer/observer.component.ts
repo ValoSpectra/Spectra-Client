@@ -366,6 +366,54 @@ export class ObserverComponent implements OnInit {
     this.extrasDialogVisible = true;
   }
 
+  protected onMapbanClick() {
+    this.tryingToConnect = true;
+    this.changeDetectorRef.detectChanges();
+    setTimeout(() => {
+      this.tryingToConnect = false;
+      this.changeDetectorRef.detectChanges();
+    }, 2500);
+    this.http
+      .post(
+        "https://mapban.valospectra.com/api/createSession",
+        {
+          teams: [this.leftTeamInfo, this.rightTeamInfo],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "X-Organization-Key": this.basicInfo.key,
+          },
+        },
+      )
+      .subscribe({
+        next: (response: any) => {
+          if (response) {
+            this.tryingToConnect = false;
+            this.extrasIssueMessage = "";
+            this.changeDetectorRef.detectChanges();
+            this.electron.openExternalLink(
+              `https://mapban.valospectra.com/session/org/${response.sessionIdentifier}/${response.sessionSecret}`,
+            );
+          } else {
+            this.extrasIssueMessage =
+              "Failed to create Mapban session. Please check your inputs and try again.";
+            console.error("Failed to create Mapban session:", response);
+          }
+        },
+        error: (error) => {
+          if (error.status === 0) {
+            this.extrasIssueMessage =
+              "Error creating Mapban session. Couldn't reach Spectra server.";
+          } else {
+            this.extrasIssueMessage =
+              "Error creating Mapban session. Please check your inputs and try again.";
+          }
+          console.error("Error creating Mapban session:", error);
+        },
+      });
+  }
+
   previewCode: string = "";
   protected onPreviewClick() {
     this.tryingToConnect = true;
