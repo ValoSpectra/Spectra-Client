@@ -5,22 +5,41 @@
     <input class="w-full" pInputText [(ngModel)]="data.name" disabled id="ValorantNameInput" />
     <label for="ValorantNameInput" class="text-sm">Please double-check your Valorant name</label>
   </p-floatlabel>
-  <p-floatlabel variant="on">
-    <p-password
-      fluid
-      [(ngModel)]="data.key"
-      (ngModelChange)="runValidation()"
-      [feedback]="false"
-      [toggleMask]="true"
-      id="KeyInput"
-      pTooltip="Using our official servers requires a key. You can get one on our Discord."
-      tooltipPosition="top"
-      showDelay="500"
-    />
-    <label for="KeyInput">Organization Key</label>
-  </p-floatlabel>
+
   <div class="flex flex-row gap-2">
-    <p-floatlabel variant="on" class="w-full">
+    <p-floatlabel variant="on" class="w-2/3">
+      <p-password
+        fluid
+        [(ngModel)]="data.key"
+        (ngModelChange)="accessKeyChanged(); runValidation()"
+        [feedback]="false"
+        [toggleMask]="true"
+        id="KeyInput"
+        autocomplete="off"
+        pTooltip="Using our official servers requires a key. You can get one on our Discord."
+        tooltipPosition="top"
+        showDelay="500"
+      />
+      <label for="KeyInput">Organization Key</label>
+    </p-floatlabel>
+    <p-button
+      class="w-1/3"
+      styleClass="w-full"
+      [icon]="validationButtonIcon"
+      [label]="validationButtonLabel"
+      [severity]="validationButtonSeverity"
+      (onClick)="validateAccessKey()"
+      [loading]="validatingKey"
+      [badge]="
+        debouncer.running && validationButtonSeverity == 'secondary' && !validatingKey
+          ? debouncer.timer + ''
+          : ''
+      "
+      [disabled]="debouncer.running && validationButtonSeverity == 'secondary' && !validatingKey"
+    ></p-button>
+  </div>
+  <div class="flex flex-row gap-2">
+    <p-floatlabel variant="on" class="w-2/3">
       <input
         fluid
         pInputText
@@ -34,6 +53,8 @@
       <label for="GroupCodeInput">Group Code</label>
     </p-floatlabel>
     <p-button
+      class="w-1/3"
+      styleClass="w-full"
       icon="pi pi-refresh"
       label="Random"
       severity="secondary"

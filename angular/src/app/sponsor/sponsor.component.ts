@@ -31,6 +31,9 @@ export class SponsorComponent implements Validatable, AfterContentInit {
   @Input({ required: true })
   data!: SponsorInfo;
 
+  @Input({ required: false })
+  isSupporter: boolean = false;
+
   ngAfterContentInit(): void {
     this.runValidation();
   }

@@ -20,6 +20,7 @@ import {
   ITournamentInfo,
   SocketChannels,
   SponsorInfo,
+  WatermarkInfo,
 } from "./formattingService";
 import HotkeyService from "./hotkeyService";
 const storage = require("electron-json-storage");
@@ -81,6 +82,7 @@ export class ConnectorService {
     seedingInfo: ISeedingInfo,
     tournamentInfo: ITournamentInfo,
     sponsorInfo: SponsorInfo,
+    watermarkInfo: WatermarkInfo,
     win: Electron.Main.BrowserWindow,
   ) {
     if (RegExp("(http|https)://[^/]+:[0-9]+").test(ingestIp)) {
@@ -188,6 +190,7 @@ export class ConnectorService {
         tournamentInfo: tournamentInfo,
         timeoutDuration: tournamentInfo.timeoutDuration,
         sponsorInfo: sponsorInfo,
+        watermarkInfo: watermarkInfo,
       },
     };
     this.ws.emit(SocketChannels.OBSERVER_LOGON, JSON.stringify(logonData));

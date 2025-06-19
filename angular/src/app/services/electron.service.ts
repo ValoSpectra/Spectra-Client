@@ -38,6 +38,7 @@ export class ElectronService {
     tournamentInfo: any,
     hotkeys: any,
     sponsorInfo: any,
+    watermarkInfo: any,
   ) {
     this.api.processInputs(
       ingestIp,
@@ -51,6 +52,7 @@ export class ElectronService {
       tournamentInfo,
       hotkeys,
       sponsorInfo,
+      watermarkInfo,
     );
   }
 

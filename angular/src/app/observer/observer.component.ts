@@ -31,6 +31,7 @@ import { ToggleSwitchModule } from "primeng/toggleswitch";
 import { TooltipModule } from "primeng/tooltip";
 import { SponsorComponent } from "../sponsor/sponsor.component";
 import { HttpClient } from "@angular/common/http";
+import { WatermarkComponent } from "../watermark/watermark.component";
 
 @Component({
   selector: "app-observer",
@@ -61,6 +62,7 @@ import { HttpClient } from "@angular/common/http";
     ToggleSwitchModule,
     TooltipModule,
     SponsorComponent,
+    WatermarkComponent,
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
@@ -71,6 +73,8 @@ export class ObserverComponent implements OnInit {
   protected darkModeEnabled: boolean = false;
   protected editable: boolean = true;
   protected tryingToConnect: boolean = false;
+
+  protected isSupporter: boolean = false;
 
   protected drawerVisible: boolean = false;
   protected checklistItems: MenuItem[] = [
@@ -136,6 +140,11 @@ export class ObserverComponent implements OnInit {
     {
       label: "Sponsors",
       fragment: "sponsorPanelId",
+      command: this.scrollToPanel.bind(this),
+    },
+    {
+      label: "Watermark",
+      fragment: "watermarkPanelId",
       command: this.scrollToPanel.bind(this),
     },
   ];
@@ -221,6 +230,12 @@ export class ObserverComponent implements OnInit {
     duration: 5000,
     sponsors: [],
   };
+
+  protected watermarkInfo: WatermarkInfo = {
+    spectraWatermark: true,
+    customTextEnabled: false,
+    customText: "",
+  };
   //#endregion
 
   constructor(
@@ -272,6 +287,9 @@ export class ObserverComponent implements OnInit {
 
     this.sponsorInfo =
       this.localStorageService.getItem<SponsorInfo>("sponsors") || this.sponsorInfo;
+
+    this.watermarkInfo =
+      this.localStorageService.getItem<WatermarkInfo>("watermark") || this.watermarkInfo;
   }
 
   ngOnInit() {
@@ -348,6 +366,7 @@ export class ObserverComponent implements OnInit {
       this.tournamentInfo,
       this.hotkeys,
       this.sponsorInfo,
+      this.watermarkInfo,
     );
 
     this.localStorageService.setItem("basicInfo", this.basicInfo);
@@ -360,6 +379,7 @@ export class ObserverComponent implements OnInit {
     this.localStorageService.setItem("rightMap", this.rightMap);
     this.localStorageService.setItem("hotkeys", this.hotkeys);
     this.localStorageService.setItem("sponsors", this.sponsorInfo);
+    this.localStorageService.setItem("watermark", this.watermarkInfo);
   }
 
   protected onExtrasClick() {
@@ -618,6 +638,10 @@ export class ObserverComponent implements OnInit {
   protected openSupportUs() {
     window.open(`https://valospectra.com/support?dark=${this.darkModeEnabled}`, "_blank");
   }
+
+  protected onIsSupporterChanged(newState: boolean) {
+    this.isSupporter = newState;
+  }
 }
 
 //#region Type definition
@@ -669,6 +693,12 @@ export type SponsorInfo = {
   enabled: boolean;
   duration: number;
   sponsors: string[];
+};
+
+export type WatermarkInfo = {
+  spectraWatermark: boolean;
+  customTextEnabled: boolean;
+  customText: string;
 };
 
 type BaseMapInfo = {

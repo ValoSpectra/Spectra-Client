@@ -70,9 +70,11 @@
             }
           </div>
         }
-        <div class="text-md text-color w-full text-center italic">
-          If sponsors are enabled, the Spectra logo will always be included.
-        </div>
+        @if (!isSupporter) {
+          <div class="text-md text-color w-full text-center italic">
+            If sponsors are enabled, the Spectra logo will always be included.
+          </div>
+        }
       </div>
 
       <div class="grid h-full w-1/2 grid-cols-2 items-center justify-center gap-4">
@@ -105,17 +107,19 @@
             You can preview sponsor logos here.
           </div>
         }
-        <!-- Spectra Logo is down here so it loads on init and doesn't lag the client when you enter your first sponsor -->
-        <div
-          class="border-surface col-span-1 flex h-22 w-60 items-center justify-center border"
-          [class]="data.sponsors.length > 0 && data.enabled ? '' : 'hidden'"
-        >
-          <img
-            class="aspect-square h-4/5 w-13/20 justify-self-center object-contain"
-            src="https://auto.valospectra.com/assets/misc/logo.webp"
-            load="lazy"
-          />
-        </div>
+        @if (!isSupporter) {
+          <!-- Spectra Logo is down here so it loads on init and doesn't lag the client when you enter your first sponsor -->
+          <div
+            class="border-surface col-span-1 flex h-22 w-60 items-center justify-center border"
+            [class]="data.sponsors.length > 0 && data.enabled ? '' : 'hidden'"
+          >
+            <img
+              class="aspect-square h-4/5 w-13/20 justify-self-center object-contain"
+              src="https://auto.valospectra.com/assets/misc/logo.webp"
+              load="lazy"
+            />
+          </div>
+        }
       </div>
     </div>
   </blockable-div>
