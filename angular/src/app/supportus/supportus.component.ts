@@ -95,7 +95,7 @@ export class SupportusComponent implements OnInit {
     // return;
 
     this.http
-      .get<OrgInfo>("http://localhost:5101/getOrgForKey", {
+      .get<OrgInfo>("https://eu.valospectra.com:5101/getOrgForKey", {
         params: {
           key: this.key,
         },
@@ -120,7 +120,7 @@ export class SupportusComponent implements OnInit {
   }
 
   protected getPackages() {
-    this.http.get<Package[]>("http://localhost:5101/getSupportPackages").subscribe({
+    this.http.get<Package[]>("https://eu.valospectra.com:5101/getSupportPackages").subscribe({
       next: (packages) => {
         this.processPackages(packages);
       },
@@ -141,8 +141,6 @@ export class SupportusComponent implements OnInit {
       if (!this.sortedPackages.has(pkg.category.name)) {
         this.sortedPackages.set(pkg.category.name, []);
       }
-      pkg.description = pkg.description.replaceAll("<p>", "");
-      pkg.description = pkg.description.replaceAll("</p>", "");
 
       this.sortedPackages.get(pkg.category.name)?.push(pkg);
     });
@@ -169,10 +167,12 @@ export class SupportusComponent implements OnInit {
     this.loggedInOrg = { id: "", name: "Loading..." };
   }
 
+  DISCORD_REDIRECT_URI = "https://eu.valospectra.com:5101/client/oauth-callback";
+
   protected discordLogin() {
     this.loading = true;
     this.electronService.openExternalLink(
-      "https://discord.com/oauth2/authorize?response_type=code&redirect_uri=http%3A%2F%2Flocalhost%3A5101%2Fclient%2Foauth-callback&scope=identify&client_id=1296902430503604264",
+      `https://discord.com/oauth2/authorize?response_type=code&redirect_uri=${encodeURIComponent(this.DISCORD_REDIRECT_URI)}&scope=identify&client_id=1296902430503604264`,
     );
     setTimeout(() => {
       this.loading = false;
