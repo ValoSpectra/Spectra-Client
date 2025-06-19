@@ -434,7 +434,7 @@ export class ObserverComponent implements OnInit {
     }
 
     this.http
-      .put(`https://eu.valospectra.com:5101/createPreview`, {
+      .put(`https://eu-extras.valospectra.com/createPreview`, {
         // .put(`http://localhost:5101/createPreview`, {
         type: "preview",
         clientVersion: "1.0.0",

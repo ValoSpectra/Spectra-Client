@@ -84,18 +84,8 @@ export class SupportusComponent implements OnInit {
     }
     this.loading = true;
 
-    // this.loading = false;
-    // this.loggedIn = true;
-    // this.loggedInOrg = {
-    //   name: "Test Org",
-    //   id: "test-org-id",
-    //   isSupporting: false,
-    // };
-    // this.getPackages();
-    // return;
-
     this.http
-      .get<OrgInfo>("https://eu.valospectra.com:5101/getOrgForKey", {
+      .get<OrgInfo>("https://eu-extras.valospectra.com/getOrgForKey", {
         params: {
           key: this.key,
         },
@@ -119,7 +109,7 @@ export class SupportusComponent implements OnInit {
   }
 
   protected getPackages() {
-    this.http.get<Package[]>("https://eu.valospectra.com:5101/getSupportPackages").subscribe({
+    this.http.get<Package[]>("https://eu-extras.valospectra.com/getSupportPackages").subscribe({
       next: (packages) => {
         this.processPackages(packages);
       },
