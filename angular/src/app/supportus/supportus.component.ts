@@ -105,7 +105,6 @@ export class SupportusComponent implements OnInit {
           this.loading = false;
           this.loggedIn = true;
           this.loggedInOrg = orgInfo;
-          this.loggedInOrg.isSupporting = false;
         },
         error: () => {
           this.messageService.add({
@@ -192,7 +191,7 @@ export class SupportusComponent implements OnInit {
 export type OrgInfo = {
   name: string;
   id: string;
-  isSupporting?: boolean;
+  isSupporter?: boolean;
 };
 
 export interface Category {
