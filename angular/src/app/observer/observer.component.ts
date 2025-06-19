@@ -405,6 +405,9 @@ export class ObserverComponent implements OnInit {
           if (error.status === 0) {
             this.extrasIssueMessage =
               "Error creating Mapban session. Couldn't reach Spectra server.";
+          } else if (error.status === 401 || error.status === 403) {
+            this.extrasIssueMessage =
+              "Error creating Mapban session: Unable to authorize with server. Using Spectra Mapban requires a valid Organization Key.";
           } else {
             this.extrasIssueMessage =
               "Error creating Mapban session. Please check your inputs and try again.";
