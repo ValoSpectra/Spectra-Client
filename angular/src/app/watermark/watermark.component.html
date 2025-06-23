@@ -1,0 +1,62 @@
+<div class="border-surface flex flex-col gap-3 rounded-lg border p-5">
+  <div class="flex items-center gap-2">
+    <h1 class="text-color text-xl font-bold">Watermark</h1>
+    <i class="pi" [class.pi-lock]="!isSupporter" [class.pi-lock-open]="isSupporter"></i>
+    @if (!isSupporter) {
+      <i
+        class="text-md! pi pi-info size-min cursor-pointer rounded-full border p-1"
+        (click)="info_popover.toggle($event)"
+      ></i>
+      <p-popover #info_popover>
+        <p class="">This feature is only available to our supporters.</p>
+        <p class="">If you are a supporter, enter your organization key and press "Validate".</p>
+      </p-popover>
+    }
+  </div>
+
+  <p-blockui [target]="toBlock" [blocked]="!isSupporter" />
+  <blockable-div #toBlock>
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2">
+        <label for="SpectraWatermarkSwitch">Spectra Watermark</label>
+        <p-toggleswitch
+          id="SpectraWatermarkSwitch"
+          [(ngModel)]="data.spectraWatermark"
+          (ngModelChange)="runValidation()"
+        ></p-toggleswitch>
+      </div>
+      <div class="flex items-center gap-2">
+        <label for="CustomTextSwitch">Show Custom Text</label>
+        <p-toggleswitch
+          id="CustomTextSwitch"
+          [(ngModel)]="data.customTextEnabled"
+          [disabled]="data.spectraWatermark"
+          (ngModelChange)="runValidation()"
+        ></p-toggleswitch>
+      </div>
+      <div class="w-full">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            fluid
+            [class.ng-dirty]="data.customTextEnabled && (!data.customText || data.customText == '')"
+            [class.ng-invalid]="
+              data.customTextEnabled && (!data.customText || data.customText == '')
+            "
+            [disabled]="!data.customTextEnabled"
+            [(ngModel)]="data.customText"
+            (ngModelChange)="runValidation()"
+            id="CustomTextInput"
+            aria-describedby="CustomTextInput-warning"
+          />
+          <label for="CustomTextInput">Custom Text</label>
+          <small
+            id="CustomTextInput-warning"
+            [class.hidden]="data.customText.length <= 20 || !data.customTextEnabled"
+            >Custom text longer than 20 characters might overflow</small
+          >
+        </p-floatlabel>
+      </div>
+    </div>
+  </blockable-div>
+</div>

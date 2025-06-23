@@ -289,6 +289,7 @@ export interface IToolsData {
   tournamentInfo: ITournamentInfo;
   timeoutDuration: number;
   sponsorInfo: SponsorInfo;
+  watermarkInfo: WatermarkInfo;
 }
 
 export type ISeriesInfo = {
@@ -314,6 +315,12 @@ export type SponsorInfo = {
   enabled: boolean;
   duration: number;
   sponsors: string[];
+};
+
+export type WatermarkInfo = {
+  spectraWatermark: boolean;
+  customTextEnabled: boolean;
+  customText: string;
 };
 
 type BaseMapPoolInfo = {

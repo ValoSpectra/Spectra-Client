@@ -15,6 +15,7 @@ import {
   ISeriesInfo,
   ITournamentInfo,
   SponsorInfo,
+  WatermarkInfo,
 } from "./services/formattingService";
 import HotkeyService, { HotkeyType } from "./services/hotkeyService";
 import axios from "axios";
@@ -325,6 +326,7 @@ function processInputs(
   tournamentInfo: ITournamentInfo,
   hotkeys: any,
   sponsorInfo: SponsorInfo,
+  watermarkInfo: WatermarkInfo,
 ) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
@@ -439,6 +441,7 @@ function processInputs(
     seedingInfo,
     tournamentInfo,
     sponsorInfo,
+    watermarkInfo,
     win,
   );
 }

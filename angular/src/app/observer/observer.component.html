@@ -86,6 +86,7 @@
       class=""
       [data]="basicInfo"
       (validationChanged)="onPanelValidationChanged($event, 'observerinfoPanelId')"
+      (isSupporterChanged)="onIsSupporterChanged($event)"
     ></app-observerinfo>
   </blockable-div>
 
@@ -106,7 +107,11 @@
       tooltipPosition="left"
       showDelay="500"
     />
-    <img class="h-40 self-center" src="assets/icon.webp" />
+    @if (isSupporter) {
+      <img class="h-40 self-center" src="assets/plus-icon.webp" />
+    } @else {
+      <img class="h-40 self-center" src="assets/icon.webp" />
+    }
     <p class="text-md text-color my-2">
       Spectra Status:
       <p-tag [value]="spectraStatus.message | titlecase" [severity]="spectraStatus.statusType" />
@@ -238,7 +243,19 @@
       id="sponsorPanelId"
       [data]="sponsorInfo"
       class="col-span-6"
+      [isSupporter]="isSupporter"
       (validationChanged)="onPanelValidationChanged($event, 'sponsorPanelId')"
     ></app-sponsor>
+  </blockable-div>
+
+  <blockable-div class="col-span-3" #watermark_panel>
+    <p-block-ui [target]="watermark_panel" [blocked]="!editable" />
+    <app-watermark
+      id="watermarkPanelId"
+      [data]="watermarkInfo"
+      class="col-span-3"
+      [isSupporter]="isSupporter"
+      (validationChanged)="onPanelValidationChanged($event, 'watermarkPanelId')"
+    ></app-watermark>
   </blockable-div>
 </div>
