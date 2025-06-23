@@ -13,6 +13,9 @@ import { ElectronService } from "../services/electron.service";
 import { LocalstorageService } from "../services/localstorage.service";
 import { AvatarModule } from "primeng/avatar";
 import { DialogModule } from "primeng/dialog";
+import { InputNumberModule } from "primeng/inputnumber";
+import { InputGroupModule } from "primeng/inputgroup";
+import { InputGroupAddonModule } from "primeng/inputgroupaddon";
 
 @Component({
   selector: "app-supportus",
@@ -28,6 +31,9 @@ import { DialogModule } from "primeng/dialog";
     CardModule,
     AvatarModule,
     DialogModule,
+    InputNumberModule,
+    InputGroupModule,
+    InputGroupAddonModule,
   ],
   templateUrl: "./supportus.component.html",
   styleUrl: "./supportus.component.css",
@@ -45,6 +51,8 @@ export class SupportusComponent implements OnInit {
   };
   protected packagesReady: boolean = false;
   protected displayCloseTab: boolean = false;
+
+  protected prizepool: number = 500;
 
   protected sortedPackages: Map<string, Package[]> = new Map<string, Package[]>();
 
@@ -175,6 +183,42 @@ export class SupportusComponent implements OnInit {
       username: "Not logged in",
       avatarHash: "",
     };
+  }
+
+  protected jumpToSuggestion() {
+    if (this.prizepool <= 350) {
+      this.scrollToPanel(`category-${0}`);
+    } else if (this.prizepool <= 700) {
+      this.scrollToPanel(`category-${1}`);
+    } else if (this.prizepool < 1500) {
+      this.scrollToPanel(`category-${2}`);
+    } else if (this.prizepool < 4500) {
+      this.scrollToPanel(`category-${3}`);
+    } else {
+      this.scrollToPanel(`custom-arrangement`);
+    }
+  }
+
+  private scrollToPanel(id: string) {
+    const element = document.getElementById(id);
+    if (!element) return;
+
+    const box = element.getBoundingClientRect();
+    if (!box) return;
+
+    window.scrollTo({
+      top: box.top + window.scrollY,
+      left: box.left + window.scrollX,
+      behavior: "smooth",
+    });
+    element.classList.add("animate-[pulse_0.5s_3]");
+    setTimeout(() => {
+      element.classList.remove("animate-[pulse_0.5s_3]");
+    }, 1500);
+  }
+
+  protected openDiscordInvite() {
+    this.electronService.openExternalLink("https://discord.gg/nWWXqqK6tz");
   }
 }
 

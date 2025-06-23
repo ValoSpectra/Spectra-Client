@@ -91,16 +91,14 @@
 
   <div class="border-surface col-span-3 flex flex-col rounded-lg border p-5">
     <p-button
-      class="w-10 h-10 self-start absolute"
-      severity="success"
+      class="absolute h-10 self-start"
+      [severity]="issueDialogVisible ? 'success' : 'help'"
       icon="pi pi-heart-fill"
+      [label]="issueDialogVisible ? 'Support Us!' : 'Thank you!'"
       (onClick)="openSupportUs()"
-      pTooltip="Support us!"
-      tooltipPosition="right"
-      showDelay="500"
     />
     <p-button
-      class="w-10 h-10 self-end absolute"
+      class="absolute h-10 w-10 self-end"
       severity="contrast"
       [icon]="darkModeEnabled ? 'pi pi-sun' : 'pi pi-moon'"
       (onClick)="toggleDarkMode()"

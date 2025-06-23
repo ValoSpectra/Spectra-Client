@@ -142,10 +142,32 @@
 </div>
 <div class="flex flex-col items-center gap-1 p-2">
   <p class="text-lg">All Spectra Plus Tiers grant the same benefits.</p>
-  <p class="italic">
-    We ask that larger organizations support at a higher tier, but don't pay more than you can.
+  <p class="mt-4 text-center italic">
+    We recommend that organizations consider their prize pool and choose a support package
+    accordingly.
   </p>
-  <p class="text-xl font-bold">We currently offer the following packages:</p>
+  <p class="">You can input your prizepool here to find out what we think is appropriate.</p>
+  <p-inputGroup class="w-1/3">
+    <p-inputGroupAddon>USD</p-inputGroupAddon>
+    <p-inputNumber
+      [(ngModel)]="prizepool"
+      [min]="0"
+      [max]="100000"
+      mode="decimal"
+      locale="en-US"
+      [useGrouping]="true"
+    >
+    </p-inputNumber>
+    <p-inputGroupAddon>
+      <p-button
+        icon="pi pi-calculator"
+        label="Jump"
+        severity="primary"
+        (onClick)="jumpToSuggestion()"
+      ></p-button
+    ></p-inputGroupAddon>
+  </p-inputGroup>
+  <p class="mt-8 text-xl font-bold">We currently offer the following packages:</p>
 </div>
 
 @if (!packagesReady) {
@@ -154,7 +176,7 @@
   </div>
 } @else {
   @for (category of sortedPackages.keys(); track $index) {
-    <div class="m-2 p-5">
+    <div class="m-2 p-5" id="category-{{ $index }}">
       <h1 class="text-color text-2xl font-bold">{{ category | titlecase }}</h1>
       <div class="grid grid-cols-2 gap-2">
         @for (package of sortedPackages.get(category); track $index) {
@@ -179,4 +201,18 @@
       </div>
     </div>
   }
+  <div
+    class="text-color text-md -mt-4 mb-4 flex w-full flex-col text-center"
+    id="custom-arrangement"
+  >
+    If you want to discuss different arrangements or a more personalized experience, reach out to us
+    on Discord!
+    <p-button
+      class="mt-2"
+      icon="pi pi-discord"
+      label="Join Discord"
+      severity="success"
+      (onClick)="openDiscordInvite()"
+    ></p-button>
+  </div>
 }
