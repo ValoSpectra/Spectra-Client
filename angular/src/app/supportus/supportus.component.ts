@@ -64,6 +64,7 @@ export class SupportusComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.electronService.overrideLoadingStatus(false);
     this.getPackages();
     window.addEventListener("storage", (event) => {
       if (event.key === "discordInfo") {

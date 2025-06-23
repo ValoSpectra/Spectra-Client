@@ -115,6 +115,10 @@ export class ElectronService {
     this.loadingStatusMessageSource.next(value);
   }
 
+  public overrideLoadingStatus(value: boolean) {
+    this.loadingStatusMessageSource.next(value);
+  }
+
   private eventStatusMessageSource = new BehaviorSubject<number>(1);
   public eventStatusMessage = this.eventStatusMessageSource.asObservable();
 
