@@ -48,4 +48,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("set-event-status", (_event: any, value: number) => callback(value)),
   fireConnect: (callback: (arg0: any) => any) =>
     ipcRenderer.on("fire-connect", (_event: any, value: any) => callback(value)),
+  onDiscordInfo: (callback: (arg0: any) => any) =>
+    ipcRenderer.on("set-discord-info", (_event: any, value: any) => callback(value)),
 });

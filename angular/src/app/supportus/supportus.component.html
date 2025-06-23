@@ -1,0 +1,218 @@
+<p-toast />
+<p-dialog
+  header="Discord Login Successfull"
+  [(visible)]="displayCloseTab"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+>
+  <p>You've successfully signed in with Discord!</p>
+  <p>You can now close the Discord tab in your browser.</p>
+</p-dialog>
+@if (!loggedIn) {
+  <div class="mb-10 flex w-full flex-col justify-center">
+    <div class="text-color mt-2 self-center p-2 text-2xl font-bold">
+      You're currently not logged in to any organization.
+    </div>
+    <div class="text-md text-color self-center">
+      In order to receive benefits in Spectra, please log in with your organization key.
+    </div>
+    <div class="mt-4 flex flex-row content-center items-center justify-center gap-2 self-center">
+      <p-floatlabel variant="on">
+        <p-password [(ngModel)]="key" [feedback]="false" [toggleMask]="true" id="KeyInput" />
+        <label for="KeyInput">Organization Key</label>
+      </p-floatlabel>
+      <p-button
+        icon="pi pi-sign-in"
+        label="Organization Login"
+        severity="primary"
+        (onClick)="tryLogIn()"
+        [loading]="loading"
+      ></p-button>
+    </div>
+  </div>
+} @else {
+  <div class="m-2 flex flex-col items-center gap-1 p-2">
+    <div class="text-color text-2xl font-bold">
+      You're currently logged in to {{ loggedInOrg.name }}
+    </div>
+    @if (loggedInOrg.isSupporter) {
+      <div class="text-primary text-xl font-bold">Thank you for supporting Spectra!</div>
+
+      <div
+        class="text-md m-2 flex flex-col items-center gap-1 rounded-lg bg-[var(--p-button-success-background)]/70 p-4"
+      >
+        <p class="italic">
+          Please note that you cannot change your subscription here while you have an active
+          subscription.
+        </p>
+        If you want to manage your subsciption, please click on the button below.
+        <p-button
+          class="mt-3"
+          icon="pi pi-refresh"
+          label="Manage Subscription"
+          severity="primary"
+          (onClick)="manageSubscription()"
+        ></p-button>
+      </div>
+    } @else {
+      <p class="text-md mb-2 font-bold">Thank you for being interested in supporting Spectra!</p>
+    }
+    <p-button
+      icon="pi pi-sign-in"
+      label="Log Out"
+      severity="secondary"
+      (onClick)="orgLogout()"
+      [loading]="loading"
+    ></p-button>
+  </div>
+}
+
+@if (!loggedInOrg.isSupporter) {
+  <div class="mb-6 flex w-full flex-col justify-center">
+    @if (loggedIn) {
+      <div class="text-md text-color -mb-2 self-center">
+        You can also log in with Discord to receive the Supporter role on our Discord server.
+      </div>
+    } @else {
+      <div class="text-md text-color self-center font-bold">
+        You can also support us as an individual by only logging in with Discord.
+      </div>
+      <div class="text-color -mb-2 self-center text-sm italic">
+        Please note that you will not receive benefits outside of Discord without later linking your
+        organization through us.
+      </div>
+    }
+    <div class="mt-4 flex flex-row content-center items-center justify-center gap-2 self-center">
+      Currently logged in as:
+      <div class="border-surface flex flex-row items-center gap-2 rounded-lg border p-1">
+        @if (loggedInDiscord.userId != "") {
+          <p-avatar
+            image="https://cdn.discordapp.com/avatars/{{ loggedInDiscord.userId }}/{{
+              loggedInDiscord.avatarHash
+            }}.webp"
+            shape="circle"
+            size="normal"
+            class="-mr-1"
+          ></p-avatar>
+        }
+        <p class="text-md font-bold">{{ loggedInDiscord.username }}</p>
+      </div>
+      @if (loggedInDiscord.userId == "") {
+        <p-button
+          icon="pi pi-discord"
+          label="Discord Login"
+          severity="primary"
+          (onClick)="discordLogin()"
+          [loading]="loading"
+        ></p-button>
+      } @else {
+        <p-button
+          icon="pi pi-discord"
+          label="Log out"
+          severity="secondary"
+          (onClick)="clearDiscordLogin()"
+        ></p-button>
+      }
+    </div>
+  </div>
+}
+
+<div class="flex flex-row items-center justify-center gap-1">
+  <div class="border-primary flex flex-col items-center gap-1 rounded-lg border p-4">
+    <p>Here's a list of the current benefits you get by supporting us:</p>
+    <ul class="list-disc">
+      <li class="font-bold">No Spectra ad in the Overlay</li>
+      <li>Priority Support</li>
+      <li>Access to the Supporter Discord channel...</li>
+      <li>... including sneak peeks of upcoming updates</li>
+      <li class="italic">And more to come!</li>
+    </ul>
+  </div>
+  <div class="flex flex-col items-center gap-1 rounded-lg border border-purple-500 p-7">
+    <p>And here's what your support does for us:</p>
+    <ul class="list-disc">
+      <li>Helps us pay for our servers and other costs</li>
+      <li>Allows us to keep Spectra free for everyone</li>
+      <li>Improves quality of future updates</li>
+      <li class="italic">Prioritizes our requests with Overwolf</li>
+    </ul>
+  </div>
+</div>
+<div class="flex flex-col items-center gap-1 p-2">
+  <p class="text-lg">All Spectra Plus Tiers grant the same benefits.</p>
+  <p class="mt-4 text-center italic">
+    We recommend that organizations consider their prize pool and choose a support package
+    accordingly.
+  </p>
+  <p class="">You can input your prizepool here to find out what we think is appropriate.</p>
+  <p-inputGroup class="w-1/3">
+    <p-inputGroupAddon>USD</p-inputGroupAddon>
+    <p-inputNumber
+      [(ngModel)]="prizepool"
+      [min]="0"
+      [max]="100000"
+      mode="decimal"
+      locale="en-US"
+      [useGrouping]="true"
+    >
+    </p-inputNumber>
+    <p-inputGroupAddon>
+      <p-button
+        icon="pi pi-calculator"
+        label="Jump"
+        severity="primary"
+        (onClick)="jumpToSuggestion()"
+      ></p-button
+    ></p-inputGroupAddon>
+  </p-inputGroup>
+  <p class="mt-8 text-xl font-bold">We currently offer the following packages:</p>
+</div>
+
+@if (!packagesReady) {
+  <div class="flex h-full w-full flex-row justify-center">
+    <p-progressSpinner strokeWidth="6" animationDuration="2s"></p-progressSpinner>
+  </div>
+} @else {
+  @for (category of sortedPackages.keys(); track $index) {
+    <div class="m-2 p-5" id="category-{{ $index }}">
+      <h1 class="text-color text-2xl font-bold">{{ category | titlecase }}</h1>
+      <div class="grid grid-cols-2 gap-2">
+        @for (package of sortedPackages.get(category); track $index) {
+          <div class="border-surface col-span-1 m-1 flex flex-col rounded-lg border p-2">
+            <p-button
+              class="absolute self-end"
+              icon="pi pi-check"
+              label="Choose"
+              [disabled]="loggedInOrg.isSupporter || (!loggedIn && loggedInDiscord.userId == '')"
+              severity="primary"
+              (onClick)="openCheckout(package)"
+            ></p-button>
+            <div class="mt-1 mb-3 ml-2">
+              <p class="text-color text-lg">Charged {{ package.name }}</p>
+              <p class="text-md text-color">
+                {{ package.total_price | currency: package.currency }}
+              </p>
+            </div>
+            <p class="text-color mb-1 ml-2 text-sm" [innerHTML]="package.description"></p>
+          </div>
+        }
+      </div>
+    </div>
+  }
+  <div
+    class="text-color text-md -mt-4 mb-4 flex w-full flex-col text-center"
+    id="custom-arrangement"
+  >
+    If you want to discuss different arrangements or a more personalized experience, reach out to us
+    on Discord!
+    <p-button
+      class="mt-2"
+      icon="pi pi-discord"
+      label="Join Discord"
+      severity="success"
+      (onClick)="openDiscordInvite()"
+    ></p-button>
+  </div>
+}

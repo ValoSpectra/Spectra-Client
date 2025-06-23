@@ -2,14 +2,7 @@
   class="border-surface col-span-3 flex h-full flex-col justify-around gap-7 rounded-lg border p-5"
 >
   <p-floatlabel variant="on">
-    <input
-      class="w-full"
-      pInputText
-      [(ngModel)]="data.name"
-      disabled
-      id="ValorantNameInput"
-      autocomplete="off"
-    />
+    <input class="w-full" pInputText [(ngModel)]="data.name" disabled id="ValorantNameInput" />
     <label for="ValorantNameInput" class="text-sm">Please double-check your Valorant name</label>
   </p-floatlabel>
   <p-floatlabel variant="on">
@@ -20,7 +13,6 @@
       [feedback]="false"
       [toggleMask]="true"
       id="KeyInput"
-      autocomplete="off"
       pTooltip="Using our official servers requires a key. You can get one on our Discord."
       tooltipPosition="top"
       showDelay="500"
@@ -35,7 +27,6 @@
         [(ngModel)]="data.groupCode"
         (ngModelChange)="runValidation()"
         id="GroupCodeInput"
-        autocomplete="off"
         pTooltip="Arbitrary identifier. Does not need to be the same as the one displayed in game"
         tooltipPosition="top"
         showDelay="500"
