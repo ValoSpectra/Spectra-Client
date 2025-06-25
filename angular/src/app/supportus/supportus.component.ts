@@ -16,6 +16,7 @@ import { DialogModule } from "primeng/dialog";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputGroupModule } from "primeng/inputgroup";
 import { InputGroupAddonModule } from "primeng/inputgroupaddon";
+import { BasicInfo } from "../observer/observer.component";
 
 @Component({
   selector: "app-supportus",
@@ -79,6 +80,10 @@ export class SupportusComponent implements OnInit {
       username: "Not logged in",
       avatarHash: "",
     };
+    this.key = this.localstorageService.getItem<BasicInfo>("basicInfo")?.key || this.key;
+    if (this.key && this.key.length > 12) {
+      this.tryLogIn();
+    }
   }
 
   protected tryLogIn() {
