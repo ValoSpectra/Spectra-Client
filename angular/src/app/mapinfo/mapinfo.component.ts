@@ -57,6 +57,7 @@ export class MapinfoComponent implements Validatable, AfterContentInit, OnChange
     "Lotus",
     "Sunset",
     "Abyss",
+    "Corrode",
   ];
 
   @Input({ required: true })
