@@ -31,8 +31,8 @@ import { Validatable, ValidationState } from "../services/validation.service";
 })
 export class MapinfoComponent implements Validatable, AfterContentInit, OnChanges {
   protected mapTimeOptions_left: string[] = ["Past", "Present"];
-  protected mapTimeOptions_center: string[] = ["Past", "Present", "Future"];
-  protected mapTimeOptions_right: string[] = ["Present", "Future"];
+  protected mapTimeOptions_center: string[] = ["Past", "Present", "Future", "Disabled"];
+  protected mapTimeOptions_right: string[] = ["Present", "Future", "Disabled"];
 
   protected getMapTimeOptions(): string[] {
     switch (this.position) {
@@ -106,6 +106,10 @@ export class MapinfoComponent implements Validatable, AfterContentInit, OnChange
       case "Future":
         valid = this.data.map != null;
         valid = valid && ["left", "right", "decider"].includes(this.data.picker);
+        break;
+
+      case "Disabled":
+        valid = true;
         break;
 
       default:

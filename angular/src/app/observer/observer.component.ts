@@ -702,7 +702,7 @@ export type WatermarkInfo = {
 };
 
 type BaseMapInfo = {
-  type: "Past" | "Present" | "Future";
+  type: "Past" | "Present" | "Future" | "Disabled";
 };
 
 type PastMapInfo = BaseMapInfo & {
@@ -723,7 +723,12 @@ type FutureMapInfo = BaseMapInfo & {
   picker: "left" | "right" | "decider";
 };
 
-export type MapInfo = PastMapInfo | PresentMapInfo | FutureMapInfo;
+type DisabledMapInfo = BaseMapInfo & {
+  type: "Disabled";
+  picker: "right" | "decider";
+};
+
+export type MapInfo = PastMapInfo | PresentMapInfo | FutureMapInfo | DisabledMapInfo;
 
 type MapInfoSend = {
   type: "past" | "present" | "future";
