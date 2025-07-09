@@ -365,7 +365,7 @@ function processInputs(
     let allow = true;
     for (const map of seriesInfo.mapInfo!) {
       if (map.type === "past") {
-        if (map.map === "" || map.left.score < 0 || map.right.score < 0) {
+        if (map.map === "" || map.left.score <= 0 || map.right.score <= 0) {
           allow = false;
           break;
         }
