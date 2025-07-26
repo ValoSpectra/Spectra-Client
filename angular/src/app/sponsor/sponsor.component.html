@@ -1,6 +1,13 @@
 <div class="border-surface flex flex-col gap-3 rounded-lg border p-5">
   <div class="flex items-center gap-2">
     <h1 class="text-color text-xl font-bold">Sponsors</h1>
+    <i
+      class="text-md! pi pi-info size-min cursor-pointer rounded-full border p-1"
+      (click)="info_popover.toggle($event)"
+    ></i>
+    <p-popover #info_popover>
+      <p class="">Recommended image size: 156x71 / 2.2:1</p>
+    </p-popover>
     <p-toggleswitch
       id="ShowTournamentInfo"
       [(ngModel)]="data.enabled"
