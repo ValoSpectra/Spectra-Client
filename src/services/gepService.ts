@@ -260,6 +260,9 @@ export class GameEventsService {
 
       case "game_mode":
         const modeInfo = JSON.parse(data.value);
+        if (!modeInfo || !modeInfo.mode) {
+          break;
+        }
         toSend = {
           type: DataTypes.GAME_MODE,
           data: modeInfo.mode,
