@@ -1,6 +1,16 @@
 <div class="border-surface flex flex-col gap-3 rounded-lg border p-5">
-  <h1 class="text-color text-xl font-bold">Tournament Info</h1>
-
+  <div class="flex items-center gap-2">
+    <h1 class="text-color text-xl font-bold">Tournament Info</h1>
+    <i
+      class="text-md! pi pi-info size-min cursor-pointer rounded-full border p-1"
+      (click)="info_popover.toggle($event)"
+    ></i>
+    <p-popover #info_popover>
+      <p class="">Recommended image size:</p>
+      <p class="">Logo: Any size with a 1:1 aspect ratio</p>
+      <p class="">Backdrop: 875x200 / 35:8 - 830x250 / 83:25 on Nobii's Style</p>
+    </p-popover>
+  </div>
   <div class="grid grid-cols-12">
     <div class="col-span-5 flex flex-col justify-around">
       <div class="flex content-center gap-2">
