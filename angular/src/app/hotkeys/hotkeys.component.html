@@ -136,4 +136,37 @@
     </p-inputgroup>
     <label for="RightTimeoutInput">Right Team Timeout</label>
   </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <p-inputgroup>
+      <input
+        pInputText
+        fluid
+        [(ngModel)]="data.switchKdaCredits"
+        (ngModelChange)="runValidation()"
+        type="text"
+        id="switchKdaCreditsInput"
+        disabled
+        [class.ng-dirty]="!valid.switchKdaCredits"
+        [class.ng-invalid]="!valid.switchKdaCredits"
+      />
+      <p-inputgroup-addon>
+        <p-togglebutton
+          onLabel="Enabled"
+          offLabel="Disabled"
+          [(ngModel)]="data.enabled.switchKdaCredits"
+          (ngModelChange)="runValidation()"
+          styleClass="w-24 border-r-[var(--p-form-field-border-color)] rounded-none"
+        />
+        <p-button
+          label="Change"
+          severity="primary"
+          variant="text"
+          (onClick)="changeKeybind($event, 'switchKdaCredits')"
+          [disabled]="isCapturing"
+        />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+    <label for="switchKdaCreditsInput">Switch KDA/Credits</label>
+  </p-floatlabel>
 </div>

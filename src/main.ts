@@ -417,6 +417,11 @@ function processInputs(
       hotkeys.rightTimeout,
       hotkeys.enabled.rightTimeout,
     );
+    hotkeyService.setKeyForHotkey(
+      HotkeyType.SWITCH_KDA_CREDITS,
+      hotkeys.switchKdaCredits,
+      hotkeys.enabled.switchKdaCredits,
+    );
   } catch (error: any) {
     messageBox("Spectra Client - Error", error.message, messageBoxType.ERROR);
     return;

@@ -41,7 +41,13 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
   @Input({ required: true })
   data!: Hotkeys;
 
-  valid = { spikePlanted: false, techPause: false, leftTimeout: false, rightTimeout: false };
+  valid = {
+    spikePlanted: false,
+    techPause: false,
+    leftTimeout: false,
+    rightTimeout: false,
+    switchKdaCredits: false,
+  };
 
   @ViewChild("change_popover")
   changePopover!: Popover;
@@ -51,7 +57,13 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
   }
 
   protected isCapturing = false;
-  protected capturingHotkey: "timeLeft" | "timeRight" | "techPause" | "spike" | "" = "";
+  protected capturingHotkey:
+    | "timeLeft"
+    | "timeRight"
+    | "techPause"
+    | "spike"
+    | "switchKdaCredits"
+    | "" = "";
 
   @HostListener("window:keyup", ["$event"])
   onKeyUp(event: KeyboardEvent) {
@@ -84,7 +96,7 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
 
     //filter out the modifier keys themselves
     if (event.key != "Shift" && event.key != "Alt" && event.key != "Control") {
-      keyString += event.key;
+      keyString += event.key.toUpperCase();
     }
     event.stopPropagation();
 
@@ -101,10 +113,16 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
       case "spike":
         this.data.spikePlanted = keyString;
         break;
+      case "switchKdaCredits":
+        this.data.switchKdaCredits = keyString;
+        break;
     }
   }
 
-  changeKeybind(event: any, hotkey: "timeLeft" | "timeRight" | "techPause" | "spike") {
+  changeKeybind(
+    event: any,
+    hotkey: "timeLeft" | "timeRight" | "techPause" | "spike" | "switchKdaCredits",
+  ) {
     this.isCapturing = true;
     this.capturingHotkey = hotkey;
     this.changePopover.show(event);
@@ -124,12 +142,15 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
       !this.data.enabled.leftTimeout || this.data.leftTimeout.match(hotkeyRegex) != null;
     this.valid.rightTimeout =
       !this.data.enabled.rightTimeout || this.data.rightTimeout.match(hotkeyRegex) != null;
+    this.valid.switchKdaCredits =
+      !this.data.enabled.switchKdaCredits || this.data.switchKdaCredits.match(hotkeyRegex) != null;
 
     valid =
       this.valid.spikePlanted &&
       this.valid.techPause &&
       this.valid.leftTimeout &&
-      this.valid.rightTimeout;
+      this.valid.rightTimeout &&
+      this.valid.switchKdaCredits;
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
   }
 }

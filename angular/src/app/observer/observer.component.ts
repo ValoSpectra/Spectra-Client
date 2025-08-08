@@ -217,11 +217,13 @@ export class ObserverComponent implements OnInit {
     techPause: "F10",
     leftTimeout: "O",
     rightTimeout: "P",
+    switchKdaCredits: "I",
     enabled: {
       spikePlanted: false,
       techPause: true,
       leftTimeout: true,
       rightTimeout: true,
+      switchKdaCredits: true,
     },
   };
 
@@ -282,6 +284,7 @@ export class ObserverComponent implements OnInit {
         techPause: true,
         leftTimeout: true,
         rightTimeout: true,
+        switchKdaCredits: true,
       };
     }
 
@@ -687,11 +690,13 @@ export type Hotkeys = {
   techPause: string;
   leftTimeout: string;
   rightTimeout: string;
+  switchKdaCredits: string;
   enabled: {
     spikePlanted: boolean;
     techPause: boolean;
     leftTimeout: boolean;
     rightTimeout: boolean;
+    switchKdaCredits: boolean;
   };
 };
 

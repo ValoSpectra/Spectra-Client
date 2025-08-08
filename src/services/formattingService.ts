@@ -267,6 +267,7 @@ export enum DataTypes {
   TECH_PAUSE = "tech_pause",
   LEFT_TIMEOUT = "left_timeout",
   RIGHT_TIMEOUT = "right_timeout",
+  SWITCH_KDA_CREDITS = "switch_kda_credits",
 }
 
 export enum SocketChannels {

@@ -36,6 +36,12 @@ export default class HotkeyService {
       type: HotkeyType.RIGHT_TIMEOUT,
       enabled: true,
     };
+    this.hotkeys[HotkeyType.SWITCH_KDA_CREDITS] = {
+      key: "",
+      action: this._switchKdaCreditsHotkeyAction.bind(this),
+      type: HotkeyType.SWITCH_KDA_CREDITS,
+      enabled: true,
+    };
   }
 
   public static getInstance(): HotkeyService {
@@ -111,12 +117,18 @@ export default class HotkeyService {
     const toSend = { type: DataTypes.RIGHT_TIMEOUT, data: true };
     ConnectorService.getInstance().sendToIngest(toSend);
   }
+
+  private _switchKdaCreditsHotkeyAction() {
+    const toSend = { type: DataTypes.SWITCH_KDA_CREDITS, data: true };
+    ConnectorService.getInstance().sendToIngest(toSend);
+  }
 }
 export enum HotkeyType {
   SPIKE_PLANTED,
   TECH_PAUSE,
   LEFT_TIMEOUT,
   RIGHT_TIMEOUT,
+  SWITCH_KDA_CREDITS,
 }
 type Hotkey = {
   key: string;
