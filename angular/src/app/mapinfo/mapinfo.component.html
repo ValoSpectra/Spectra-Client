@@ -50,6 +50,8 @@
             />
           } @else if (data.type === "Future" && data.picker === "decider") {
             Decider: {{ data.map ? data.map : "Map" }}
+          } @else if (data.type === "Disabled") {
+            <p class="font-normal italic">Disabled</p>
           }
         </div>
       </div>
@@ -73,6 +75,7 @@
           @if (data.type === "Present") {
             <p-select fluid [disabled]="true" id="MapNameInput"></p-select>
             <label for="MapNameInput">Map Name Automatic</label>
+          } @else if (data.type === "Disabled") {
           } @else {
             <p-select
               fluid
@@ -142,7 +145,7 @@
       </div>
     }
 
-    @if (data.type !== "Past") {
+    @if (data.type !== "Past" && data.type !== "Disabled") {
       <label class="-mb-2 self-center">Map Picker</label>
       <div class="flex justify-around">
         <div>
