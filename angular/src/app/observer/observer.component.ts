@@ -294,6 +294,11 @@ export class ObserverComponent implements OnInit {
 
   ngOnInit() {
     this.electron.spectraStatusMessage.subscribe((status: Status) => {
+      if (status.statusType === StatusTypes.GREEN) {
+        if (ingestServerOptions.includes(this.basicInfo.ingestIp || "")) {
+          this.localStorageService.setItem("lastConnectionOfficialSuccess", true);
+        }
+      }
       this.spectraStatus = status;
       this.changeDetectorRef.detectChanges();
     });
@@ -318,6 +323,7 @@ export class ObserverComponent implements OnInit {
     if (this.tryingToConnect) return;
 
     this.tryingToConnect = true;
+    this.localStorageService.setItem("lastConnectionOfficialSuccess", false);
     this.changeDetectorRef.detectChanges();
     setTimeout(() => {
       this.tryingToConnect = false;

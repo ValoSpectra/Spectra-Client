@@ -18,6 +18,7 @@ import { Validatable, ValidationState } from "../../services/validation.service"
 import { ButtonModule, ButtonSeverity } from "primeng/button";
 import { TooltipModule } from "primeng/tooltip";
 import { HttpClient } from "@angular/common/http";
+import { LocalstorageService } from "../../services/localstorage.service";
 
 @Component({
   selector: "app-observerinfo",
@@ -57,6 +58,7 @@ export class ObserverinfoComponent implements OnInit, Validatable, AfterContentI
   constructor(
     protected electron: ElectronService,
     protected changeDetectorRef: ChangeDetectorRef,
+    protected localStorageService: LocalstorageService,
     protected http: HttpClient,
   ) {}
 
@@ -65,6 +67,12 @@ export class ObserverinfoComponent implements OnInit, Validatable, AfterContentI
       this.data.name = name;
       this.changeDetectorRef.detectChanges();
     });
+
+    const tryKey =
+      this.localStorageService.getItem<boolean>("lastConnectionOfficialSuccess") || false;
+    if (tryKey) {
+      this.validateAccessKey();
+    }
   }
 
   @Input({ required: true })
@@ -136,7 +144,7 @@ export class ObserverinfoComponent implements OnInit, Validatable, AfterContentI
   }
 
   async getOrgForKey(key: string): Promise<{ valid: boolean; isSupporter: boolean }> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       this.http
         .get<OrgInfo>("https://eu.valospectra.com:5101/getOrgForKey", {
           params: {

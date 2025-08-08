@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from "@angular/core";
 import { BlockUI } from "primeng/blockui";
 import { ToggleSwitchModule } from "primeng/toggleswitch";
 import { BlockableDiv } from "../blockablediv/blockablediv.component";
-import { FormsModule, NgModel } from "@angular/forms";
+import { FormsModule } from "@angular/forms";
 import { WatermarkInfo } from "../observer/observer.component";
 import { ValidationState } from "../services/validation.service";
 import { FloatLabelModule } from "primeng/floatlabel";
