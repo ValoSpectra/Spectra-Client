@@ -648,6 +648,10 @@ export class ObserverComponent implements OnInit {
     this.localStorageService.setItem("darkMode", this.darkModeEnabled);
   }
 
+  protected joinDiscord() {
+    this.electron.openExternalLink("https://discord.gg/WMmQXjtkPD");
+  }
+
   protected openSupportUs() {
     window.open(`https://valospectra.com/support?dark=${this.darkModeEnabled}`, "_blank");
   }

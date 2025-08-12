@@ -47,7 +47,7 @@
     }
     <p-button
       fluid
-      label="Open Overlay Preview"
+      label="Open Overlay Preview (🔑)"
       icon="pi pi-eye"
       class="w-full"
       severity="primary"
@@ -57,7 +57,7 @@
     />
     <p-button
       fluid
-      label="Start Mapban Session"
+      label="Start Mapban Session (🔑)"
       icon="pi pi-map"
       class="w-full"
       severity="primary"
@@ -98,15 +98,26 @@
       [label]="!isSupporter ? 'Support Us!' : 'Thank you!'"
       (onClick)="openSupportUs()"
     />
-    <p-button
-      class="absolute h-10 w-10 self-end"
-      severity="contrast"
-      [icon]="darkModeEnabled ? 'pi pi-sun' : 'pi pi-moon'"
-      (onClick)="toggleDarkMode()"
-      pTooltip="Switch to {{ darkModeEnabled ? 'Light' : 'Dark' }} Mode"
-      tooltipPosition="left"
-      showDelay="500"
-    />
+    <div class="absolute flex gap-2 self-end">
+      <p-button
+        class="h-10 w-10"
+        severity="success"
+        icon="pi pi-discord"
+        (onClick)="joinDiscord()"
+        pTooltip="Join our Discord Server!"
+        tooltipPosition="left"
+        showDelay="500"
+      />
+      <p-button
+        class="h-10 w-10"
+        severity="contrast"
+        [icon]="darkModeEnabled ? 'pi pi-sun' : 'pi pi-moon'"
+        (onClick)="toggleDarkMode()"
+        pTooltip="Switch to {{ darkModeEnabled ? 'Light' : 'Dark' }} Mode"
+        tooltipPosition="left"
+        showDelay="500"
+      />
+    </div>
     @if (isSupporter) {
       <img class="h-40 self-center" src="assets/plus-icon.webp" />
     } @else {
@@ -131,16 +142,22 @@
         loadingIcon="pi pi-sync"
         (onClick)="onConnectClick()"
       />
-      @if (!validationIssuesDetected) {
-        <p-button
-          fluid
-          label="Extras"
-          class="w-2/5"
-          severity="secondary"
-          [disabled]="!editable"
-          (onClick)="onExtrasClick()"
-        />
-      }
+      <p-button
+        fluid
+        label="Extras"
+        class="w-2/5"
+        severity="secondary"
+        [disabled]="!editable || validationIssuesDetected"
+        (onClick)="onExtrasClick()"
+        pTooltip="{{
+          validationIssuesDetected
+            ? 'Cannot open Spectra Extras while there is an issue in the checklist'
+            : ''
+        }}"
+        tooltipPosition="top"
+        tooltipEvent="hover"
+        showDelay="300"
+      />
     </div>
   </div>
 
