@@ -287,6 +287,10 @@ export class ObserverComponent implements OnInit {
         switchKdaCredits: true,
       };
     }
+    // Hotkey migration for switch KDA/Credits
+    if (!this.hotkeys.switchKdaCredits || this.hotkeys.switchKdaCredits === "") {
+      this.hotkeys.switchKdaCredits = "I"; // Default hotkey for switch KDA/Credits
+    }
 
     this.sponsorInfo =
       this.localStorageService.getItem<SponsorInfo>("sponsors") || this.sponsorInfo;

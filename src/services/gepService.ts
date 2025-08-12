@@ -259,6 +259,9 @@ export class GameEventsService {
         break;
 
       case "game_mode":
+        if (data.value == null) {
+          return;
+        }
         const modeInfo = JSON.parse(data.value);
         if (!modeInfo || !modeInfo.mode) {
           break;
@@ -282,6 +285,9 @@ export class GameEventsService {
         break;
 
       case "map":
+        if (data.value == null) {
+          return;
+        }
         // Why do we do this? The TS enum on the server side does not like "Infinity"
         // as one of its members because it counts as a numeric name :)
         if (data.value === "Infinity") {
