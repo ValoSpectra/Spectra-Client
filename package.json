@@ -1,10 +1,10 @@
 {
   "name": "spectra-client",
   "author": {
-    "name": "Spectra Team",
+    "name": "Purple Shark UG (haftungsbeschränkt)",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.41",
+  "version": "0.2.42",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
