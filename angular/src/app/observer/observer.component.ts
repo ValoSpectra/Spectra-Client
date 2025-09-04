@@ -157,9 +157,9 @@ export class ObserverComponent implements OnInit {
       command: this.scrollToPanel.bind(this),
     },
     {
-      label: "Options",
+      label: "Client Options",
       fragment: "optionsPanelId",
-      commands: this.scrollToPanel.bind(this)
+      commands: this.scrollToPanel.bind(this),
     },
   ];
 
@@ -371,21 +371,21 @@ export class ObserverComponent implements OnInit {
 
   // Close confirmation actions
   protected cancelAppClose() {
-  this.closeDecision = false;
-  this.closeConfirmVisible = false;
+    this.closeDecision = false;
+    this.closeConfirmVisible = false;
   }
 
   protected confirmAppClose() {
-  this.closeDecision = true;
-  this.closeConfirmVisible = false;
+    this.closeDecision = true;
+    this.closeConfirmVisible = false;
   }
 
   // Ensures the dialog close (X) behaves like Cancel
   protected onCloseConfirmHide() {
-  // If no explicit decision was made (X or Esc), treat as cancel
-  const decided = this.closeDecision;
-  this.closeDecision = null;
-  this.electron.confirmCloseDecision(decided === true);
+    // If no explicit decision was made (X or Esc), treat as cancel
+    const decided = this.closeDecision;
+    this.closeDecision = null;
+    this.electron.confirmCloseDecision(decided === true);
   }
 
   protected onConnectClick() {
