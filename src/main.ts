@@ -122,7 +122,12 @@ const createWindow = () => {
     } else {
       // Ensure tray exists so user can restore the window
       if (!tray) {
-        createTray(iconPathGlobal || (isDev() ? path.join(__dirname, "../build/icon.ico") : path.join(__dirname, "./frontend/browser/assets/icon.ico")));
+        createTray(
+          iconPathGlobal ||
+            (isDev()
+              ? path.join(__dirname, "../build/icon.ico")
+              : path.join(__dirname, "./frontend/browser/assets/icon.ico")),
+        );
       }
     }
   });
@@ -146,7 +151,10 @@ const createWindow = () => {
 
   if (!isAuxiliary) {
     // Observer mode
-    if ((traySetting || (runAtStartupSetting.enabled && runAtStartupSetting.startMinimized)) && !tray) {
+    if (
+      (traySetting || (runAtStartupSetting.enabled && runAtStartupSetting.startMinimized)) &&
+      !tray
+    ) {
       createTray(iconPath);
     }
     if (!isDev()) {
@@ -335,7 +343,13 @@ app.on("web-contents-created", (event: any, contents: any) => {
 function createTray(iconPath: string) {
   tray = new Tray(iconPath);
   tray.setToolTip("Spectra Client");
-  log.info("Creating system tray icon (traySetting=" + traySetting + ", startMinimized=" + runAtStartupSetting.startMinimized + ")");
+  log.info(
+    "Creating system tray icon (traySetting=" +
+      traySetting +
+      ", startMinimized=" +
+      runAtStartupSetting.startMinimized +
+      ")",
+  );
   const contextMenu = Menu.buildFromTemplate([
     {
       label: "Open Spectra",
@@ -806,13 +820,9 @@ ipcMain.on("confirmed-close", (_event: any, confirm: boolean) => {
 // ----- Startup settings (Run at login, Start minimized) -----
 function setStartupSettings(_event: any, enabled: boolean, startMinimized: boolean) {
   runAtStartupSetting = { enabled, startMinimized };
-  storage.set(
-    "startupSettings",
-    { enabled, startMinimized },
-    function (error: any) {
-      if (error) log.error(error);
-    },
-  );
+  storage.set("startupSettings", { enabled, startMinimized }, function (error: any) {
+    if (error) log.error(error);
+  });
   app.setLoginItemSettings({
     openAtLogin: !isDev() && enabled,
     enabled: !isDev() && enabled,

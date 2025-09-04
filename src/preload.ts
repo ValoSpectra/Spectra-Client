@@ -57,8 +57,6 @@ contextBridge.exposeInMainWorld("electronAPI", {
   onDiscordInfo: (callback: (arg0: any) => any) =>
     ipcRenderer.on("set-discord-info", (_event: any, value: any) => callback(value)),
   // Close confirmation flow
-  onConfirmClose: (callback: () => any) =>
-    ipcRenderer.on("confirm-close", () => callback()),
-  confirmCloseDecision: (confirm: boolean) =>
-    ipcRenderer.send("confirmed-close", confirm),
+  onConfirmClose: (callback: () => any) => ipcRenderer.on("confirm-close", () => callback()),
+  confirmCloseDecision: (confirm: boolean) => ipcRenderer.send("confirmed-close", confirm),
 });

@@ -31,8 +31,8 @@
   maskStyleClass="frosted-mask"
 >
   <div class="flex flex-col gap-3">
-  <p class="text-xl font-bold">Are you sure you want to close Spectra?</p>
-    <p class="text-sm text-color-secondary">
+    <p class="text-xl font-bold">Are you sure you want to close Spectra?</p>
+    <p class="text-color-secondary text-sm">
       Any active connections will be closed and the overlay will stop functioning.
     </p>
     <div class="mt-1 flex justify-end gap-2">
@@ -41,7 +41,7 @@
         [label]="'Let me out!'"
         (onClick)="confirmAppClose()"
         [link]="false"
-  severity="primary"
+        severity="primary"
       />
     </div>
   </div>
@@ -315,7 +315,7 @@
       (validationChanged)="onPanelValidationChanged($event, 'playercamsPanelId')"
     ></app-playercams>
   </blockable-div>
-  
+
   <blockable-div class="col-span-3" #options_panel>
     <p-block-ui [target]="options_panel" [blocked]="!editable" />
     <app-options id="optionsPanelId" class="col-span-3"></app-options>
