@@ -14,6 +14,7 @@ import {
   ISeedingInfo,
   ISeriesInfo,
   ITournamentInfo,
+  PlayercamsInfo,
   SponsorInfo,
   WatermarkInfo,
 } from "./services/formattingService";
@@ -327,6 +328,7 @@ function processInputs(
   hotkeys: any,
   sponsorInfo: SponsorInfo,
   watermarkInfo: WatermarkInfo,
+  playercamsInfo: PlayercamsInfo,
 ) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
@@ -447,6 +449,7 @@ function processInputs(
     tournamentInfo,
     sponsorInfo,
     watermarkInfo,
+    playercamsInfo,
     win,
   );
 }

@@ -39,6 +39,7 @@ export class ElectronService {
     hotkeys: any,
     sponsorInfo: any,
     watermarkInfo: any,
+    playercamsInfo: any,
   ) {
     this.api.processInputs(
       ingestIp,
@@ -53,6 +54,7 @@ export class ElectronService {
       hotkeys,
       sponsorInfo,
       watermarkInfo,
+      playercamsInfo,
     );
   }
 

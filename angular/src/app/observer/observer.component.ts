@@ -32,6 +32,7 @@ import { TooltipModule } from "primeng/tooltip";
 import { SponsorComponent } from "../sponsor/sponsor.component";
 import { HttpClient } from "@angular/common/http";
 import { WatermarkComponent } from "../watermark/watermark.component";
+import { PlayercamsComponent } from "../playercams/playercams.component";
 
 @Component({
   selector: "app-observer",
@@ -63,6 +64,7 @@ import { WatermarkComponent } from "../watermark/watermark.component";
     TooltipModule,
     SponsorComponent,
     WatermarkComponent,
+    PlayercamsComponent,
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
@@ -145,6 +147,11 @@ export class ObserverComponent implements OnInit {
     {
       label: "Watermark",
       fragment: "watermarkPanelId",
+      command: this.scrollToPanel.bind(this),
+    },
+    {
+      label: "Playercams & Name Overrides",
+      fragment: "playercamsPanelId",
       command: this.scrollToPanel.bind(this),
     },
   ];
@@ -238,6 +245,14 @@ export class ObserverComponent implements OnInit {
     customTextEnabled: false,
     customText: "",
   };
+
+  protected playercamsInfo: PlayercamsInfo = {
+    enable: false,
+    removeTricodes: false,
+    identifier: "",
+    secret: "",
+    endTime: 0,
+  };
   //#endregion
 
   constructor(
@@ -297,6 +312,18 @@ export class ObserverComponent implements OnInit {
 
     this.watermarkInfo =
       this.localStorageService.getItem<WatermarkInfo>("watermark") || this.watermarkInfo;
+
+    const loadedPlayercamsInfo = this.localStorageService.getItem<PlayercamsInfo>("playercams");
+    if (loadedPlayercamsInfo) {
+      if (loadedPlayercamsInfo.endTime > Date.now()) {
+        this.playercamsInfo = loadedPlayercamsInfo;
+      } else {
+        if (loadedPlayercamsInfo.enable) {
+          this.playercamsInfo.enable = true; // Re-enable to trigger validation issue
+        }
+        console.log("Playercam session expired, clearing info.");
+      }
+    }
   }
 
   ngOnInit() {
@@ -380,6 +407,7 @@ export class ObserverComponent implements OnInit {
       this.hotkeys,
       this.sponsorInfo,
       this.watermarkInfo,
+      this.playercamsInfo,
     );
 
     this.localStorageService.setItem("basicInfo", this.basicInfo);
@@ -393,6 +421,7 @@ export class ObserverComponent implements OnInit {
     this.localStorageService.setItem("hotkeys", this.hotkeys);
     this.localStorageService.setItem("sponsors", this.sponsorInfo);
     this.localStorageService.setItem("watermark", this.watermarkInfo);
+    this.localStorageService.setItem("playercams", this.playercamsInfo);
   }
 
   protected onExtrasClick() {
@@ -706,6 +735,14 @@ export type Hotkeys = {
     rightTimeout: boolean;
     switchKdaCredits: boolean;
   };
+};
+
+export type PlayercamsInfo = {
+  enable: boolean;
+  removeTricodes: boolean;
+  identifier: string;
+  secret: string;
+  endTime: number;
 };
 
 export type SponsorInfo = {

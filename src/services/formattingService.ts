@@ -291,6 +291,7 @@ export interface IToolsData {
   timeoutDuration: number;
   sponsorInfo: SponsorInfo;
   watermarkInfo: WatermarkInfo;
+  playercamsInfo: PlayercamsInfo;
 }
 
 export type ISeriesInfo = {
@@ -322,6 +323,13 @@ export type WatermarkInfo = {
   spectraWatermark: boolean;
   customTextEnabled: boolean;
   customText: string;
+};
+
+export type PlayercamsInfo = {
+  enable: boolean;
+  identifier: string;
+  secret: string;
+  endTime: number;
 };
 
 type BaseMapPoolInfo = {

@@ -275,4 +275,15 @@
       (validationChanged)="onPanelValidationChanged($event, 'watermarkPanelId')"
     ></app-watermark>
   </blockable-div>
+
+  <blockable-div class="col-span-3" #playercams_panel>
+    <p-block-ui [target]="playercams_panel" [blocked]="!editable" />
+    <app-playercams
+      id="playercamsPanelId"
+      [data]="playercamsInfo"
+      [key]="basicInfo.key"
+      class="col-span-3"
+      (validationChanged)="onPanelValidationChanged($event, 'playercamsPanelId')"
+    ></app-playercams>
+  </blockable-div>
 </div>

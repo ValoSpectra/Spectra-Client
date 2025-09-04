@@ -18,6 +18,7 @@ import {
   ISeedingInfo,
   ISeriesInfo,
   ITournamentInfo,
+  PlayercamsInfo,
   SocketChannels,
   SponsorInfo,
   WatermarkInfo,
@@ -83,6 +84,7 @@ export class ConnectorService {
     tournamentInfo: ITournamentInfo,
     sponsorInfo: SponsorInfo,
     watermarkInfo: WatermarkInfo,
+    playercamsInfo: PlayercamsInfo,
     win: Electron.Main.BrowserWindow,
   ) {
     if (RegExp("(http|https)://[^/]+:[0-9]+").test(ingestIp)) {
@@ -191,6 +193,7 @@ export class ConnectorService {
         timeoutDuration: tournamentInfo.timeoutDuration,
         sponsorInfo: sponsorInfo,
         watermarkInfo: watermarkInfo,
+        playercamsInfo: playercamsInfo,
       },
     };
     this.ws.emit(SocketChannels.OBSERVER_LOGON, JSON.stringify(logonData));
