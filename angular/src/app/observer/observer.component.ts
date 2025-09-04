@@ -33,6 +33,7 @@ import { SponsorComponent } from "../sponsor/sponsor.component";
 import { HttpClient } from "@angular/common/http";
 import { WatermarkComponent } from "../watermark/watermark.component";
 import { PlayercamsComponent } from "../playercams/playercams.component";
+import { OptionsComponent } from "../options/options.component";
 
 @Component({
   selector: "app-observer",
@@ -65,6 +66,7 @@ import { PlayercamsComponent } from "../playercams/playercams.component";
     SponsorComponent,
     WatermarkComponent,
     PlayercamsComponent,
+    OptionsComponent,
   ],
   templateUrl: "./observer.component.html",
   styleUrl: "./observer.component.css",
@@ -154,6 +156,13 @@ export class ObserverComponent implements OnInit {
       fragment: "playercamsPanelId",
       command: this.scrollToPanel.bind(this),
     },
+    {
+      label: "Client Options",
+      fragment: "optionsPanelId",
+      icon: "pi pi-cog",
+      iconStyle: { color: "#38bdf7" },
+      command: this.scrollToPanel.bind(this),
+    },
   ];
 
   protected issueDialogVisible: boolean = false;
@@ -162,6 +171,9 @@ export class ObserverComponent implements OnInit {
 
   protected extrasDialogVisible: boolean = false;
   protected extrasIssueMessage: string = "";
+  // Close confirmation
+  protected closeConfirmVisible: boolean = false;
+  private closeDecision: boolean | null = null;
 
   //#region Data strucures definition
   protected ingestServerOptions: string[] = ingestServerOptions;
@@ -351,6 +363,31 @@ export class ObserverComponent implements OnInit {
     this.electron.fireConnect.subscribe(() => {
       this.onConnectClick();
     });
+
+    // Listen for app close confirmation request from main
+    this.electron.onConfirmClose(() => {
+      this.closeConfirmVisible = true;
+      this.changeDetectorRef.detectChanges();
+    });
+  }
+
+  // Close confirmation actions
+  protected cancelAppClose() {
+    this.closeDecision = false;
+    this.closeConfirmVisible = false;
+  }
+
+  protected confirmAppClose() {
+    this.closeDecision = true;
+    this.closeConfirmVisible = false;
+  }
+
+  // Ensures the dialog close (X) behaves like Cancel
+  protected onCloseConfirmHide() {
+    // If no explicit decision was made (X or Esc), treat as cancel
+    const decided = this.closeDecision;
+    this.closeDecision = null;
+    this.electron.confirmCloseDecision(decided === true);
   }
 
   protected onConnectClick() {

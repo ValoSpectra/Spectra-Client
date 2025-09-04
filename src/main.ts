@@ -56,6 +56,11 @@ const formattingService = FormattingService.getInstance();
 let win!: Electron.Main.BrowserWindow;
 let tray: Tray | null = null;
 let traySetting: boolean = getTraySetting();
+let iconPathGlobal = "";
+let runAtStartupSetting: { enabled: boolean; startMinimized: boolean } = {
+  enabled: false,
+  startMinimized: false,
+};
 
 const VALORANT_ID = 21640;
 
@@ -76,6 +81,7 @@ const createWindow = () => {
   } else {
     iconPath = path.join(__dirname, "../build/icon.ico");
   }
+  iconPathGlobal = iconPath;
 
   const windowState = isAuxiliary ? { width: 750, height: 320, x: 0, y: 0 } : getWindowState();
   const boundsSettings: { width: number; height: number; x?: number; y?: number } = {
@@ -110,7 +116,20 @@ const createWindow = () => {
   });
 
   win.once("ready-to-show", () => {
-    win.show();
+    // Only show immediately if not configured to start minimized
+    if (!(runAtStartupSetting.enabled && runAtStartupSetting.startMinimized)) {
+      win.show();
+    } else {
+      // Ensure tray exists so user can restore the window
+      if (!tray) {
+        createTray(
+          iconPathGlobal ||
+            (isDev()
+              ? path.join(__dirname, "../build/icon.ico")
+              : path.join(__dirname, "./frontend/browser/assets/icon.ico")),
+        );
+      }
+    }
   });
 
   if (isAuxiliary) {
@@ -128,8 +147,16 @@ const createWindow = () => {
   ipcMain.on("process-log", processLog);
   ipcMain.on("set-tray-setting", setTraySetting);
   ipcMain.on("open-external-link", openExternalLink);
+  ipcMain.on("set-startup-settings", setStartupSettings);
 
   if (!isAuxiliary) {
+    // Observer mode
+    if (
+      (traySetting || (runAtStartupSetting.enabled && runAtStartupSetting.startMinimized)) &&
+      !tray
+    ) {
+      createTray(iconPath);
+    }
     if (!isDev()) {
       win.loadFile("./app/frontend/browser/index.html");
     } else {
@@ -158,6 +185,26 @@ const createWindow = () => {
   win.on("moved", storeWindowState);
   win.on("maximize", storeWindowState);
   win.on("unmaximize", storeWindowState);
+
+  // Intercept close to either hide to tray or ask for confirmation when connected
+  win.on("close", (e: Electron.Event) => {
+    // Allow quitting when explicitly requested
+    if ((app as any).isQuitting) return;
+
+    if (!isAuxiliary) {
+      if (traySetting) {
+        e.preventDefault();
+        win.hide();
+        return;
+      }
+
+      if (connService.isConnected()) {
+        e.preventDefault();
+        win.webContents.send("confirm-close");
+        return;
+      }
+    }
+  });
 
   // Trying to load the support page in a new window resulted in loading about:blank all of the time, so we do this hacky workaround
   win.webContents.setWindowOpenHandler(({ url }) => {
@@ -224,9 +271,13 @@ const createWindow = () => {
 };
 
 app.whenReady().then(async () => {
+  // Apply persisted startup settings to login items
+  const startup = getStartupSettings();
+  runAtStartupSetting = startup;
   app.setLoginItemSettings({
-    openAtLogin: false,
-    enabled: false,
+    openAtLogin: !isDev() && startup.enabled,
+    enabled: !isDev() && startup.enabled,
+    openAsHidden: !isDev() && startup.enabled && startup.startMinimized,
   });
 
   createWindow();
@@ -292,15 +343,22 @@ app.on("web-contents-created", (event: any, contents: any) => {
 function createTray(iconPath: string) {
   tray = new Tray(iconPath);
   tray.setToolTip("Spectra Client");
+  log.info(
+    "Creating system tray icon (traySetting=" +
+      traySetting +
+      ", startMinimized=" +
+      runAtStartupSetting.startMinimized +
+      ")",
+  );
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: "Show",
+      label: "Open Spectra",
       click: () => {
         win.show();
       },
     },
     {
-      label: "Exit",
+      label: "Quit",
       click: () => {
         app.isQuitting = true;
         app.quit();
@@ -649,6 +707,12 @@ function setTraySetting(_event: any, setting: boolean) {
   storage.set("traySetting", { traySetting: traySetting }, function (error: any) {
     if (error) log.error(error);
   });
+  if (traySetting && !tray) {
+    createTray(iconPathGlobal);
+  } else if (!traySetting && tray) {
+    tray.destroy();
+    tray = null;
+  }
 }
 
 function getTraySetting() {
@@ -743,4 +807,36 @@ export function messageBox(
 
 function openExternalLink(event: any, link: string) {
   shell.openExternal(link);
+}
+
+// Renderer confirmed close of the app
+ipcMain.on("confirmed-close", (_event: any, confirm: boolean) => {
+  if (confirm) {
+    (app as any).isQuitting = true;
+    app.quit();
+  }
+});
+
+// ----- Startup settings (Run at login, Start minimized) -----
+function setStartupSettings(_event: any, enabled: boolean, startMinimized: boolean) {
+  runAtStartupSetting = { enabled, startMinimized };
+  storage.set("startupSettings", { enabled, startMinimized }, function (error: any) {
+    if (error) log.error(error);
+  });
+  app.setLoginItemSettings({
+    openAtLogin: !isDev() && enabled,
+    enabled: !isDev() && enabled,
+    openAsHidden: !isDev() && enabled && startMinimized,
+  });
+}
+
+function getStartupSettings(): { enabled: boolean; startMinimized: boolean } {
+  const retrieved = storage.getSync("startupSettings");
+  if (retrieved == null || Object.keys(retrieved).length == 0) {
+    return { enabled: false, startMinimized: false };
+  }
+  return {
+    enabled: !!retrieved.enabled,
+    startMinimized: !!retrieved.startMinimized,
+  };
 }

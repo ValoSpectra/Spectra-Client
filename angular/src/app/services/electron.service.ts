@@ -103,6 +103,19 @@ export class ElectronService {
     this.api.setTraySetting(setting);
   }
 
+  public setStartupSettings(enabled: boolean, startMinimized: boolean) {
+    this.api.setStartupSettings(enabled, startMinimized);
+  }
+
+  // Close confirmation flow
+  public onConfirmClose(callback: () => void) {
+    this.api.onConfirmClose(callback);
+  }
+
+  public confirmCloseDecision(confirm: boolean) {
+    this.api.confirmCloseDecision(confirm);
+  }
+
   private inputAllowedMessageSource = new BehaviorSubject<boolean>(true);
   public inputAllowedMessage = this.inputAllowedMessageSource.asObservable();
 

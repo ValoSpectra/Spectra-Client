@@ -1,0 +1,45 @@
+<div class="border-surface flex h-full flex-col gap-3 rounded-lg border p-5">
+  <div class="flex items-center gap-2">
+    <h1 class="text-color text-xl font-bold">Client Options</h1>
+  </div>
+
+  <p-blockui [target]="toBlock" />
+  <blockable-div #toBlock>
+    <div class="flex flex-col gap-3">
+      <div class="flex items-center gap-2">
+        <label for="MinimizeToTraySwitch" class="mb-2">Minimize to System Tray When Closing</label>
+        <p-toggleswitch
+          id="MinimizeToTraySwitch"
+          [(ngModel)]="data.minimizeToTray"
+          (ngModelChange)="save()"
+        ></p-toggleswitch>
+      </div>
+
+      <div class="flex flex-col">
+        <div class="flex items-center gap-2">
+          <label for="RunAtStartupSwitch" class="mb-2">Run at System Startup</label>
+          <p-toggleswitch
+            id="RunAtStartupSwitch"
+            [(ngModel)]="data.runAtStartup"
+            (ngModelChange)="save()"
+          ></p-toggleswitch>
+        </div>
+
+        <div class="flex items-center gap-2 opacity-100" [class.opacity-50]="!data.runAtStartup">
+          <label for="StartMinimizedSwitch" class="mb-2"
+            >⮡&nbsp;
+            <span [class.line-through]="!data.runAtStartup"
+              >Start Minimized to System Tray</span
+            ></label
+          >
+          <p-toggleswitch
+            id="StartMinimizedSwitch"
+            [(ngModel)]="data.startMinimized"
+            (ngModelChange)="save()"
+            [disabled]="!data.runAtStartup"
+          ></p-toggleswitch>
+        </div>
+      </div>
+    </div>
+  </blockable-div>
+</div>

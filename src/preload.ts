@@ -37,6 +37,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
   processLog: (toLog: any) => ipcRenderer.send("process-log", toLog),
   setTraySetting: (setting: any) => ipcRenderer.send("set-tray-setting", setting),
   openExternalLink: (link: string) => ipcRenderer.send("open-external-link", link),
+  setStartupSettings: (enabled: boolean, startMinimized: boolean) =>
+    ipcRenderer.send("set-startup-settings", enabled, startMinimized),
 
   setPlayerName: (callback: (arg0: any) => any) =>
     ipcRenderer.on("set-player-name", (_event: any, value: any) => callback(value)),
@@ -54,4 +56,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("fire-connect", (_event: any, value: any) => callback(value)),
   onDiscordInfo: (callback: (arg0: any) => any) =>
     ipcRenderer.on("set-discord-info", (_event: any, value: any) => callback(value)),
+  // Close confirmation flow
+  onConfirmClose: (callback: () => any) => ipcRenderer.on("confirm-close", () => callback()),
+  confirmCloseDecision: (confirm: boolean) => ipcRenderer.send("confirmed-close", confirm),
 });

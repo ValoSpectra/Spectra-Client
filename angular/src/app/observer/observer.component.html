@@ -17,6 +17,35 @@
   <br />
   <p>Issues are marked with a red cross. Gray circles are optional fields.</p>
 </p-dialog>
+
+<!-- Close confirmation dialog -->
+<p-dialog
+  [(visible)]="closeConfirmVisible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="false"
+  [styleClass]="'w-[420px] close-confirm-dialog'"
+  [closable]="false"
+  (onHide)="onCloseConfirmHide()"
+  maskStyleClass="frosted-mask"
+>
+  <div class="flex flex-col gap-3">
+    <p class="text-xl font-bold">Are you sure you want to close Spectra?</p>
+    <p class="text-color-secondary text-sm">
+      Any active connections will be closed and the overlay will stop functioning.
+    </p>
+    <div class="mt-1 flex justify-end gap-2">
+      <p-button label="Cancel" severity="primary" (onClick)="cancelAppClose()" />
+      <p-button
+        [label]="'Let me out!'"
+        (onClick)="confirmAppClose()"
+        [link]="false"
+        severity="secondary"
+      />
+    </div>
+  </div>
+</p-dialog>
 <p-dialog
   header="Spectra Extras"
   [styleClass]="'w-3/5'"
@@ -286,4 +315,6 @@
       (validationChanged)="onPanelValidationChanged($event, 'playercamsPanelId')"
     ></app-playercams>
   </blockable-div>
+
+  <app-options id="optionsPanelId" class="col-span-3"></app-options>
 </div>
