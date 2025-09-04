@@ -159,7 +159,9 @@ export class ObserverComponent implements OnInit {
     {
       label: "Client Options",
       fragment: "optionsPanelId",
-      commands: this.scrollToPanel.bind(this),
+      icon: "pi pi-cog",
+      iconStyle: { color: "#38bdf7" },
+      command: this.scrollToPanel.bind(this),
     },
   ];
 
