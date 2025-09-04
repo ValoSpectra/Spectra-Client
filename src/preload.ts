@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     hotkeys: any,
     sponsorInfo: any,
     watermarkInfo: any,
+    playercamsInfo: any,
   ) =>
     ipcRenderer.send(
       "process-inputs",
@@ -29,6 +30,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
       hotkeys,
       sponsorInfo,
       watermarkInfo,
+      playercamsInfo,
     ),
   processAuxInputs: (ingestIp: any, name: any) =>
     ipcRenderer.send("process-aux-inputs", ingestIp, name),

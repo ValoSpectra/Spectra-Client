@@ -1,0 +1,79 @@
+<div class="border-surface flex flex-col rounded-lg border p-5">
+  <div class="flex items-center gap-2">
+    <h1 class="text-color mb-2 text-xl font-bold">Playercams & Name Overrides</h1>
+  </div>
+  <div class="flex items-center gap-2">
+    <h1 class="text-color text-md mb-2">Remove Tricodes from start of names</h1>
+    <p-toggleswitch
+      id="RemoveTricodes"
+      [(ngModel)]="data.removeTricodes"
+      (ngModelChange)="runValidation()"
+    ></p-toggleswitch>
+  </div>
+  <div class="mt-2 flex items-center gap-2">
+    <h1 class="text-color text-md mb-2 font-bold">Use Playercams and Complex Overrides</h1>
+    <p-toggleswitch
+      id="ShowPlayercamInfo"
+      [(ngModel)]="data.enable"
+      (ngModelChange)="runValidation()"
+    ></p-toggleswitch>
+  </div>
+  <p-blockui [target]="toBlock" [blocked]="!data.enable" />
+  <blockable-div #toBlock>
+    <div class="flex w-full flex-row justify-around gap-2">
+      <p-button
+        label="Start Session (🔑)"
+        icon="pi pi-sparkles"
+        styleClass="mb-3 w-full"
+        class="w-full"
+        (onClick)="onSessionClick()"
+        [loading]="tryingToConnect"
+        fluid
+      ></p-button>
+      <p-button
+        label="Open in Browser"
+        icon="pi pi-external-link"
+        styleClass="mb-3 w-full"
+        class="w-full"
+        (onClick)="onSessionBrowserClick()"
+        [loading]="tryingToConnect"
+        [disabled]="!data.identifier || !data.secret"
+        fluid
+      ></p-button>
+    </div>
+    <div class="flex w-full flex-row gap-2">
+      <div class="w-1/2">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            fluid
+            disabled="true"
+            [(ngModel)]="data.identifier"
+            (ngModelChange)="runValidation()"
+            type="text"
+            id="Identifier"
+          />
+          <label for="Identifier">Identifier</label>
+        </p-floatlabel>
+      </div>
+      <div class="w-1/2">
+        <p-floatlabel variant="on">
+          <p-password
+            fluid
+            disabled="true"
+            [(ngModel)]="data.secret"
+            [toggleMask]="true"
+            (ngModelChange)="runValidation()"
+            type="text"
+            id="Secret"
+          />
+          <label for="Secret">Secret</label>
+        </p-floatlabel>
+      </div>
+    </div>
+    <div class="mt-2 -mb-2">
+      <div class="text-red-400">{{ errorMessage }}</div>
+      <div class="text-green-400">{{ endTimeMessage }}</div>
+    </div></blockable-div
+  >
+</div>
