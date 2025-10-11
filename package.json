@@ -4,7 +4,7 @@
     "name": "Purple Shark UG (haftungsbeschränkt)",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.43",
+  "version": "0.2.44",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
@@ -34,6 +34,7 @@
       "package.json",
       "LICENSE"
     ],
+    "icon": "build/icon.ico",
     "nsisWeb": {
       "artifactName": "Spectra-Client-Setup.${ext}",
       "oneClick": false,
@@ -45,6 +46,7 @@
       "differentialPackage": true
     },
     "win": {
+      "icon": "build/icon.ico",
       "target": [
         "nsis-web"
       ],
@@ -58,35 +60,35 @@
   },
   "license": "GPL-3.0-only",
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
-    "@overwolf/ow-electron": "34.5.5",
-    "@overwolf/ow-electron-builder": "26.0.11",
+    "@eslint/js": "^9.37.0",
+    "@overwolf/ow-electron": "37.2.6",
+    "@overwolf/ow-electron-builder": "26.0.12",
     "@overwolf/ow-electron-packages-types": "^0.0.16",
     "@overwolf/types": "^3.24.7",
     "@types/electron-json-storage": "^4.5.4",
-    "@types/node": "^22.15.21",
-    "@types/semver": "^7.7.0",
-    "concurrently": "^9.1.2",
-    "electron": "34.5.5",
+    "@types/node": "^22.18.10",
+    "@types/semver": "^7.7.1",
+    "concurrently": "^9.2.1",
+    "electron": "37.2.6",
     "electron-devtools-installer": "^4.0.0",
-    "eslint": "^9.27.0",
-    "eslint-config-prettier": "^10.1.5",
-    "globals": "^16.1.0",
-    "prettier": "^3.5.3",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.32.1",
-    "wait-on": "^8.0.3"
+    "typescript": "5.8.3",
+    "typescript-eslint": "^8.46.0",
+    "wait-on": "9.0.1"
   },
   "dependencies": {
-    "axios": "^1.9.0",
+    "axios": "^1.12.2",
     "bufferutil": "^4.0.9",
-    "dotenv": "^16.5.0",
     "electron-json-storage": "^4.6.0",
-    "electron-log": "^5.4.0",
-    "prettier-plugin-tailwindcss": "^0.6.11",
-    "semver": "^7.7.2",
+    "electron-log": "^5.4.3",
+    "find-process": "^2.0.0",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "semver": "^7.7.3",
     "socket.io-client": "^4.8.1"
   },
-  "packageManager": "yarn@4.9.1"
+  "packageManager": "yarn@4.10.3"
 }

@@ -1,5 +1,3 @@
-require("dotenv").config();
-
 import path from "path";
 import { GameEventsService } from "./services/gepService";
 import { ConnectorService } from "./services/connectorService";
