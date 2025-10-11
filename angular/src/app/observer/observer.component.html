@@ -190,7 +190,7 @@
     </div>
   </div>
 
-  <blockable-div class="col-span-6 lg:col-span-3" #teaminfo1_panel>
+  <blockable-div class="relative col-span-6 lg:col-span-3" #teaminfo1_panel>
     <p-block-ui [target]="teaminfo1_panel" [blocked]="!editable" />
     <app-teaminfo
       id="leftTeaminfoPanelId"
@@ -198,6 +198,13 @@
       [teaminfo]="leftTeamInfo"
       (validationChanged)="onPanelValidationChanged($event, 'leftTeaminfoPanelId')"
     ></app-teaminfo>
+    <p-button
+      label="Swap Teams"
+      severity="contrast"
+      class="absolute right-1 bottom-1"
+      styleClass="text-xs"
+      (onClick)="swapTeams()"
+    ></p-button>
   </blockable-div>
   <blockable-div class="col-span-6 lg:col-span-3" #teaminfo2_panel>
     <p-block-ui [target]="teaminfo2_panel" [blocked]="!editable" />

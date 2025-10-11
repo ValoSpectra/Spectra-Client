@@ -21,6 +21,7 @@ import {
 import HotkeyService, { HotkeyType } from "./services/hotkeyService";
 import axios from "axios";
 import * as semver from "semver";
+import find, { ProcessInfo } from "find-process";
 // import { installExtension } from "electron-devtools-installer";
 
 const { app, BrowserWindow, ipcMain } = require("electron/main");
@@ -567,15 +568,46 @@ function validateSpectraConfig(data: any) {
 }
 
 function overwolfSetup() {
-  log.info(`Starting Overwolf Setup`);
+  log.info(`Starting Overwolf Electron GEP Setup`);
   gepService.registerWindow(win);
   gepService.registerGame(VALORANT_ID);
   gepService.registerOverwolfPackageManager();
+  nativeCheck();
 
   // Wait to ensure renderer is ready
   setTimeout(() => {
     eventAvailabilityCheck();
   }, 2500);
+}
+
+function nativeCheck() {
+  find("name", "Overwolf").then((list: ProcessInfo[]) => {
+    for (const p of list) {
+      if (p.name !== "Overwolf.exe") continue;
+      log.info(`Found Overwolf process with PID ${p.pid}`);
+      const button = messageBox(
+        "Spectra Client - Overwolf GEP Conflict",
+        "Regular Overwolf is running!\nIf you continue without stopping Overwolf, the risk of experiencing issues with game data is increased.\n\nDo you want Spectra to stop regular Overwolf now?",
+        messageBoxType.WARNING,
+        ["Stop Overwolf", "Continue with added risk"],
+      );
+      if (button === 0) {
+        try {
+          process.kill(list[0].pid);
+          log.info("Killed Overwolf process");
+        } catch (e) {
+          log.error("Error killing Overwolf process:", e);
+          messageBox(
+            "Spectra Client - Failed to stop Overwolf",
+            "Failed to automatically stop Overwolf.\nPlease manually close Overwolf by right-clicking the Overwolf icon in the tray and selecting 'Exit Overwolf'.",
+            messageBoxType.ERROR,
+          );
+        }
+      } else {
+        log.info("User chose to continue with Overwolf running");
+      }
+    }
+  });
 }
 
 async function updateCheck(): Promise<boolean> {

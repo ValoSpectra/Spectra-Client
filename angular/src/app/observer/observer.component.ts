@@ -702,6 +702,12 @@ export class ObserverComponent implements OnInit {
     this.validationIssuesDetected = this.hasInputValidationErrors();
   }
 
+  swapTeams() {
+    const temp = this.leftTeamInfo;
+    this.leftTeamInfo = this.rightTeamInfo;
+    this.rightTeamInfo = temp;
+  }
+
   copyToClipboardClick() {
     const link = `https://${this.basicInfo.ingestIp}/overlay?groupCode=${this.basicInfo.groupCode}`;
     navigator.clipboard.writeText(link);
