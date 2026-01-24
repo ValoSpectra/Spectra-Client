@@ -4,7 +4,7 @@
     "name": "Purple Shark UG (haftungsbeschränkt)",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.2.44",
+  "version": "0.2.45",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
@@ -28,13 +28,16 @@
   },
   "build": {
     "productName": "Spectra Client",
+    "icon": "build/icon.ico",
     "compression": "maximum",
     "files": [
       "app/**/*",
       "package.json",
       "LICENSE"
     ],
-    "icon": "build/icon.ico",
+    "electronLanguages": [
+      "en"
+    ],
     "nsisWeb": {
       "artifactName": "Spectra-Client-Setup.${ext}",
       "oneClick": false,
