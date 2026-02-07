@@ -5,7 +5,7 @@ import { FloatLabelModule } from "primeng/floatlabel";
 import { InputNumberModule } from "primeng/inputnumber";
 import { InputTextModule } from "primeng/inputtext";
 import { ToggleSwitchModule } from "primeng/toggleswitch";
-import { TournamentInfo } from "../observer/observer.component";
+import { TimeoutInfo, TournamentInfo } from "../observer/observer.component";
 import { Validatable, ValidationState } from "../services/validation.service";
 import { PopoverModule } from "primeng/popover";
 
@@ -27,6 +27,9 @@ export class TournamentinfoComponent implements Validatable, AfterContentInit {
   @Input({ required: true })
   data!: TournamentInfo;
 
+  @Input({ required: true })
+  timeoutInfo!: TimeoutInfo;
+
   ngAfterContentInit(): void {
     this.runValidation();
   }
@@ -38,6 +41,7 @@ export class TournamentinfoComponent implements Validatable, AfterContentInit {
     valid = this.logoImageError == false && valid;
     valid = this.backdropImageError == false && valid;
     valid = this.data.timeoutDuration != null && valid;
+    valid = this.timeoutInfo.max != null && valid;
 
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
   }

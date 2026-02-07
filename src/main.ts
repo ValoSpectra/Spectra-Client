@@ -11,6 +11,7 @@ import {
   GEPStatus,
   ISeedingInfo,
   ISeriesInfo,
+  ITimeoutInfo,
   ITournamentInfo,
   PlayercamsInfo,
   SponsorInfo,
@@ -56,10 +57,10 @@ let win!: Electron.Main.BrowserWindow;
 let tray: Tray | null = null;
 let traySetting: boolean = getTraySetting();
 let iconPathGlobal = "";
-let runAtStartupSetting: { enabled: boolean; startMinimized: boolean, aux: boolean } = {
+let runAtStartupSetting: { enabled: boolean; startMinimized: boolean; aux: boolean } = {
   enabled: false,
   startMinimized: false,
-  aux: false
+  aux: false,
 };
 
 const VALORANT_ID = 21640;
@@ -279,7 +280,7 @@ app.whenReady().then(async () => {
     openAtLogin: !isDev() && startup.enabled,
     enabled: !isDev() && startup.enabled,
     openAsHidden: !isDev() && startup.enabled && startup.startMinimized,
-    args: (!isDev() && startup.aux) ? ["--auxiliary"] : []
+    args: !isDev() && startup.aux ? ["--auxiliary"] : [],
   });
 
   createWindow();
@@ -395,6 +396,7 @@ function processInputs(
   sponsorInfo: SponsorInfo,
   watermarkInfo: WatermarkInfo,
   playercamsInfo: PlayercamsInfo,
+  timeoutInfo: ITimeoutInfo,
 ) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
@@ -516,6 +518,7 @@ function processInputs(
     sponsorInfo,
     watermarkInfo,
     playercamsInfo,
+    timeoutInfo,
     win,
   );
 }
@@ -877,11 +880,11 @@ function setStartupSettings(_event: any, enabled: boolean, startMinimized: boole
     openAtLogin: !isDev() && enabled,
     enabled: !isDev() && enabled,
     openAsHidden: !isDev() && enabled && startMinimized,
-    args: (!isDev() && enabled && aux) ? ["--auxiliary"] : []
+    args: !isDev() && enabled && aux ? ["--auxiliary"] : [],
   });
 }
 
-function getStartupSettings(): { enabled: boolean; startMinimized: boolean, aux: boolean } {
+function getStartupSettings(): { enabled: boolean; startMinimized: boolean; aux: boolean } {
   const retrieved = storage.getSync("startupSettings");
   if (retrieved == null || Object.keys(retrieved).length == 0) {
     return { enabled: false, startMinimized: false, aux: false };

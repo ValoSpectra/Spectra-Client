@@ -267,6 +267,12 @@ export class ObserverComponent implements OnInit {
     secret: "",
     endTime: 0,
   };
+
+  protected timeoutInfo: TimeoutInfo = {
+    max: 2,
+    left: 2,
+    right: 2,
+  };
   //#endregion
 
   constructor(
@@ -337,6 +343,13 @@ export class ObserverComponent implements OnInit {
         }
         console.log("Playercam session expired, clearing info.");
       }
+    }
+
+    const loadedTimeoutInfo = this.localStorageService.getItem<TimeoutInfo>("timeouts");
+    if (loadedTimeoutInfo) {
+      this.timeoutInfo = loadedTimeoutInfo;
+    } else {
+      this.timeoutInfo = { max: 2, left: 2, right: 2 };
     }
   }
 
@@ -417,6 +430,12 @@ export class ObserverComponent implements OnInit {
       mapPool.push(this.translateMapInfo(this.rightMap));
     }
 
+    this.timeoutInfo = {
+      max: this.timeoutInfo.max,
+      left: this.timeoutInfo.max,
+      right: this.timeoutInfo.max,
+    };
+
     this.electron.processInputs(
       this.basicInfo.ingestIp,
       this.basicInfo.groupCode,
@@ -447,6 +466,7 @@ export class ObserverComponent implements OnInit {
       this.sponsorInfo,
       this.watermarkInfo,
       this.playercamsInfo,
+      this.timeoutInfo,
     );
 
     this.saveAllValues();
@@ -465,6 +485,7 @@ export class ObserverComponent implements OnInit {
     this.localStorageService.setItem("sponsors", this.sponsorInfo);
     this.localStorageService.setItem("watermark", this.watermarkInfo);
     this.localStorageService.setItem("playercams", this.playercamsInfo);
+    this.localStorageService.setItem("timeouts", this.timeoutInfo);
   }
 
   protected onExtrasClick() {
@@ -712,6 +733,9 @@ export class ObserverComponent implements OnInit {
     const temp = this.leftTeamInfo;
     this.leftTeamInfo = this.rightTeamInfo;
     this.rightTeamInfo = temp;
+    const tempSeeding = this.seriesInfo.seedingLeft;
+    this.seriesInfo.seedingLeft = this.seriesInfo.seedingRight;
+    this.seriesInfo.seedingRight = tempSeeding;
   }
 
   copyToClipboardClick() {
@@ -802,6 +826,12 @@ export type PlayercamsInfo = {
   identifier: string;
   secret: string;
   endTime: number;
+};
+
+export type TimeoutInfo = {
+  max: number;
+  left: number;
+  right: number;
 };
 
 export type SponsorInfo = {

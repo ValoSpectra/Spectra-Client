@@ -229,6 +229,16 @@
       />
       <p-button
         fluid
+        class="self-center"
+        severity="contrast"
+        icon="pi pi-save"
+        (onClick)="saveAllValues()"
+        pTooltip="Save Without Connecting"
+        tooltipPosition="top"
+        showDelay="500"
+      />
+      <p-button
+        fluid
         label="Extras"
         class="w-2/5"
         severity="secondary"
@@ -277,6 +287,7 @@
     <app-tournamentinfo
       id="tournamentinfoPanelId"
       [data]="tournamentInfo"
+      [timeoutInfo]="timeoutInfo"
       (validationChanged)="onPanelValidationChanged($event, 'tournamentinfoPanelId')"
     ></app-tournamentinfo>
   </blockable-div>

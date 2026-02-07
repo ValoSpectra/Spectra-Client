@@ -289,6 +289,7 @@ export interface IToolsData {
   seedingInfo: ISeedingInfo;
   tournamentInfo: ITournamentInfo;
   timeoutDuration: number;
+  timeoutCounter: ITimeoutInfo;
   sponsorInfo: SponsorInfo;
   watermarkInfo: WatermarkInfo;
   playercamsInfo: PlayercamsInfo;
@@ -311,6 +312,12 @@ export type ITournamentInfo = {
   logoUrl: string;
   backdropUrl: string;
   timeoutDuration: number;
+};
+
+export type ITimeoutInfo = {
+  max: number;
+  left: number;
+  right: number;
 };
 
 export type SponsorInfo = {

@@ -71,6 +71,31 @@
         </p-inputnumber>
         <label for="timeoutDurationInput">Timeout Duration (seconds)</label>
       </p-floatlabel>
+
+      <p-floatlabel variant="on" class="mb-2">
+        <p-inputnumber
+          fluid
+          id="timeoutCountInput"
+          [showButtons]="true"
+          buttonLayout="horizontal"
+          inputId="horizontal"
+          spinnerMode="horizontal"
+          [(ngModel)]="timeoutInfo.max"
+          (ngModelChange)="runValidation()"
+          [step]="1"
+          value="2"
+          min="0"
+          max="10"
+        >
+          <ng-template #incrementbuttonicon>
+            <span class="pi pi-plus"></span>
+          </ng-template>
+          <ng-template #decrementbuttonicon>
+            <span class="pi pi-minus"></span>
+          </ng-template>
+        </p-inputnumber>
+        <label for="timeoutCountInput">Timeout Count</label>
+      </p-floatlabel>
     </div>
 
     <!-- These are supposed to be visible, with the logo taking up 2/6 and the backdrop taking up 4/6 but I can't manage to make it work properly right now -->

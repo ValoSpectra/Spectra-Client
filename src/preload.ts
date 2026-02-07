@@ -15,6 +15,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
     sponsorInfo: any,
     watermarkInfo: any,
     playercamsInfo: any,
+    timeoutInfo: any,
   ) =>
     ipcRenderer.send(
       "process-inputs",
@@ -31,6 +32,7 @@ contextBridge.exposeInMainWorld("electronAPI", {
       sponsorInfo,
       watermarkInfo,
       playercamsInfo,
+      timeoutInfo,
     ),
   processAuxInputs: (ingestIp: any, name: any) =>
     ipcRenderer.send("process-aux-inputs", ingestIp, name),
