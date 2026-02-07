@@ -46,12 +46,12 @@ Function ClientSelectionPage
 
   ${NSD_CreateCheckbox} 0u 30u 100% 10u "Install Observer Client"
   Pop $INST_OBSERVER_HANDLE
-  ${NSD_SetState} $INST_OBSERVER_HANDLE ${BST_UNCHECKED}
+  ${NSD_SetState} $INST_OBSERVER_HANDLE ${BST_CHECKED}
   ${NSD_OnClick} $INST_OBSERVER_HANDLE ObserverCheckboxClick
 
   ${NSD_CreateCheckbox} 0u 50u 100% 10u "Install Player Client"
   Pop $INST_PLAYER_HANDLE
-  ${NSD_SetState} $INST_PLAYER_HANDLE ${BST_UNCHECKED}
+  ${NSD_SetState} $INST_PLAYER_HANDLE ${BST_CHECKED}
   ${NSD_OnClick} $INST_PLAYER_HANDLE PlayerCheckboxClick
 
   Call UpdateNextButton

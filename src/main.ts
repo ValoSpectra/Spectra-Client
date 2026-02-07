@@ -82,7 +82,7 @@ const createWindow = () => {
   }
   iconPathGlobal = iconPath;
 
-  const windowState = isAuxiliary ? { width: 750, height: 320, x: 0, y: 0 } : getWindowState();
+  const windowState = isAuxiliary ? { width: 750, height: 460, x: 0, y: 0 } : getWindowState();
   const boundsSettings: { width: number; height: number; x?: number; y?: number } = {
     width: 0,
     height: 0,

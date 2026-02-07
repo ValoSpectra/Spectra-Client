@@ -12,6 +12,7 @@ import { TitleCasePipe } from "@angular/common";
 import { ToastModule } from "primeng/toast";
 import { MessageService } from "primeng/api";
 import { DialogModule } from "primeng/dialog";
+import { OptionsComponent } from "../options/options.component";
 
 @Component({
   selector: "app-auxiliary",
@@ -26,6 +27,7 @@ import { DialogModule } from "primeng/dialog";
     TitleCasePipe,
     ToastModule,
     DialogModule,
+    OptionsComponent,
   ],
   templateUrl: "./auxiliary.component.html",
   styleUrl: "./auxiliary.component.css",
