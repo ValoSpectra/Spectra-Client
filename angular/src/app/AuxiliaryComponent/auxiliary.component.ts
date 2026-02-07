@@ -11,6 +11,7 @@ import { ButtonModule } from "primeng/button";
 import { TitleCasePipe } from "@angular/common";
 import { ToastModule } from "primeng/toast";
 import { MessageService } from "primeng/api";
+import { DialogModule } from "primeng/dialog";
 
 @Component({
   selector: "app-auxiliary",
@@ -24,6 +25,7 @@ import { MessageService } from "primeng/api";
     ButtonModule,
     TitleCasePipe,
     ToastModule,
+    DialogModule,
   ],
   templateUrl: "./auxiliary.component.html",
   styleUrl: "./auxiliary.component.css",
@@ -31,6 +33,8 @@ import { MessageService } from "primeng/api";
 export class AuxiliaryComponent implements OnInit {
   protected spectraStatus: Status = { message: "Initializing", statusType: StatusTypes.NEUTRAL };
   protected darkModeEnabled: boolean = false;
+
+  protected gameVersionDialogVisible: boolean = false;
 
   constructor(
     protected electron: ElectronService,
@@ -124,5 +128,14 @@ export class AuxiliaryComponent implements OnInit {
   protected toggleTraySetting(event: ToggleSwitchChangeEvent) {
     this.localStorageService.setItem("auxMinimizedToTraySetting", event.checked);
     this.electron.setTraySetting(event.checked);
+  }
+
+  protected selectGameVersion() {
+    this.gameVersionDialogVisible = true;
+  }
+
+  protected forwardGameVersionSelection(version: string) {
+    this.electron.setGameVersion(version);
+    this.gameVersionDialogVisible = false;
   }
 }

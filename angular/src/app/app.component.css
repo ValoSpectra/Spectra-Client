@@ -20,3 +20,16 @@
   font-size: 1.5rem;
   text-align: center;
 }
+
+.delayed-loading-text {
+  opacity: 0;
+  animation: fadeIn 0.5s ease-in 5s forwards;
+  font-size: 1rem;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}

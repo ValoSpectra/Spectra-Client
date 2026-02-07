@@ -59,4 +59,5 @@ contextBridge.exposeInMainWorld("electronAPI", {
   // Close confirmation flow
   onConfirmClose: (callback: () => any) => ipcRenderer.on("confirm-close", () => callback()),
   confirmCloseDecision: (confirm: boolean) => ipcRenderer.send("confirmed-close", confirm),
+  setGameVersion: (version: string) => ipcRenderer.send("set-game-version", version),
 });

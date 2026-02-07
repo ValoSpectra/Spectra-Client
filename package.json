@@ -18,6 +18,8 @@
   ],
   "scripts": {
     "start": "rimraf app && npx tsc && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron . --development\" --kill-others",
+    "start-client": "rimraf app && npx tsc && wait-on tcp:4401 && ow-electron . --development",
+    "start-ui": "yarn workspace angular start",
     "start-aux": "rimraf app && npx tsc && concurrently \"yarn workspace angular start\" \"wait-on tcp:4401 && ow-electron . --auxiliary --development\" --kill-others",
     "build": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=never",
     "publish": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=always",

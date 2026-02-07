@@ -147,6 +147,7 @@ const createWindow = () => {
   ipcMain.on("set-tray-setting", setTraySetting);
   ipcMain.on("open-external-link", openExternalLink);
   ipcMain.on("set-startup-settings", setStartupSettings);
+  ipcMain.on("set-game-version", setGameVersion);
 
   if (!isAuxiliary) {
     // Observer mode
@@ -340,6 +341,12 @@ app.on("web-contents-created", (event: any, contents: any) => {
 });
 
 function createTray(iconPath: string) {
+  // This is a quick fix for Linux, where executing this code crashes the client
+  // Proper Linux support is not needed as the Overwolf parts of the app don't work on Linux anyway
+  // And Valorant doesn't have a Linux version either
+  if (process.platform === "linux") {
+    return;
+  }
   tray = new Tray(iconPath);
   tray.setToolTip("Spectra Client");
   log.info(
@@ -754,6 +761,17 @@ function getTraySetting() {
     log.debug(`Retrieved tray setting: ${retrieved.traySetting}`);
     return retrieved.traySetting;
   }
+}
+
+function setGameVersion(_event: any, version: string) {
+  log.info(`Setting game/gep version to ${version}`);
+  const args: string[] = process.argv
+    .slice(1)
+    .filter((arg) => !arg.startsWith("--owepm-packages-url="));
+  app.relaunch({
+    args: args.concat([`--owepm-packages-url=https://owepm.0008811.xyz/${version}`]),
+  });
+  app.exit();
 }
 
 function storeWindowState() {
