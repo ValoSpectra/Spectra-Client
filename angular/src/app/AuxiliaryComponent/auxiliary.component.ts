@@ -133,6 +133,7 @@ export class AuxiliaryComponent implements OnInit {
   }
 
   protected selectGameVersion() {
+    this.localStorageService.setItem("auxIngestServerIp", this.ingestServerIp);
     this.gameVersionDialogVisible = true;
   }
 

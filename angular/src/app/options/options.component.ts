@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { BlockUI } from "primeng/blockui";
 import { ToggleSwitchModule } from "primeng/toggleswitch";
@@ -17,9 +17,13 @@ export class OptionsComponent implements OnInit {
     minimizeToTray: false,
     runAtStartup: false,
     startMinimized: false,
+    aux: false,
   };
 
   private readonly storageKey = "appOptions";
+
+  @Input({required: false})
+  isAux = false;
 
   constructor(
     private storage: LocalstorageService,
@@ -42,6 +46,7 @@ export class OptionsComponent implements OnInit {
     this.electron.setStartupSettings(
       this.data.runAtStartup,
       this.data.runAtStartup && this.data.startMinimized,
+      this.data.runAtStartup && this.isAux
     );
   }
 
@@ -57,6 +62,7 @@ export class OptionsComponent implements OnInit {
     this.electron.setStartupSettings(
       this.data.runAtStartup,
       this.data.runAtStartup && this.data.startMinimized,
+      this.data.runAtStartup && this.isAux
     );
   }
 }
@@ -65,4 +71,5 @@ export type ClientOptions = {
   minimizeToTray: boolean;
   runAtStartup: boolean;
   startMinimized: boolean;
+  aux: boolean;
 };

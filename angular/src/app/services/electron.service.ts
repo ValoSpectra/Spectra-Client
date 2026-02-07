@@ -103,8 +103,8 @@ export class ElectronService {
     this.api.setTraySetting(setting);
   }
 
-  public setStartupSettings(enabled: boolean, startMinimized: boolean) {
-    this.api.setStartupSettings(enabled, startMinimized);
+  public setStartupSettings(enabled: boolean, startMinimized: boolean, aux = false) {
+    this.api.setStartupSettings(enabled, startMinimized, aux);
   }
 
   // Close confirmation flow

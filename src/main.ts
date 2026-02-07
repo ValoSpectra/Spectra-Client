@@ -56,9 +56,10 @@ let win!: Electron.Main.BrowserWindow;
 let tray: Tray | null = null;
 let traySetting: boolean = getTraySetting();
 let iconPathGlobal = "";
-let runAtStartupSetting: { enabled: boolean; startMinimized: boolean } = {
+let runAtStartupSetting: { enabled: boolean; startMinimized: boolean, aux: boolean } = {
   enabled: false,
   startMinimized: false,
+  aux: false
 };
 
 const VALORANT_ID = 21640;
@@ -278,6 +279,7 @@ app.whenReady().then(async () => {
     openAtLogin: !isDev() && startup.enabled,
     enabled: !isDev() && startup.enabled,
     openAsHidden: !isDev() && startup.enabled && startup.startMinimized,
+    args: (!isDev() && startup.aux) ? ["--auxiliary"] : []
   });
 
   createWindow();
@@ -866,25 +868,27 @@ ipcMain.on("confirmed-close", (_event: any, confirm: boolean) => {
 });
 
 // ----- Startup settings (Run at login, Start minimized) -----
-function setStartupSettings(_event: any, enabled: boolean, startMinimized: boolean) {
-  runAtStartupSetting = { enabled, startMinimized };
-  storage.set("startupSettings", { enabled, startMinimized }, function (error: any) {
+function setStartupSettings(_event: any, enabled: boolean, startMinimized: boolean, aux = false) {
+  runAtStartupSetting = { enabled, startMinimized, aux };
+  storage.set("startupSettings", { enabled, startMinimized, aux }, function (error: any) {
     if (error) log.error(error);
   });
   app.setLoginItemSettings({
     openAtLogin: !isDev() && enabled,
     enabled: !isDev() && enabled,
     openAsHidden: !isDev() && enabled && startMinimized,
+    args: (!isDev() && enabled && aux) ? ["--auxiliary"] : []
   });
 }
 
-function getStartupSettings(): { enabled: boolean; startMinimized: boolean } {
+function getStartupSettings(): { enabled: boolean; startMinimized: boolean, aux: boolean } {
   const retrieved = storage.getSync("startupSettings");
   if (retrieved == null || Object.keys(retrieved).length == 0) {
-    return { enabled: false, startMinimized: false };
+    return { enabled: false, startMinimized: false, aux: false };
   }
   return {
     enabled: !!retrieved.enabled,
     startMinimized: !!retrieved.startMinimized,
+    aux: !!retrieved.aux || false,
   };
 }
