@@ -38,7 +38,7 @@
       "LICENSE"
     ],
     "electronLanguages": [
-      "en"
+      "en-US"
     ],
     "nsisWeb": {
       "artifactName": "Spectra-Client-Setup.${ext}",
