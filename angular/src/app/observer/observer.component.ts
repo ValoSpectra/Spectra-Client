@@ -449,6 +449,10 @@ export class ObserverComponent implements OnInit {
       this.playercamsInfo,
     );
 
+    this.saveAllValues();
+  }
+
+  protected saveAllValues() {
     this.localStorageService.setItem("basicInfo", this.basicInfo);
     this.localStorageService.setItem("leftTeamInfo", this.leftTeamInfo);
     this.localStorageService.setItem("rightTeamInfo", this.rightTeamInfo);
@@ -608,11 +612,11 @@ export class ObserverComponent implements OnInit {
 
     if (mapInfo.type === "Past") {
       mapInfoSend.left = {
-        score: mapInfo.leftScore || -1,
+        score: mapInfo.leftScore || 0,
         logo: this.leftTeamInfo.url,
       };
       mapInfoSend.right = {
-        score: mapInfo.rightScore || -1,
+        score: mapInfo.rightScore || 0,
         logo: this.rightTeamInfo.url,
       };
     }
@@ -731,6 +735,7 @@ export class ObserverComponent implements OnInit {
   }
 
   protected forwardGameVersionSelection(version: string) {
+    this.saveAllValues();
     this.electron.setGameVersion(version);
     this.gameVersionDialogVisible = false;
   }
