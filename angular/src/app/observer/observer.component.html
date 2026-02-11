@@ -95,53 +95,6 @@
     />
   </div>
 </p-dialog>
-<p-dialog
-  header="Select Game Version"
-  [styleClass]="'w-3/5'"
-  [(visible)]="gameVersionDialogVisible"
-  [modal]="true"
-  [draggable]="false"
-  [resizable]="false"
-  [dismissableMask]="true"
->
-  <div class="flex flex-col gap-3">
-    <p class="text-md text-center text-red-400">
-      The selected version will only be active until next Spectra Client launch!
-    </p>
-    <p-button
-      fluid
-      label="Live"
-      icon="pi pi-globe"
-      class="w-full"
-      severity="primary"
-      (onClick)="forwardGameVersionSelection('latest')"
-    />
-    <p-button
-      fluid
-      label="Tournament Realm 1"
-      icon="pi pi-map"
-      class="w-full"
-      severity="primary"
-      (onClick)="forwardGameVersionSelection('tr1')"
-    />
-    <p-button
-      fluid
-      label="Tournament Realm 2"
-      icon="pi pi-map"
-      class="w-full"
-      severity="primary"
-      (onClick)="forwardGameVersionSelection('tr2')"
-    />
-    <p-button
-      fluid
-      label="Tournament Realm 3"
-      icon="pi pi-map"
-      class="w-full"
-      severity="primary"
-      (onClick)="forwardGameVersionSelection('tr3')"
-    />
-  </div>
-</p-dialog>
 <button
   pButton
   class="border-surface fixed z-1050 -translate-x-3/7 translate-y-4/1 -rotate-90 cursor-pointer rounded-b-2xl border-x-1 border-b-1 px-3 pb-1 font-normal"
@@ -175,15 +128,6 @@
       (onClick)="openSupportUs()"
     />
     <div class="absolute flex gap-2 self-end">
-      <p-button
-        class="h-10 w-10"
-        severity="info"
-        icon="pi pi-list"
-        (onClick)="selectGameVersion()"
-        pTooltip="Select Game Version"
-        tooltipPosition="left"
-        showDelay="500"
-      />
       <p-button
         class="h-10 w-10"
         severity="success"

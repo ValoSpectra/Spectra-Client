@@ -118,10 +118,6 @@ export class ElectronService {
     this.api.confirmCloseDecision(confirm);
   }
 
-  public setGameVersion(version: string) {
-    this.api.setGameVersion(version);
-  }
-
   private inputAllowedMessageSource = new BehaviorSubject<boolean>(true);
   public inputAllowedMessage = this.inputAllowedMessageSource.asObservable();
 

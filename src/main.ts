@@ -149,7 +149,6 @@ const createWindow = () => {
   ipcMain.on("set-tray-setting", setTraySetting);
   ipcMain.on("open-external-link", openExternalLink);
   ipcMain.on("set-startup-settings", setStartupSettings);
-  ipcMain.on("set-game-version", setGameVersion);
 
   if (!isAuxiliary) {
     // Observer mode
@@ -766,17 +765,6 @@ function getTraySetting() {
     log.debug(`Retrieved tray setting: ${retrieved.traySetting}`);
     return retrieved.traySetting;
   }
-}
-
-function setGameVersion(_event: any, version: string) {
-  log.info(`Setting game/gep version to ${version}`);
-  const args: string[] = process.argv
-    .slice(1)
-    .filter((arg) => !arg.startsWith("--owepm-packages-url="));
-  app.relaunch({
-    args: args.concat([`--owepm-packages-url=https://owepm.0008811.xyz/${version}`]),
-  });
-  app.exit();
 }
 
 function storeWindowState() {

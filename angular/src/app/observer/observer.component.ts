@@ -175,8 +175,6 @@ export class ObserverComponent implements OnInit {
   protected closeConfirmVisible: boolean = false;
   private closeDecision: boolean | null = null;
 
-  protected gameVersionDialogVisible: boolean = false;
-
   //#region Data strucures definition
   protected ingestServerOptions: string[] = ingestServerOptions;
   protected basicInfo: BasicInfo = {
@@ -752,16 +750,6 @@ export class ObserverComponent implements OnInit {
 
   protected joinDiscord() {
     this.electron.openExternalLink("https://discord.gg/WMmQXjtkPD");
-  }
-
-  protected selectGameVersion() {
-    this.gameVersionDialogVisible = true;
-  }
-
-  protected forwardGameVersionSelection(version: string) {
-    this.saveAllValues();
-    this.electron.setGameVersion(version);
-    this.gameVersionDialogVisible = false;
   }
 
   protected openSupportUs() {

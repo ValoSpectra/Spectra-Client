@@ -1,53 +1,6 @@
 <p-toast />
-<p-dialog
-  header="Select Game Version"
-  [styleClass]="'h-4/5'"
-  [(visible)]="gameVersionDialogVisible"
-  [modal]="true"
-  [draggable]="false"
-  [resizable]="false"
-  [dismissableMask]="true"
->
-  <div class="flex flex-col gap-3">
-    <p class="text-md text-center text-red-400">
-      The selected version will only be active until next Spectra Client launch!
-    </p>
-    <p-button
-      fluid
-      label="Live"
-      icon="pi pi-globe"
-      class="w-full"
-      severity="primary"
-      (onClick)="forwardGameVersionSelection('latest')"
-    />
-    <p-button
-      fluid
-      label="Tournament Realm 1"
-      icon="pi pi-map"
-      class="w-full"
-      severity="primary"
-      (onClick)="forwardGameVersionSelection('tr1')"
-    />
-    <p-button
-      fluid
-      label="Tournament Realm 2"
-      icon="pi pi-map"
-      class="w-full"
-      severity="primary"
-      (onClick)="forwardGameVersionSelection('tr2')"
-    />
-    <p-button
-      fluid
-      label="Tournament Realm 3"
-      icon="pi pi-map"
-      class="w-full"
-      severity="primary"
-      (onClick)="forwardGameVersionSelection('tr3')"
-    />
-  </div>
-</p-dialog>
-<div class="m-2 grid grid-cols-6 gap-4">
-  <div class="border-surface col-span-3 flex flex-col justify-around gap-4 rounded-lg border p-5">
+<div class="m-4 grid grid-cols-6 gap-4">
+  <div class="border-surface col-span-3 flex flex-col justify-around rounded-lg border p-5">
     <p-floatlabel variant="on">
       <input class="w-full" pInputText disabled id="ValorantNameInput" [value]="playername" />
       <label for="ValorantNameInput" class="text-sm">Please double-check your Valorant name</label>
@@ -66,15 +19,6 @@
     <app-options id="optionsPanelId" class="col-span-3" [isAux]="true"></app-options>
   </div>
   <div class="border-surface col-span-3 flex flex-col justify-between rounded-lg border p-5">
-    <p-button
-      class="h-10 w-10"
-      severity="warn"
-      icon="pi pi-list"
-      (onClick)="selectGameVersion()"
-      pTooltip="Select Game Version"
-      tooltipPosition="left"
-      showDelay="500"
-    />
     <p-button
       class="absolute h-10 w-10 self-end"
       severity="contrast"
