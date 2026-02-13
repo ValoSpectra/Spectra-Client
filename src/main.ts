@@ -1,7 +1,7 @@
 import path from "path";
 import { GameEventsService } from "./services/gepService";
 import { ConnectorService } from "./services/connectorService";
-import { dialog, shell, Tray, Menu, Rectangle } from "electron";
+import { dialog, shell, Tray, Menu, Rectangle, MenuItem } from "electron";
 import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
@@ -268,6 +268,17 @@ const createWindow = () => {
     //   },
     // };
   });
+
+  const menu = new Menu();
+  const restartLatest = Menu.buildFromTemplate([
+    {
+      label: "Restart to Latest",
+      click: () => restartToLatest(),
+      accelerator: "Control+Alt+R",
+    },
+  ]);
+  menu.append(new MenuItem({ label: "Restart Options", submenu: restartLatest }));
+  Menu.setApplicationMenu(menu);
 };
 
 app.whenReady().then(async () => {
@@ -768,6 +779,16 @@ function getTraySetting() {
     log.debug(`Retrieved tray setting: ${retrieved.traySetting}`);
     return retrieved.traySetting;
   }
+}
+
+function restartToLatest() {
+  const args: string[] = process.argv
+    .slice(1)
+    .filter((arg) => !arg.startsWith("--owepm-packages-url="));
+  app.relaunch({
+    args: args.concat([`--owepm-packages-url=https://owepm.0008811.xyz/latest`]),
+  });
+  app.exit();
 }
 
 function storeWindowState() {

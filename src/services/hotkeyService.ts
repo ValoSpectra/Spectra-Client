@@ -122,6 +122,8 @@ export default class HotkeyService {
     const toSend = { type: DataTypes.SWITCH_KDA_CREDITS, data: true };
     ConnectorService.getInstance().sendToIngest(toSend);
   }
+
+  private _restartLatestHotkeyAction() {}
 }
 export enum HotkeyType {
   SPIKE_PLANTED,
