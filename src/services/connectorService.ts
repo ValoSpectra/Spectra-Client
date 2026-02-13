@@ -6,6 +6,7 @@ import {
   messageBoxType,
   setGameStatus,
   setInputAllowed,
+  rememberMatchSecret,
   setSpectraStatus,
   StatusTypes,
 } from "../main";
@@ -77,6 +78,7 @@ export class ConnectorService {
     ingestIp: string,
     obsName: string,
     groupCode: string,
+    reconnectSecret: string,
     leftTeam: AuthTeam,
     rightTeam: AuthTeam,
     key: string,
@@ -124,6 +126,7 @@ export class ConnectorService {
         if (json.value === true) {
           log.info("Authentication successful!");
           setSpectraStatus("Connected", StatusTypes.GREEN);
+          rememberMatchSecret(json.reason);
           this.connected = true;
           HotkeyService.getInstance().activateAllHotkeys();
           setInputAllowed(false);
@@ -186,6 +189,7 @@ export class ConnectorService {
       obsName: this.OBS_NAME,
       key: key,
       groupCode: this.GROUP_CODE,
+      groupSecret: reconnectSecret,
       leftTeam: this.LEFT_TEAM,
       rightTeam: this.RIGHT_TEAM,
       toolsData: {

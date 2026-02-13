@@ -33,7 +33,9 @@
   <div class="flex flex-col gap-3">
     <p class="text-xl font-bold">Are you sure you want to close Spectra?</p>
     <p class="text-color-secondary text-sm">
-      Any active connections will be closed and the overlay will stop functioning.
+      Any active connections will be closed and the overlay will stop functioning.<br /><br />It
+      might be possible to reconnect to the Overlay, however this is not guaranteed and not all data
+      may function.<br />If you want to reconnect, make sure to start Spectra before Valorant.
     </p>
     <div class="mt-1 flex justify-end gap-2">
       <p-button label="Cancel" severity="primary" (onClick)="cancelAppClose()" />
@@ -97,7 +99,7 @@
 </p-dialog>
 <button
   pButton
-  class="border-surface fixed z-1050 -translate-x-3/7 translate-y-4/1 -rotate-90 cursor-pointer rounded-b-2xl border-x-1 border-b-1 px-3 pb-1 font-normal"
+  class="border-surface fixed z-1050 -translate-x-3/7 translate-y-4/1 -rotate-90 cursor-pointer rounded-b-2xl border-x border-b px-3 pb-1 font-normal"
   icon="pi pi-list-check"
   [hidden]="!editable"
   (click)="drawerVisible = true"

@@ -11,6 +11,7 @@ import { ButtonModule } from "primeng/button";
 import { TitleCasePipe } from "@angular/common";
 import { ToastModule } from "primeng/toast";
 import { MessageService } from "primeng/api";
+import { OptionsComponent } from "../options/options.component";
 
 @Component({
   selector: "app-auxiliary",
@@ -24,6 +25,7 @@ import { MessageService } from "primeng/api";
     ButtonModule,
     TitleCasePipe,
     ToastModule,
+    OptionsComponent,
   ],
   templateUrl: "./auxiliary.component.html",
   styleUrl: "./auxiliary.component.css",

@@ -3,8 +3,10 @@ import { dialog, app as electronApp } from "electron";
 import log from "electron-log";
 import {
   fireConnect,
+  getMatchSecret,
   setGameStatus,
   setLoadingStatus,
+  setMatchSecret,
   setPlayerName,
   setSpectraStatus,
   StatusTypes,
@@ -95,7 +97,13 @@ export class GameEventsService {
         return;
       }
       log.info(`GEP version ${version} ready!`);
-      setSpectraStatus("Ready", StatusTypes.NEUTRAL);
+
+      if (getMatchSecret() !== "") {
+        setSpectraStatus("Ready (Reconnect Available)", StatusTypes.NEUTRAL);
+      } else {
+        setSpectraStatus("Ready", StatusTypes.NEUTRAL);
+      }
+
       setTimeout(() => {
         this.win!.setTitle(
           `Spectra Client | Ready (GEP: ${version}, Spectra: ${app.getVersion()})`,
@@ -320,6 +328,9 @@ export class GameEventsService {
 
       case "health":
       case "abilities":
+        log.info(`Received HP/Ability event in observer mode!`);
+        break;
+
       case "player_id":
       case "state":
       case "score":
@@ -329,6 +340,8 @@ export class GameEventsService {
       case "region":
       case "planted_site":
       case "is_pbe":
+      case "ui_team_order_allies":
+      case "ui_team_order_enemies":
         // Irrelevant, ignore
         break;
 
@@ -351,6 +364,7 @@ export class GameEventsService {
         toSend = { type: DataTypes.MATCH_START, data: this.currMatchId };
         this.connService.sendToIngest(toSend);
         setGameStatus("Game Started", StatusTypes.GREEN);
+        setMatchSecret();
         break;
 
       case "spike_planted":
@@ -378,6 +392,7 @@ export class GameEventsService {
       // I do not know why we are getting a duplicate of kill feeds here now
       case "kill_feed":
       case "shop":
+      case "planted_location":
         break;
 
       default:

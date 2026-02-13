@@ -6,7 +6,6 @@ import { AuthTeam } from "./services/connectorService";
 import log from "electron-log/main";
 import { readFileSync } from "fs";
 import {
-  FormattingService,
   GEPStates,
   GEPStatus,
   ISeedingInfo,
@@ -52,7 +51,6 @@ let isAuxiliary = false;
 
 let gepService: GameEventsService;
 const connService = ConnectorService.getInstance();
-const formattingService = FormattingService.getInstance();
 let win!: Electron.Main.BrowserWindow;
 let tray: Tray | null = null;
 let traySetting: boolean = getTraySetting();
@@ -62,6 +60,7 @@ let runAtStartupSetting: { enabled: boolean; startMinimized: boolean; aux: boole
   startMinimized: false,
   aux: false,
 };
+let rememberedSecret = { secret: "", endTime: 0 };
 
 const VALORANT_ID = 21640;
 
@@ -315,8 +314,9 @@ app.on("window-all-closed", () => {
 
 app.on("before-quit", () => {
   if (isAuxiliary) return;
-  const formatted = formattingService.formatRoundData("game_end", -1);
-  connService.sendToIngest(formatted);
+  // Comment out for now because of the reconnect feature - maybe we'll use this for a proper disconnect in the future
+  // const formatted = formattingService.formatRoundData("game_end", -1);
+  // connService.sendToIngest(formatted);
 });
 
 app.on("web-contents-created", (event: any, contents: any) => {
@@ -500,6 +500,8 @@ function processInputs(
     sponsorInfo.sponsors = [];
   }
 
+  const reconnectSecret = getMatchSecret();
+
   log.info(
     `Received Observer Name ${obsName}, Group Code ${groupCode}, Key ${key}, Left Tricode ${leftTeam.tricode}, Right Tricode ${rightTeam.tricode}`,
   );
@@ -508,6 +510,7 @@ function processInputs(
     ingestIp,
     obsName,
     groupCode,
+    reconnectSecret,
     leftTeam,
     rightTeam,
     key,
@@ -882,4 +885,37 @@ function getStartupSettings(): { enabled: boolean; startMinimized: boolean; aux:
     startMinimized: !!retrieved.startMinimized,
     aux: !!retrieved.aux || false,
   };
+}
+
+export function rememberMatchSecret(secret: string) {
+  if (secret === "reconnected") return;
+  log.info(`Remembering match secret ${secret}`);
+  rememberedSecret = { secret, endTime: Date.now() + 1000 * 60 * 60 * 2 }; // 2 hours, should be ample time for the match + some buffer
+  setMatchSecret();
+}
+
+export function setMatchSecret() {
+  if (rememberedSecret.secret === "reconnected") return;
+  log.info("Match started, storing match secret in storage");
+  storage.set("matchSecret", rememberedSecret, function (error: any) {
+    if (error) log.error(error);
+  });
+}
+
+export function getMatchSecret(): string {
+  const retrieved = storage.getSync("matchSecret");
+  if (retrieved == null || Object.keys(retrieved).length == 0) {
+    return "";
+  }
+  if (Date.now() > retrieved.endTime) {
+    log.info(`Match secret expired, removing from storage`);
+    storage.remove("matchSecret", function (error: any) {
+      if (error) log.error(error);
+    });
+    return "";
+  }
+  log.info(
+    `Retrieved match secret from storage, expires in ${(retrieved.endTime - Date.now()) / 1000} seconds`,
+  );
+  return retrieved.secret;
 }

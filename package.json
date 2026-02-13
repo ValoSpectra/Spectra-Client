@@ -4,7 +4,7 @@
     "name": "Purple Shark UG (haftungsbeschränkt)",
     "url": "https://www.valospectra.com"
   },
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "https://www.valospectra.com",
   "private": true,
   "main": "./app/main.js",
