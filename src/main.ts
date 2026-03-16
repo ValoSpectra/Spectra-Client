@@ -8,6 +8,7 @@ import { readFileSync } from "fs";
 import {
   GEPStates,
   GEPStatus,
+  IRoundWinBox,
   ISeedingInfo,
   ISeriesInfo,
   ITimeoutInfo,
@@ -407,6 +408,7 @@ function processInputs(
   watermarkInfo: WatermarkInfo,
   playercamsInfo: PlayercamsInfo,
   timeoutInfo: ITimeoutInfo,
+  roundWinBox: IRoundWinBox,
 ) {
   const webContents = event.sender;
   const win = BrowserWindow.fromWebContents(webContents)!;
@@ -532,6 +534,7 @@ function processInputs(
     watermarkInfo,
     playercamsInfo,
     timeoutInfo,
+    roundWinBox,
     win,
   );
 }

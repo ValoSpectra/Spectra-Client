@@ -34,6 +34,7 @@ import { HttpClient } from "@angular/common/http";
 import { WatermarkComponent } from "../watermark/watermark.component";
 import { PlayercamsComponent } from "../playercams/playercams.component";
 import { OptionsComponent } from "../options/options.component";
+import { RoundwinboxComponent } from "../roundwinbox/roundwinbox.component";
 
 @Component({
   selector: "app-observer",
@@ -50,6 +51,7 @@ import { OptionsComponent } from "../options/options.component";
     TeaminfoComponent,
     SeriesinfoComponent,
     TournamentinfoComponent,
+    RoundwinboxComponent,
     MapinfoComponent,
     HotkeysComponent,
     ObserverinfoComponent,
@@ -107,6 +109,11 @@ export class ObserverComponent implements OnInit {
     {
       label: "Tournament Info",
       fragment: "tournamentinfoPanelId",
+      command: this.scrollToPanel.bind(this),
+    },
+    {
+      label: "Roundwin Box",
+      fragment: "roundwinboxPanelId",
       command: this.scrollToPanel.bind(this),
     },
     {
@@ -197,7 +204,6 @@ export class ObserverComponent implements OnInit {
   };
 
   protected tournamentInfo: TournamentInfo = {
-    name: false,
     logoUrl: "",
     backdropUrl: "",
     timeoutDuration: 60,
@@ -264,6 +270,11 @@ export class ObserverComponent implements OnInit {
     identifier: "",
     secret: "",
     endTime: 0,
+  };
+
+  protected roundWinBox: RoundWinBox = {
+    type: "disabled",
+    sponsors: [],
   };
 
   protected timeoutInfo: TimeoutInfo = {
@@ -342,6 +353,8 @@ export class ObserverComponent implements OnInit {
         console.log("Playercam session expired, clearing info.");
       }
     }
+    this.roundWinBox =
+      this.localStorageService.getItem<RoundWinBox>("roundWinBox") || this.roundWinBox;
 
     const loadedTimeoutInfo = this.localStorageService.getItem<TimeoutInfo>("timeouts");
     if (loadedTimeoutInfo) {
@@ -465,6 +478,7 @@ export class ObserverComponent implements OnInit {
       this.watermarkInfo,
       this.playercamsInfo,
       this.timeoutInfo,
+      this.roundWinBox,
     );
 
     this.saveAllValues();
@@ -484,6 +498,7 @@ export class ObserverComponent implements OnInit {
     this.localStorageService.setItem("watermark", this.watermarkInfo);
     this.localStorageService.setItem("playercams", this.playercamsInfo);
     this.localStorageService.setItem("timeouts", this.timeoutInfo);
+    this.localStorageService.setItem("roundWinBox", this.roundWinBox);
   }
 
   protected onExtrasClick() {
@@ -579,6 +594,7 @@ export class ObserverComponent implements OnInit {
           },
           tournamentInfo: this.tournamentInfo,
           timeoutDuration: this.tournamentInfo.timeoutDuration,
+          roundWinBox: this.roundWinBox,
           sponsorInfo: this.sponsorInfo,
         },
       })
@@ -776,12 +792,33 @@ export type TeamInfo = {
 };
 
 export type TournamentInfo = {
-  // name just activates the round win box at this time
-  name: boolean;
   logoUrl: string;
   backdropUrl: string;
   timeoutDuration: number;
   showMappool: boolean;
+};
+
+export type RoundWinBox = {
+  type: "disabled" | "tournamentInfo" | "sponsors";
+  sponsors: RoundWinBoxSponsors[];
+};
+
+export type RoundWinBoxWonTeam = "all" | "left" | "right";
+export type RoundWinBoxRoundCeremonie = (
+  | "all"
+  | "normal"
+  | "ace"
+  | "clutch"
+  | "teamAce"
+  | "flawless"
+  | "thrifty"
+)[];
+
+export type RoundWinBoxSponsors = {
+  wonTeam: RoundWinBoxWonTeam;
+  roundCeremonie: RoundWinBoxRoundCeremonie;
+  iconUrl: string;
+  backdropUrl: string;
 };
 
 export type SeriesInfo = {
