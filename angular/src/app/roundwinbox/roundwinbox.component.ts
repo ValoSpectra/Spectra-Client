@@ -58,7 +58,11 @@ export class RoundwinboxComponent implements Validatable, AfterContentInit {
       return;
     }
 
-    valid = valid && !this.sponsorIconError.includes(true) && !this.sponsorTypeError.includes(true);
+    valid =
+      valid &&
+      !this.sponsorIconError.includes(true) &&
+      !this.sponsorBackdropError.includes(true) &&
+      !this.sponsorTypeError.includes(true);
 
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
   }

@@ -416,6 +416,22 @@ export class ObserverComponent implements OnInit {
     this.electron.confirmCloseDecision(decided === true);
   }
 
+  protected roundWinBoxCheckSpectraPlus() {
+    if (this.isSupporter) return this.roundWinBox;
+    if (this.roundWinBox.type != "sponsors")
+      return {
+        type: this.roundWinBox.type,
+        sponsors: [],
+      };
+    const roundWinBoxFirstSponsor = this.roundWinBox.sponsors[0];
+    roundWinBoxFirstSponsor.roundCeremonie = ["all"];
+    roundWinBoxFirstSponsor.wonTeam = "all";
+    return {
+      type: this.roundWinBox.type,
+      sponsors: [roundWinBoxFirstSponsor],
+    };
+  }
+
   protected onConnectClick() {
     if (this.tryingToConnect) return;
 
@@ -478,7 +494,7 @@ export class ObserverComponent implements OnInit {
       this.watermarkInfo,
       this.playercamsInfo,
       this.timeoutInfo,
-      this.roundWinBox,
+      this.roundWinBoxCheckSpectraPlus(),
     );
 
     this.saveAllValues();
@@ -594,7 +610,7 @@ export class ObserverComponent implements OnInit {
           },
           tournamentInfo: this.tournamentInfo,
           timeoutDuration: this.tournamentInfo.timeoutDuration,
-          roundWinBox: this.roundWinBox,
+          roundWinBox: this.roundWinBoxCheckSpectraPlus(),
           sponsorInfo: this.sponsorInfo,
         },
       })
