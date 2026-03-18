@@ -72,19 +72,6 @@ export class RoundwinboxComponent implements Validatable, AfterContentInit {
 
   protected sponsorTypeError: boolean[] = [];
 
-  protected onSponsorDetailsClick(index: number) {
-    if (!this.data.sponsors[index]) {
-      this.data.sponsors[index] = {
-        wonTeam: "all",
-        roundCeremonie: ["all"],
-        iconUrl: "",
-        backdropUrl: "",
-      };
-    }
-
-    this.runValidation();
-  }
-
   protected updateSponsor(
     index: number,
     field: "iconUrl" | "backdropUrl" | "wonTeam" | "roundCeremonie",
