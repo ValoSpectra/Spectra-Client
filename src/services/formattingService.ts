@@ -310,7 +310,6 @@ export type ISeedingInfo = {
 };
 
 export type ITournamentInfo = {
-  name: string;
   logoUrl: string;
   backdropUrl: string;
   timeoutDuration: number;
