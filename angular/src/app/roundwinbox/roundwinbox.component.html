@@ -80,7 +80,8 @@
                     [options]="roundWinBoxTeams"
                     [ngModel]="data.sponsors[$index]?.wonTeam"
                     (ngModelChange)="updateSponsor($index, 'wonTeam', $event)"
-                    [class.ng-invalid]="sponsorTypeError[$index]"
+                    [class.ng-dirty]="$index < data.sponsors.length ?  sponsorTypeError[$index] : false"
+                    [class.ng-invalid]="$index < data.sponsors.length ?  sponsorTypeError[$index] : false"
                   ></p-select>
                   <label for="roundWinBoxDialogTeam">Which Team</label>
                 </p-floatlabel>
@@ -95,7 +96,8 @@
                     [maxSelectedLabels]="3"
                     [filter]="false"
                     [showToggleAll]="false"
-                    [class.ng-invalid]="sponsorTypeError[$index]"
+                    [class.ng-dirty]="$index < data.sponsors.length ?  sponsorTypeError[$index] : false"
+                    [class.ng-invalid]="$index < data.sponsors.length ?  sponsorTypeError[$index] : false"
                   ></p-multiselect>
                   <label for="roundWinBoxDialogCeremonies">Which Round Ceremonies</label>
                 </p-floatlabel>
