@@ -16,6 +16,7 @@ import {
   PlayercamsInfo,
   SponsorInfo,
   WatermarkInfo,
+  DataTypes,
 } from "./services/formattingService";
 import HotkeyService, { HotkeyType } from "./services/hotkeyService";
 import axios from "axios";
@@ -149,6 +150,22 @@ const createWindow = () => {
   ipcMain.on("set-tray-setting", setTraySetting);
   ipcMain.on("open-external-link", openExternalLink);
   ipcMain.on("set-startup-settings", setStartupSettings);
+  ipcMain.on("midmatch-event", (_event: any, type: string) => {
+    try {
+      const toSend = { type: type, data: true };
+      connService.sendToIngest(toSend);
+    } catch (e) {
+      log.error("Failed to forward midmatch event:", e);
+    }
+  });
+  ipcMain.on("send-toast", (_event: any, toast: any) => {
+    try {
+      const toSend = { type: DataTypes.TOAST, data: toast };
+      connService.sendToIngest(toSend);
+    } catch (e) {
+      log.error("Failed to forward toast event:", e);
+    }
+  });
 
   if (!isAuxiliary) {
     // Observer mode

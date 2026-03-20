@@ -48,6 +48,8 @@
     </div>
   </div>
 </p-dialog>
+
+<!-- Extras Dialog -->
 <p-dialog
   header="Spectra Extras"
   [styleClass]="'w-3/5'"
@@ -97,6 +99,72 @@
     />
   </div>
 </p-dialog>
+
+<!-- Mid Match Dialog -->
+<p-dialog
+  header="Mid-Match Update"
+  [styleClass]="'w-3/5'"
+  [(visible)]="midmatchVisible"
+  [modal]="true"
+  [draggable]="false"
+  [resizable]="false"
+  [dismissableMask]="true"
+>
+  <div class="flex flex-col gap-12">
+    <div class="flex flex-col gap-3">
+      <p-button
+        fluid
+        label="Swap Attack and Defense for Teams"
+        icon="pi pi-eye"
+        class="w-full"
+        severity="primary"
+        [loading]="tryingToConnect"
+        (onClick)="onMidMatchSwapAD()"
+      />
+      <p-button
+        fluid
+        label="Swap Left and Right Teams"
+        icon="pi pi-arrow-right-arrow-left"
+        class="w-full"
+        severity="primary"
+        [loading]="tryingToConnect"
+        (onClick)="onMidMatchSwapLR()"
+      />
+    </div>
+    <div class="flex flex-col gap-3">
+      <div class="flex flex-col gap-2">
+        <input pInputText placeholder="Title (optional)" [(ngModel)]="toastConfig.title" />
+        <textarea
+          placeholder="Message"
+          rows="3"
+          [(ngModel)]="toastConfig.message"
+          class="p-inputtextarea p-inputtext"
+        ></textarea>
+        <div class="flex items-center gap-2">
+          <label class="text-sm">Duration (ms)</label>
+          <input pInputText type="number" [(ngModel)]="toastConfig.duration" min="3000" />
+        </div>
+        <div class="flex items-center gap-4">
+          <label class="text-sm">Team Logo</label>
+          <select [(ngModel)]="toastConfig.selectedTeam" class="p-inputtext">
+            <option value="none">None</option>
+            <option value="left">Left</option>
+            <option value="right">Right</option>
+          </select>
+          <label class="ml-4 inline-flex items-center gap-2 text-sm">
+            <input type="checkbox" [(ngModel)]="toastConfig.eventLogoEnabled" />
+            <span>Include Event Logo</span>
+          </label>
+        </div>
+        <div class="flex items-center gap-2">
+          <p-button label="Send Toast" severity="primary" (onClick)="onSendToast()" />
+          <p class="text-color-secondary text-sm">{{ toastStatusMessage }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-dialog>
+
 <button
   pButton
   class="border-surface fixed z-1050 -translate-x-3/7 translate-y-4/1 -rotate-90 cursor-pointer rounded-b-2xl border-x border-b px-3 pb-1 font-normal"
@@ -121,7 +189,7 @@
     ></app-observerinfo>
   </blockable-div>
 
-  <div class="border-surface col-span-3 flex flex-col rounded-lg border p-5">
+  <div class="border-surface relative col-span-3 flex flex-col rounded-lg border p-5">
     <p-button
       class="absolute h-10 self-start"
       [severity]="!isSupporter ? 'success' : 'help'"
@@ -162,6 +230,20 @@
       Game Status:
       <p-tag [value]="gameStatus.message | titlecase" [severity]="gameStatus.statusType" />
     </p>
+    @if (!editable) {
+      <div class="absolute right-5 bottom-18">
+        <p-button
+          fluid
+          label="Mid-Match Options"
+          class="w-full"
+          severity="contrast"
+          [disabled]="editable"
+          [loading]="tryingToConnect"
+          loadingIcon="pi pi-sync"
+          (onClick)="onMidMatchClick()"
+        />
+      </div>
+    }
     <div class="flex w-full flex-row gap-2">
       <p-button
         fluid

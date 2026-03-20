@@ -269,6 +269,10 @@ export enum DataTypes {
   LEFT_TIMEOUT = "left_timeout",
   RIGHT_TIMEOUT = "right_timeout",
   SWITCH_KDA_CREDITS = "switch_kda_credits",
+  // Mid-match update type
+  TOAST = "toast",
+  SWAP_L_R = "swap_left_right",
+  SWAP_A_D = "swap_attacker_defender",
 }
 
 export enum SocketChannels {
@@ -347,7 +351,7 @@ export type IRoundWinBox = {
 
 export type IRoundWinBoxSponsors = {
   wonTeam: "all" | "left" | "right";
-  roundCeremonie: ("all" | "normal" | "ace" | "clutch" | "teamAce" | "flawless" | "thrifty")[];
+  roundCeremony: ("all" | "normal" | "ace" | "clutch" | "teamAce" | "flawless" | "thrifty")[];
   iconUrl: string;
   backdropUrl: string;
 };
@@ -390,6 +394,13 @@ export type MapPoolInfo =
   | FutureMapPoolInfo
   | ErrorMapPoolInfo;
 
+export type IToastInfo = {
+  duration: number | null;
+  message: string;
+  eventLogoEnabled: boolean;
+  selectedTeam?: "left" | "right";
+  active: boolean;
+};
 //#endregion
 
 export interface GEPStatus {

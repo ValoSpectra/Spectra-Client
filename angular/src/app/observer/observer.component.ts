@@ -182,6 +182,25 @@ export class ObserverComponent implements OnInit {
   protected closeConfirmVisible: boolean = false;
   private closeDecision: boolean | null = null;
 
+  protected midmatchVisible: boolean = false;
+
+  // Toast configuration for mid-match toasts
+  protected toastConfig: {
+    title: string;
+    message: string;
+    duration: number; // milliseconds
+    selectedTeam: "none" | "left" | "right";
+    eventLogoEnabled: boolean;
+  } = {
+    title: "",
+    message: "",
+    duration: 5000,
+    selectedTeam: "none",
+    eventLogoEnabled: false,
+  };
+
+  protected toastStatusMessage: string = "";
+
   //#region Data strucures definition
   protected ingestServerOptions: string[] = ingestServerOptions;
   protected basicInfo: BasicInfo = {
@@ -383,6 +402,7 @@ export class ObserverComponent implements OnInit {
     this.electron.inputAllowedMessage.subscribe((value: boolean) => {
       this.editable = value;
       this.tryingToConnect = false;
+      this.midmatchVisible = false;
       this.changeDetectorRef.detectChanges();
     });
 
@@ -424,7 +444,7 @@ export class ObserverComponent implements OnInit {
         sponsors: [],
       };
     const roundWinBoxFirstSponsor = this.roundWinBox.sponsors[0];
-    roundWinBoxFirstSponsor.roundCeremonie = ["all"];
+    roundWinBoxFirstSponsor.roundCeremony = ["all"];
     roundWinBoxFirstSponsor.wonTeam = "all";
     return {
       type: this.roundWinBox.type,
@@ -791,6 +811,62 @@ export class ObserverComponent implements OnInit {
   protected onIsSupporterChanged(newState: boolean) {
     this.isSupporter = newState;
   }
+
+  protected onMidMatchClick() {
+    this.midmatchVisible = true;
+    // Weird change detector issues here, force update
+    this.changeDetectorRef.detectChanges();
+  }
+  protected onMidMatchSwapAD() {
+    this.midmatchVisible = false;
+    try {
+      this.electron.sendMidmatchEvent("swap_attacker_defender");
+    } catch (e) {
+      console.error("Failed to send midmatch attacker/defender swap event", e);
+    }
+    this.changeDetectorRef.detectChanges();
+  }
+
+  protected onMidMatchSwapLR() {
+    this.midmatchVisible = false;
+    try {
+      this.electron.sendMidmatchEvent("swap_left_right");
+    } catch (e) {
+      console.error("Failed to send midmatch left/right swap event", e);
+    }
+    this.changeDetectorRef.detectChanges();
+  }
+
+  protected onSendToast() {
+    if (!this.toastConfig.message || this.toastConfig.message.trim() === "") {
+      this.toastStatusMessage = "Message cannot be empty";
+      this.changeDetectorRef.detectChanges();
+      return;
+    }
+
+    const payload = {
+      title: this.toastConfig.title,
+      message: this.toastConfig.message,
+      duration: this.toastConfig.duration,
+      selectedTeam: this.toastConfig.selectedTeam,
+      eventLogoEnabled: this.toastConfig.eventLogoEnabled,
+    };
+
+    try {
+      this.electron.sendToast(payload);
+      this.toastStatusMessage = "Toast sent";
+      // Clear message after a short moment
+      setTimeout(() => {
+        this.toastStatusMessage = "";
+        this.changeDetectorRef.detectChanges();
+      }, 3000);
+    } catch (e) {
+      console.error("Failed to send toast", e);
+      this.toastStatusMessage = "Failed to send toast";
+    }
+
+    this.changeDetectorRef.detectChanges();
+  }
 }
 
 //#region Type definition
@@ -820,7 +896,7 @@ export type RoundWinBox = {
 };
 
 export type RoundWinBoxWonTeam = "all" | "left" | "right";
-export type RoundWinBoxRoundCeremonie = (
+export type RoundWinBoxroundCeremony = (
   | "all"
   | "normal"
   | "ace"
@@ -832,7 +908,7 @@ export type RoundWinBoxRoundCeremonie = (
 
 export type RoundWinBoxSponsors = {
   wonTeam: RoundWinBoxWonTeam;
-  roundCeremonie: RoundWinBoxRoundCeremonie;
+  roundCeremony: RoundWinBoxroundCeremony;
   iconUrl: string;
   backdropUrl: string;
 };

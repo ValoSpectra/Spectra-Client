@@ -60,6 +60,8 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.on("fire-connect", (_event: any, value: any) => callback(value)),
   onDiscordInfo: (callback: (arg0: any) => any) =>
     ipcRenderer.on("set-discord-info", (_event: any, value: any) => callback(value)),
+  sendMidmatchEvent: (type: string) => ipcRenderer.send("midmatch-event", type),
+  sendToast: (toast: any) => ipcRenderer.send("send-toast", toast),
   // Close confirmation flow
   onConfirmClose: (callback: () => any) => ipcRenderer.on("confirm-close", () => callback()),
   confirmCloseDecision: (confirm: boolean) => ipcRenderer.send("confirmed-close", confirm),

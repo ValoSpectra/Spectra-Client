@@ -43,7 +43,7 @@ export class RoundwinboxComponent implements Validatable, AfterContentInit {
   isSupporter: boolean = false;
 
   roundWinBoxTeams = ["all", "left", "right"];
-  roundWinBoxRoundCeremonie = ["all", "normal", "ace", "clutch", "teamAce", "flawless", "thrifty"];
+  roundWinBoxroundCeremony = ["all", "normal", "ace", "clutch", "teamAce", "flawless", "thrifty"];
 
   ngAfterContentInit(): void {
     this.runValidation();
@@ -70,10 +70,10 @@ export class RoundwinboxComponent implements Validatable, AfterContentInit {
             sponsor.wonTeam == "all" ||
             spons.wonTeam == "all"
           ) {
-            for (const ceremonie of sponsor.roundCeremonie) {
+            for (const ceremonie of sponsor.roundCeremony) {
               if (
-                spons.roundCeremonie.includes(ceremonie) ||
-                (ceremonie == "all" && spons.roundCeremonie.length > 0)
+                spons.roundCeremony.includes(ceremonie) ||
+                (ceremonie == "all" && spons.roundCeremony.length > 0)
               ) {
                 this.sponsorTypeError[i] = true;
                 this.sponsorTypeError[j] = true;
@@ -100,13 +100,13 @@ export class RoundwinboxComponent implements Validatable, AfterContentInit {
 
   protected updateSponsor(
     index: number,
-    field: "iconUrl" | "backdropUrl" | "wonTeam" | "roundCeremonie",
+    field: "iconUrl" | "backdropUrl" | "wonTeam" | "roundCeremony",
     value: string,
   ) {
     if (!this.data.sponsors[index]) {
       this.data.sponsors[index] = {
         wonTeam: "all",
-        roundCeremonie: ["all"],
+        roundCeremony: ["all"],
         iconUrl: "",
         backdropUrl: "",
       };

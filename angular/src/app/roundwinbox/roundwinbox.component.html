@@ -14,25 +14,31 @@
 
   <p-inputgroup>
     <p-inputgroup-addon>
-      <p-button label="Disabled" [severity]="data.type == 'disabled' ? 'primary' : 'secondary'" (onClick)="data.type = 'disabled'; runValidation()" />
+      <p-button
+        label="Disabled"
+        [severity]="data.type == 'disabled' ? 'primary' : 'secondary'"
+        (onClick)="data.type = 'disabled'; runValidation()"
+      />
     </p-inputgroup-addon>
     <p-inputgroup-addon>
-      <p-button label="Tournament Info" [severity]="data.type == 'tournamentInfo' ? 'primary' : 'secondary'" (onClick)="data.type = 'tournamentInfo'; runValidation()" />
+      <p-button
+        label="Tournament Info"
+        [severity]="data.type == 'tournamentInfo' ? 'primary' : 'secondary'"
+        (onClick)="data.type = 'tournamentInfo'; runValidation()"
+      />
     </p-inputgroup-addon>
     <p-inputgroup-addon>
-      <p-button label="Sponsors" [severity]="data.type == 'sponsors' ? 'primary' : 'secondary'" (onClick)="data.type = 'sponsors'; runValidation()"/>
+      <p-button
+        label="Sponsors"
+        [severity]="data.type == 'sponsors' ? 'primary' : 'secondary'"
+        (onClick)="data.type = 'sponsors'; runValidation()"
+      />
     </p-inputgroup-addon>
   </p-inputgroup>
-  <h1
-    [hidden]="data.type != 'tournamentInfo'"
-    class="text-md text-color italic"
-  >
+  <h1 [hidden]="data.type != 'tournamentInfo'" class="text-md text-color italic">
     Configure Tournament Info in the Box above.
   </h1>
-  <h1
-    [hidden]="isSupporter || data.type != 'sponsors'"
-    class="text-md text-color italic"
-  >
+  <h1 [hidden]="isSupporter || data.type != 'sponsors'" class="text-md text-color italic">
     Subscribe to Spectra+ to be able to add more than one sponsor.
   </h1>
 
@@ -40,16 +46,16 @@
   <blockable-div #toBlock>
     <div class="grid grid-cols-12 gap-3">
       @for (i of numSequence(data.sponsors.length + 1); track $index) {
-        @if ($index == 0 || $index > 0 && isSupporter) {
+        @if ($index == 0 || ($index > 0 && isSupporter)) {
           <div class="col-span-7 flex flex-row">
-            <div class="w-full mr-2">
-              <div class="flex w-full mb-2">
-                <p-floatlabel variant="on" class="w-1/2 mr-1">
+            <div class="mr-2 w-full">
+              <div class="mb-2 flex w-full">
+                <p-floatlabel variant="on" class="mr-1 w-1/2">
                   <input
                     pInputText
                     fluid
                     type="url"
-                    [ngModel]="data.sponsors[$index]?.iconUrl"
+                    [ngModel]="data.sponsors[$index].iconUrl"
                     (ngModelChange)="updateSponsor($index, 'iconUrl', $event)"
                     [class.ng-dirty]="sponsorIconError[$index]"
                     [class.ng-invalid]="sponsorIconError[$index]"
@@ -57,47 +63,57 @@
                   />
                   <label for="SponsorLogo{{ $index + 1 }}">Sponsor {{ $index + 1 }} logo URL</label>
                 </p-floatlabel>
-                <p-floatlabel variant="on" class="w-1/2 ml-1">
+                <p-floatlabel variant="on" class="ml-1 w-1/2">
                   <input
                     pInputText
                     fluid
                     type="url"
-                    [ngModel]="data.sponsors[$index]?.backdropUrl"
+                    [ngModel]="data.sponsors[$index].backdropUrl"
                     (ngModelChange)="updateSponsor($index, 'backdropUrl', $event)"
                     [class.ng-dirty]="sponsorBackdropError[$index]"
                     [class.ng-invalid]="sponsorBackdropError[$index]"
                     id="SponsorBackdrop{{ $index + 1 }}"
                   />
-                  <label for="SponsorBackdrop{{ $index + 1 }}">Sponsor {{ $index + 1 }} backdrop URL</label>
+                  <label for="SponsorBackdrop{{ $index + 1 }}"
+                    >Sponsor {{ $index + 1 }} backdrop URL</label
+                  >
                 </p-floatlabel>
               </div>
               <div class="flex w-full">
-                <p-floatlabel variant="on" class="w-1/2 mr-1">
+                <p-floatlabel variant="on" class="mr-1 w-1/2">
                   <p-select
                     appendTo="body"
                     fluid
                     id="roundWinBoxDialogTeam"
                     [options]="roundWinBoxTeams"
-                    [ngModel]="data.sponsors[$index]?.wonTeam"
+                    [ngModel]="data.sponsors[$index].wonTeam"
                     (ngModelChange)="updateSponsor($index, 'wonTeam', $event)"
-                    [class.ng-dirty]="$index < data.sponsors.length ?  sponsorTypeError[$index] : false"
-                    [class.ng-invalid]="$index < data.sponsors.length ?  sponsorTypeError[$index] : false"
+                    [class.ng-dirty]="
+                      $index < data.sponsors.length ? sponsorTypeError[$index] : false
+                    "
+                    [class.ng-invalid]="
+                      $index < data.sponsors.length ? sponsorTypeError[$index] : false
+                    "
                   ></p-select>
                   <label for="roundWinBoxDialogTeam">Which Team</label>
                 </p-floatlabel>
-                <p-floatlabel variant="on" class="w-1/2 ml-1">
+                <p-floatlabel variant="on" class="ml-1 w-1/2">
                   <p-multiselect
                     appendTo="body"
                     id="roundWinBoxDialogCeremonies"
                     class="w-full"
-                    [options]="roundWinBoxRoundCeremonie"
-                    [ngModel]="data.sponsors[$index]?.roundCeremonie"
-                    (ngModelChange)="updateSponsor($index, 'roundCeremonie', $event)"
+                    [options]="roundWinBoxroundCeremony"
+                    [ngModel]="data.sponsors[$index].roundCeremony"
+                    (ngModelChange)="updateSponsor($index, 'roundCeremony', $event)"
                     [maxSelectedLabels]="3"
                     [filter]="false"
                     [showToggleAll]="false"
-                    [class.ng-dirty]="$index < data.sponsors.length ?  sponsorTypeError[$index] : false"
-                    [class.ng-invalid]="$index < data.sponsors.length ?  sponsorTypeError[$index] : false"
+                    [class.ng-dirty]="
+                      $index < data.sponsors.length ? sponsorTypeError[$index] : false
+                    "
+                    [class.ng-invalid]="
+                      $index < data.sponsors.length ? sponsorTypeError[$index] : false
+                    "
                   ></p-multiselect>
                   <label for="roundWinBoxDialogCeremonies">Which Round Ceremonies</label>
                 </p-floatlabel>
@@ -110,15 +126,23 @@
                   icon="pi pi-times"
                   styleClass="w-full h-full"
                   severity="danger"
-                  (onClick)="this.data.sponsors.splice($index, 1); this.sponsorIconError.splice($index, 1); this.sponsorBackdropError.splice($index, 1);"
+                  (onClick)="
+                    this.data.sponsors.splice($index, 1);
+                    this.sponsorIconError.splice($index, 1);
+                    this.sponsorBackdropError.splice($index, 1)
+                  "
                 />
               }
             </div>
           </div>
           @if ($index < data.sponsors.length) {
-            <div class="col-span-5 flex flex-row max-h-22">
+            <div class="col-span-5 flex max-h-22 flex-row">
               <div
-                class="flex shrink min-w-0 aspect-square max-h-22 items-center justify-center mr-6 {{(sponsorIconError[$index] || !data.sponsors[$index].iconUrl) ? 'border-surface bg-emphasis rounded-xl border' : ''}}"
+                class="flex shrink min-w-0 aspect-square max-h-22 items-center justify-center mr-6 {{
+                  sponsorIconError[$index] || !data.sponsors[$index].iconUrl
+                    ? 'border-surface bg-emphasis rounded-xl border'
+                    : ''
+                }}"
               >
                 @if (sponsorIconError[$index] || !data.sponsors[$index].iconUrl) {
                   <i
@@ -140,7 +164,11 @@
                 />
               </div>
               <div
-                class="flex shrink min-w-0 aspect-35/8 max-h-full max-w-full items-center justify-center {{(sponsorBackdropError[$index] || !data.sponsors[$index].backdropUrl) ? 'border-surface bg-emphasis rounded-xl border' : ''}}"
+                class="flex shrink min-w-0 aspect-35/8 max-h-full max-w-full items-center justify-center {{
+                  sponsorBackdropError[$index] || !data.sponsors[$index].backdropUrl
+                    ? 'border-surface bg-emphasis rounded-xl border'
+                    : ''
+                }}"
               >
                 @if (sponsorBackdropError[$index] || !data.sponsors[$index].backdropUrl) {
                   <i
@@ -153,7 +181,7 @@
                   </p-popover>
                 }
                 <img
-                  class="max-w-full max-h-full object-contain"
+                  class="max-h-full max-w-full object-contain"
                   alt=""
                   [src]="data.sponsors[$index].backdropUrl"
                   (load)="onSponsorImageLoadSuccess($index, 'backdrop')"
@@ -164,9 +192,7 @@
             </div>
           }
           @if ($index < data.sponsors.length) {
-            <div
-              class="col-span-12 flex flex-row w-full border-b border-surface"
-            ></div>
+            <div class="border-surface col-span-12 flex w-full flex-row border-b"></div>
           }
         }
       }

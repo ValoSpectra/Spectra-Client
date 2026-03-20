@@ -138,6 +138,15 @@ export class ElectronService {
     this.loadingStatusMessageSource.next(value);
   }
 
+  public sendMidmatchEvent(type: MidMatchEventTypes) {
+    this.api.sendMidmatchEvent(type);
+  }
+
+  public sendToast(toast: any) {
+    if (!this.api.sendToast) return;
+    this.api.sendToast(toast);
+  }
+
   private eventStatusMessageSource = new BehaviorSubject<number>(1);
   public eventStatusMessage = this.eventStatusMessageSource.asObservable();
 
@@ -159,4 +168,12 @@ export enum StatusTypes {
 export type Status = {
   statusType: StatusTypes;
   message: string;
+};
+export type MidMatchEventTypes = "toast" | "swap_left_right" | "swap_attacker_defender";
+export type IToastInfo = {
+  duration: number | null;
+  message: string;
+  eventLogoEnabled: boolean;
+  selectedTeam?: "left" | "right";
+  active: boolean;
 };
