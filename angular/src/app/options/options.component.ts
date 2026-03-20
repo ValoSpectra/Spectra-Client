@@ -22,7 +22,7 @@ export class OptionsComponent implements OnInit {
 
   private readonly storageKey = "appOptions";
 
-  @Input({required: false})
+  @Input({ required: false })
   isAux = false;
 
   constructor(
@@ -46,7 +46,7 @@ export class OptionsComponent implements OnInit {
     this.electron.setStartupSettings(
       this.data.runAtStartup,
       this.data.runAtStartup && this.data.startMinimized,
-      this.data.runAtStartup && this.isAux
+      this.data.runAtStartup && this.isAux,
     );
   }
 
@@ -62,7 +62,7 @@ export class OptionsComponent implements OnInit {
     this.electron.setStartupSettings(
       this.data.runAtStartup,
       this.data.runAtStartup && this.data.startMinimized,
-      this.data.runAtStartup && this.isAux
+      this.data.runAtStartup && this.isAux,
     );
   }
 }
