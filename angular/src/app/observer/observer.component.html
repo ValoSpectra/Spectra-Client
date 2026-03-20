@@ -237,6 +237,17 @@
       (validationChanged)="onPanelValidationChanged($event, 'tournamentinfoPanelId')"
     ></app-tournamentinfo>
   </blockable-div>
+
+  <blockable-div class="col-span-6" #roundwinbox_panel>
+    <p-block-ui [target]="roundwinbox_panel" [blocked]="!editable" />
+    <app-roundwinbox
+      id="roundwinboxPanelId"
+      [data]="roundWinBox"
+      [isSupporter]="isSupporter"
+      (validationChanged)="onPanelValidationChanged($event, 'roundwinboxPanelId')"
+    ></app-roundwinbox>
+  </blockable-div>
+
   <blockable-div class="col-span-3 h-full" #seriesinfo_panel>
     <p-block-ui [target]="seriesinfo_panel" [blocked]="!editable" />
     <app-seriesinfo

@@ -41,6 +41,7 @@ export class ElectronService {
     watermarkInfo: any,
     playercamsInfo: any,
     timeoutInfo: any,
+    roundWinBox: any,
   ) {
     this.api.processInputs(
       ingestIp,
@@ -57,6 +58,7 @@ export class ElectronService {
       watermarkInfo,
       playercamsInfo,
       timeoutInfo,
+      roundWinBox,
     );
   }
 

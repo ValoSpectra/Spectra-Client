@@ -294,6 +294,7 @@ export interface IToolsData {
   sponsorInfo: SponsorInfo;
   watermarkInfo: WatermarkInfo;
   playercamsInfo: PlayercamsInfo;
+  roundWinBox: IRoundWinBox;
 }
 
 export type ISeriesInfo = {
@@ -309,7 +310,6 @@ export type ISeedingInfo = {
 };
 
 export type ITournamentInfo = {
-  name: string;
   logoUrl: string;
   backdropUrl: string;
   timeoutDuration: number;
@@ -338,6 +338,18 @@ export type PlayercamsInfo = {
   identifier: string;
   secret: string;
   endTime: number;
+};
+
+export type IRoundWinBox = {
+  type: "disabled" | "tournamentInfo" | "sponsors";
+  sponsors: IRoundWinBoxSponsors[];
+};
+
+export type IRoundWinBoxSponsors = {
+  wonTeam: "all" | "left" | "right";
+  roundCeremonie: ("all" | "normal" | "ace" | "clutch" | "teamAce" | "flawless" | "thrifty")[];
+  iconUrl: string;
+  backdropUrl: string;
 };
 
 type BaseMapPoolInfo = {

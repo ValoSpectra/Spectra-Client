@@ -16,6 +16,7 @@ import {
   IAuxAuthenticationData,
   IFormattedAuxScoreboardTeam as IFormattedAuxScoreboardTeammate,
   IFormattedData,
+  IRoundWinBox,
   ISeedingInfo,
   ISeriesInfo,
   ITimeoutInfo,
@@ -89,6 +90,7 @@ export class ConnectorService {
     watermarkInfo: WatermarkInfo,
     playercamsInfo: PlayercamsInfo,
     timeoutInfo: ITimeoutInfo,
+    roundWinBox: IRoundWinBox,
     win: Electron.Main.BrowserWindow,
   ) {
     if (RegExp("(http|https)://[^/]+:[0-9]+").test(ingestIp)) {
@@ -201,6 +203,7 @@ export class ConnectorService {
         sponsorInfo: sponsorInfo,
         watermarkInfo: watermarkInfo,
         playercamsInfo: playercamsInfo,
+        roundWinBox: roundWinBox,
       },
     };
     this.ws.emit(SocketChannels.OBSERVER_LOGON, JSON.stringify(logonData));
