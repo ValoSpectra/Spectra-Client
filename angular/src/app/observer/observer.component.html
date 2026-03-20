@@ -112,26 +112,6 @@
 >
   <div class="flex flex-col gap-12">
     <div class="flex flex-col gap-3">
-      <p-button
-        fluid
-        label="Swap Attack and Defense for Teams"
-        icon="pi pi-eye"
-        class="w-full"
-        severity="primary"
-        [loading]="tryingToConnect"
-        (onClick)="onMidMatchSwapAD()"
-      />
-      <p-button
-        fluid
-        label="Swap Left and Right Teams"
-        icon="pi pi-arrow-right-arrow-left"
-        class="w-full"
-        severity="primary"
-        [loading]="tryingToConnect"
-        (onClick)="onMidMatchSwapLR()"
-      />
-    </div>
-    <div class="flex flex-col gap-3">
       <div class="flex flex-col gap-2">
         <input pInputText placeholder="Title (optional)" [(ngModel)]="toastConfig.title" />
         <textarea
@@ -161,6 +141,30 @@
           <p class="text-color-secondary text-sm">{{ toastStatusMessage }}</p>
         </div>
       </div>
+    </div>
+    <div class="flex flex-col gap-3">
+      <p class="text-md w-full text-center">
+        The following two options should only be used as a last resort.
+        <br />Always ensure you set all options properly before connecting.
+      </p>
+      <p-button
+        fluid
+        label="Swap Attack and Defense for Teams"
+        icon="pi pi-eye"
+        class="w-full"
+        severity="primary"
+        [loading]="tryingToConnect"
+        (onClick)="onMidMatchSwapAD()"
+      />
+      <p-button
+        fluid
+        label="Swap Left and Right Teams"
+        icon="pi pi-arrow-right-arrow-left"
+        class="w-full"
+        severity="primary"
+        [loading]="tryingToConnect"
+        (onClick)="onMidMatchSwapLR()"
+      />
     </div>
   </div>
 </p-dialog>
