@@ -24,6 +24,7 @@
     "build": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=never",
     "publish": "rimraf app && rimraf dist && yarn workspace angular build && npx tsc && ow-electron-builder --publish=always",
     "postinstall": "ow-electron-builder install-app-deps",
+    "prepare": "husky install",
     "lint": "eslint src/ angular/src",
     "lint-fix": "eslint src/ angular/src --fix",
     "format": "prettier src/ angular/src --write"
@@ -79,6 +80,8 @@
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "globals": "^16.5.0",
+    "husky": "^8.0.3",
+    "lint-staged": "^14.0.0",
     "prettier": "^3.8.1",
     "rimraf": "^6.1.2",
     "typescript": "5.8.3",
@@ -94,6 +97,16 @@
     "prettier-plugin-tailwindcss": "^0.6.14",
     "semver": "^7.7.4",
     "socket.io-client": "^4.8.1"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "git add"
+    ],
+    "*.{css,scss,html,md,json,css,ts}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "packageManager": "yarn@4.10.3"
 }
