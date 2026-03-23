@@ -55,7 +55,7 @@
                     pInputText
                     fluid
                     type="url"
-                    [ngModel]="data.sponsors[$index]?.iconUrl"
+                    [ngModel]="data.sponsors[$index] ? data.sponsors[$index].iconUrl : ''"
                     (ngModelChange)="updateSponsor($index, 'iconUrl', $event)"
                     [class.ng-dirty]="sponsorIconError[$index]"
                     [class.ng-invalid]="sponsorIconError[$index]"
@@ -68,7 +68,7 @@
                     pInputText
                     fluid
                     type="url"
-                    [ngModel]="data.sponsors[$index]?.backdropUrl"
+                    [ngModel]="data.sponsors[$index] ? data.sponsors[$index].backdropUrl : ''"
                     (ngModelChange)="updateSponsor($index, 'backdropUrl', $event)"
                     [class.ng-dirty]="sponsorBackdropError[$index]"
                     [class.ng-invalid]="sponsorBackdropError[$index]"
@@ -86,7 +86,7 @@
                     fluid
                     id="roundWinBoxDialogTeam"
                     [options]="roundWinBoxTeams"
-                    [ngModel]="data.sponsors[$index]?.wonTeam"
+                    [ngModel]="data.sponsors[$index] ? data.sponsors[$index].wonTeam : 'all'"
                     (ngModelChange)="updateSponsor($index, 'wonTeam', $event)"
                     [class.ng-dirty]="
                       $index < data.sponsors.length ? sponsorTypeError[$index] : false
@@ -103,7 +103,7 @@
                     id="roundWinBoxDialogCeremonies"
                     class="w-full"
                     [options]="roundWinBoxroundCeremony"
-                    [ngModel]="data.sponsors[$index]?.roundCeremony"
+                    [ngModel]="data.sponsors[$index] ? data.sponsors[$index].roundCeremony : ['all']"
                     (ngModelChange)="updateSponsor($index, 'roundCeremony', $event)"
                     [maxSelectedLabels]="3"
                     [filter]="false"
@@ -157,7 +157,7 @@
                 <img
                   class="aspect-square justify-self-center object-contain"
                   alt=""
-                  [src]="data.sponsors[$index]?.iconUrl"
+                  [src]="data.sponsors[$index].iconUrl"
                   (load)="onSponsorImageLoadSuccess($index, 'icon')"
                   (error)="onSponsorImageLoadError($index, 'icon')"
                   [hidden]="sponsorIconError[$index] || !data.sponsors[$index].iconUrl"
@@ -183,7 +183,7 @@
                 <img
                   class="max-h-full max-w-full object-contain"
                   alt=""
-                  [src]="data.sponsors[$index]?.backdropUrl"
+                  [src]="data.sponsors[$index].backdropUrl"
                   (load)="onSponsorImageLoadSuccess($index, 'backdrop')"
                   (error)="onSponsorImageLoadError($index, 'backdrop')"
                   [hidden]="sponsorBackdropError[$index] || !data.sponsors[$index].backdropUrl"
