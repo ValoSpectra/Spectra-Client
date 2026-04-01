@@ -2,6 +2,7 @@ import { globalShortcut } from "electron/main";
 import { ConnectorService } from "./connectorService";
 import { DataTypes } from "./formattingService";
 import log from "electron-log";
+import { fireSendToast } from "../main";
 
 export default class HotkeyService {
   private static instance: HotkeyService;
@@ -42,6 +43,12 @@ export default class HotkeyService {
       type: HotkeyType.SWITCH_KDA_CREDITS,
       enabled: true,
     };
+    this.hotkeys[HotkeyType.SHOW_TOAST] = {
+      key: "",
+      action: this._showToastHotkeyAction.bind(this),
+      type: HotkeyType.SHOW_TOAST,
+      enabled: true,
+    };
   }
 
   public static getInstance(): HotkeyService {
@@ -51,7 +58,7 @@ export default class HotkeyService {
 
   protected activateHotkey(key: HotkeyType) {
     const hotkey = this.hotkeys[key];
-    if (hotkey.enabled) {
+    if (hotkey.enabled && hotkey.key !== "") {
       globalShortcut.register(hotkey.key, hotkey.action);
       log.info(`Activated hotkey ${HotkeyType[hotkey.type]} on key ${hotkey.key}`);
     }
@@ -122,6 +129,10 @@ export default class HotkeyService {
     const toSend = { type: DataTypes.SWITCH_KDA_CREDITS, data: true };
     ConnectorService.getInstance().sendToIngest(toSend);
   }
+
+  private _showToastHotkeyAction() {
+    fireSendToast();
+  }
 }
 export enum HotkeyType {
   SPIKE_PLANTED,
@@ -129,6 +140,7 @@ export enum HotkeyType {
   LEFT_TIMEOUT,
   RIGHT_TIMEOUT,
   SWITCH_KDA_CREDITS,
+  SHOW_TOAST,
 }
 type Hotkey = {
   key: string;

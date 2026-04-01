@@ -186,13 +186,7 @@ export class ObserverComponent implements OnInit {
   protected toastTeamOptions: string[] = ["none", "left", "right"];
 
   // Toast configuration for mid-match toasts
-  protected toastConfig: {
-    title: string;
-    message: string;
-    duration: number; // milliseconds
-    selectedTeam: "none" | "left" | "right";
-    eventLogoEnabled: boolean;
-  } = {
+  protected toastConfig: ToastConfig = {
     title: "",
     message: "",
     duration: 5000,
@@ -264,12 +258,14 @@ export class ObserverComponent implements OnInit {
     leftTimeout: "O",
     rightTimeout: "P",
     switchKdaCredits: "I",
+    showToast: "L",
     enabled: {
       spikePlanted: false,
       techPause: true,
       leftTimeout: true,
       rightTimeout: true,
       switchKdaCredits: true,
+      showToast: false,
     },
   };
 
@@ -350,6 +346,7 @@ export class ObserverComponent implements OnInit {
         leftTimeout: true,
         rightTimeout: true,
         switchKdaCredits: true,
+        showToast: true,
       };
     }
     // Hotkey migration for switch KDA/Credits
@@ -383,6 +380,9 @@ export class ObserverComponent implements OnInit {
     } else {
       this.timeoutInfo = { max: 2, left: 2, right: 2 };
     }
+
+    this.toastConfig =
+      this.localStorageService.getItem<ToastConfig>("toastConfig") || this.toastConfig;
   }
 
   ngOnInit() {
@@ -416,6 +416,10 @@ export class ObserverComponent implements OnInit {
     this.electron.onConfirmClose(() => {
       this.closeConfirmVisible = true;
       this.changeDetectorRef.detectChanges();
+    });
+
+    this.electron.fireSendToast.subscribe(() => {
+      this.onSendToast();
     });
   }
 
@@ -537,6 +541,7 @@ export class ObserverComponent implements OnInit {
     this.localStorageService.setItem("playercams", this.playercamsInfo);
     this.localStorageService.setItem("timeouts", this.timeoutInfo);
     this.localStorageService.setItem("roundWinBox", this.roundWinBox);
+    this.localStorageService.setItem("toastConfig", this.toastConfig);
   }
 
   protected onExtrasClick() {
@@ -852,6 +857,8 @@ export class ObserverComponent implements OnInit {
       return;
     }
 
+    this.localStorageService.setItem("toastConfig", this.toastConfig);
+
     const payload = {
       title: this.toastConfig.title,
       message: this.toastConfig.message,
@@ -945,13 +952,23 @@ export type Hotkeys = {
   leftTimeout: string;
   rightTimeout: string;
   switchKdaCredits: string;
+  showToast: string;
   enabled: {
     spikePlanted: boolean;
     techPause: boolean;
     leftTimeout: boolean;
     rightTimeout: boolean;
     switchKdaCredits: boolean;
+    showToast: boolean;
   };
+};
+
+export type ToastConfig = {
+  title: string;
+  message: string;
+  duration: number; // milliseconds
+  selectedTeam: "none" | "left" | "right";
+  eventLogoEnabled: boolean;
 };
 
 export type PlayercamsInfo = {

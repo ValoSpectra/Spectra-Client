@@ -169,4 +169,37 @@
     </p-inputgroup>
     <label for="switchKdaCreditsInput">Switch KDA/Credits</label>
   </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <p-inputgroup>
+      <input
+        pInputText
+        fluid
+        [(ngModel)]="data.showToast"
+        (ngModelChange)="runValidation()"
+        type="text"
+        id="showToastInput"
+        disabled
+        [class.ng-dirty]="!valid.showToast"
+        [class.ng-invalid]="!valid.showToast"
+      />
+      <p-inputgroup-addon>
+        <p-togglebutton
+          onLabel="Enabled"
+          offLabel="Disabled"
+          [(ngModel)]="data.enabled.showToast"
+          (ngModelChange)="runValidation()"
+          styleClass="w-24 border-r-[var(--p-form-field-border-color)] rounded-none"
+        />
+        <p-button
+          label="Change"
+          severity="primary"
+          variant="text"
+          (onClick)="changeKeybind($event, 'showToast')"
+          [disabled]="isCapturing"
+        />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+    <label for="showToastInput">Show Toast Message</label>
+  </p-floatlabel>
 </div>

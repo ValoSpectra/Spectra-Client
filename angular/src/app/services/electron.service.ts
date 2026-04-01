@@ -20,6 +20,7 @@ export class ElectronService {
     this.api.setLoadingStatus(this.changeLoadingStatus.bind(this));
     this.api.setEventStatus(this.changeEventStatus.bind(this));
     this.api.onDiscordInfo(this.changeDiscordInfo.bind(this));
+    this.api.onTriggerSendToast(this.onTriggerSendToast.bind(this));
   }
 
   public get api(): any {
@@ -145,6 +146,12 @@ export class ElectronService {
   public sendToast(toast: any) {
     if (!this.api.sendToast) return;
     this.api.sendToast(toast);
+  }
+
+  @Output()
+  fireSendToast = new EventEmitter<void>();
+  public onTriggerSendToast() {
+    this.fireSendToast.emit();
   }
 
   private eventStatusMessageSource = new BehaviorSubject<number>(1);

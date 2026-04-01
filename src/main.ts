@@ -521,6 +521,11 @@ function processInputs(
       hotkeys.switchKdaCredits,
       hotkeys.enabled.switchKdaCredits,
     );
+    hotkeyService.setKeyForHotkey(
+      HotkeyType.SHOW_TOAST,
+      hotkeys.showToast,
+      hotkeys.enabled.showToast,
+    );
   } catch (error: any) {
     messageBox("Spectra Client - Error", error.message, messageBoxType.ERROR);
     return;
@@ -959,4 +964,11 @@ export function getMatchSecret(): string {
     `Retrieved match secret from storage, expires in ${(retrieved.endTime - Date.now()) / 1000} seconds`,
   );
   return retrieved.secret;
+}
+
+/**
+ * Sends the frontend an event so it can trigger the sendToast action with the correct data
+ */
+export function fireSendToast() {
+  win.webContents.send("fire-send-toast");
 }
