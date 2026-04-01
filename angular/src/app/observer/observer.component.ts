@@ -5,7 +5,7 @@ import { FloatLabelModule } from "primeng/floatlabel";
 import { PasswordModule } from "primeng/password";
 import { SelectModule } from "primeng/select";
 import { RadioButtonModule } from "primeng/radiobutton";
-import { ButtonModule } from "primeng/button";
+import { ButtonModule, ButtonSeverity } from "primeng/button";
 import { ElectronService, Status, StatusTypes } from "../services/electron.service";
 import { TagModule } from "primeng/tag";
 import { InputNumberModule } from "primeng/inputnumber";
@@ -200,7 +200,8 @@ export class ObserverComponent implements OnInit {
     eventLogoEnabled: false,
   };
 
-  protected toastStatusMessage: string = "";
+  protected toastStatusMessage: string = "Send Toast";
+  protected toastSeverity: ButtonSeverity = "primary";
 
   //#region Data strucures definition
   protected ingestServerOptions: string[] = ingestServerOptions;
@@ -840,7 +841,13 @@ export class ObserverComponent implements OnInit {
 
   protected onSendToast() {
     if (!this.toastConfig.message || this.toastConfig.message.trim() === "") {
-      this.toastStatusMessage = "Message cannot be empty";
+      this.toastStatusMessage = "Message Empty";
+      this.toastSeverity = "danger";
+      setTimeout(() => {
+        this.toastStatusMessage = "Send Toast";
+        this.toastSeverity = "primary";
+        this.changeDetectorRef.detectChanges();
+      }, 3000);
       this.changeDetectorRef.detectChanges();
       return;
     }
@@ -855,15 +862,24 @@ export class ObserverComponent implements OnInit {
 
     try {
       this.electron.sendToast(payload);
-      this.toastStatusMessage = "Toast sent";
-      // Clear message after a short moment
+      if (this.toastSeverity !== "warn") {
+        this.toastStatusMessage = "Stop Toast";
+        this.toastSeverity = "warn";
+      } else {
+        this.toastStatusMessage = "Send Toast";
+        this.toastSeverity = "primary";
+      }
+
+      // Clear message after a delay
       setTimeout(() => {
-        this.toastStatusMessage = "";
+        this.toastStatusMessage = "Send Toast";
+        this.toastSeverity = "primary";
         this.changeDetectorRef.detectChanges();
-      }, 3000);
+      }, this.toastConfig.duration + 500);
     } catch (e) {
       console.error("Failed to send toast", e);
       this.toastStatusMessage = "Failed to send toast";
+      this.toastSeverity = "danger";
     }
 
     this.changeDetectorRef.detectChanges();

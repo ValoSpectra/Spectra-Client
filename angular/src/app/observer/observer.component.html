@@ -146,9 +146,12 @@
             <p-toggleswitch [(ngModel)]="toastConfig.eventLogoEnabled" class="mt-1" />
           </label>
         </div>
-        <div class="flex w-full justify-center">
-          <p-button label="Send Toast" severity="primary" (onClick)="onSendToast()" />
-          <p class="text-color-secondary text-sm">{{ toastStatusMessage }}</p>
+        <div class="flex w-full flex-col items-center">
+          <p-button
+            label="{{ toastStatusMessage }}"
+            [severity]="toastSeverity"
+            (onClick)="onSendToast()"
+          />
         </div>
       </div>
     </div>
