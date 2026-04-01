@@ -113,30 +113,40 @@
   <div class="flex flex-col gap-12">
     <div class="flex flex-col gap-3">
       <div class="flex flex-col gap-2">
-        <input pInputText placeholder="Title (optional)" [(ngModel)]="toastConfig.title" />
+        <input
+          pInputText
+          placeholder="Title (optional, max 35 characters)"
+          [(ngModel)]="toastConfig.title"
+          minlength="3"
+          maxlength="35"
+        />
         <textarea
-          placeholder="Message"
+          placeholder="Message (max 100 characters)"
           rows="3"
           [(ngModel)]="toastConfig.message"
           class="p-inputtextarea p-inputtext"
+          minlength="3"
+          maxlength="100"
         ></textarea>
         <div class="flex items-center gap-2">
           <label class="text-sm">Duration (ms)</label>
-          <input pInputText type="number" [(ngModel)]="toastConfig.duration" min="3000" />
+          <p-inputNumber type="number" [(ngModel)]="toastConfig.duration" min="3000" max="30000" />
         </div>
         <div class="flex items-center gap-4">
           <label class="text-sm">Team Logo</label>
-          <select [(ngModel)]="toastConfig.selectedTeam" class="p-inputtext">
-            <option value="none">None</option>
-            <option value="left">Left</option>
-            <option value="right">Right</option>
-          </select>
-          <label class="ml-4 inline-flex items-center gap-2 text-sm">
-            <input type="checkbox" [(ngModel)]="toastConfig.eventLogoEnabled" />
-            <span>Include Event Logo</span>
+          <p-select
+            [(ngModel)]="toastConfig.selectedTeam"
+            fluid
+            [options]="toastTeamOptions"
+            class="capitalize"
+          >
+          </p-select>
+          <label class="flex items-center gap-2 text-sm">
+            <span>Event Logo</span>
+            <p-toggleswitch [(ngModel)]="toastConfig.eventLogoEnabled" class="mt-1" />
           </label>
         </div>
-        <div class="flex items-center gap-2">
+        <div class="flex w-full justify-center">
           <p-button label="Send Toast" severity="primary" (onClick)="onSendToast()" />
           <p class="text-color-secondary text-sm">{{ toastStatusMessage }}</p>
         </div>

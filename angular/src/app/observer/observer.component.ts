@@ -183,6 +183,7 @@ export class ObserverComponent implements OnInit {
   private closeDecision: boolean | null = null;
 
   protected midmatchVisible: boolean = false;
+  protected toastTeamOptions: string[] = ["none", "left", "right"];
 
   // Toast configuration for mid-match toasts
   protected toastConfig: {
