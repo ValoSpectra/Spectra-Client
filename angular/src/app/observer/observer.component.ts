@@ -352,6 +352,12 @@ export class ObserverComponent implements OnInit {
     // Hotkey migration for switch KDA/Credits
     if (!this.hotkeys.switchKdaCredits || this.hotkeys.switchKdaCredits === "") {
       this.hotkeys.switchKdaCredits = "I"; // Default hotkey for switch KDA/Credits
+      this.hotkeys.enabled.switchKdaCredits = false; // Enable by default
+    }
+    // Hotkey migration for show toast
+    if (!this.hotkeys.showToast || this.hotkeys.showToast === "") {
+      this.hotkeys.showToast = "L"; // Default hotkey for show toast
+      this.hotkeys.enabled.showToast = false; // Disable by default
     }
 
     this.sponsorInfo =
