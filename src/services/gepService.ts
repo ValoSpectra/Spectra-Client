@@ -179,14 +179,17 @@ export class GameEventsService {
       return;
     }
 
-    if (data.key.includes("scoreboard") && data.value) {
-      if (data.value == "open" || data.value == "closed") return;
+    if (data.key.includes("scoreboard")) {
+      if (data.value == null) {
+        return;
+      }
+      if (data.value == "open" || data.value == "closed" || data.value == "close") return;
       const value = JSON.parse(data.value);
       if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatScoreboardData(value);
       this.connService.sendToIngest(formatted);
       return;
-    } else if (data.key.includes("roster") && data.value) {
+    } else if (data.key.includes("roster")) {
       const value = JSON.parse(data.value);
       if (value.name == undefined || value.name == "") return;
       const formatted: IFormattedData = this.formattingService.formatRosterData(value, data.key);
@@ -196,160 +199,187 @@ export class GameEventsService {
 
     let formatted: IFormattedData;
     let toSend: IFormattedData;
-    if (data.value) {
-      switch (data.key) {
-        case "kill_feed":
-          const value = JSON.parse(data.value);
-          formatted = this.formattingService.formatKillfeedData(value);
-          this.connService.sendToIngest(formatted);
-          break;
+    switch (data.key) {
+      case "kill_feed":
+        if (data.value == null) {
+          return;
+        }
 
-        case "observing":
-          toSend = { type: DataTypes.OBSERVING, data: data.value };
-          this.connService.sendToIngest(toSend);
+        const value = JSON.parse(data.value);
+        formatted = this.formattingService.formatKillfeedData(value);
+        this.connService.sendToIngest(formatted);
+        break;
+
+      case "observing":
+        if (data.value == null) {
+          return;
+        }
+
+        toSend = { type: DataTypes.OBSERVING, data: data.value };
+        this.connService.sendToIngest(toSend);
+        this.isObserver = true;
+        break;
+
+      case "round_number":
+        if (data.value) this.currRoundNumber = +data.value;
+        break;
+
+      case "round_phase":
+        if (data.value == null) {
+          return;
+        }
+
+        formatted = this.formattingService.formatRoundData(data.value, this.currRoundNumber);
+        this.connService.sendToIngest(formatted);
+        HotkeyService.getInstance().setRoundPhase(data.value);
+        this.roundPhase = data.value;
+
+        if ((formatted.data as IFormattedRoundInfo).roundPhase === "game_end") {
+          this.isObserver = false;
+          this.connService.handleMatchEnd();
+        }
+
+        setGameStatus(`Round ${this.currRoundNumber}`, StatusTypes.GREEN);
+
+        break;
+
+      case "match_score":
+        if (data.value == null) {
+          return;
+        }
+
+        toSend = {
+          type: DataTypes.SCORE,
+          data: JSON.parse(data.value) as IFormattedScore,
+        };
+        this.connService.sendToIngest(toSend);
+
+        break;
+
+      case "team":
+        if (data.value === "observer") {
           this.isObserver = true;
-          break;
+        }
+        break;
 
-        case "round_number":
-          this.currRoundNumber = +data.value;
-          break;
+      case "scene":
+        if (data.value == null) {
+          return;
+        }
 
-        case "round_phase":
-          formatted = this.formattingService.formatRoundData(data.value, this.currRoundNumber);
-          this.connService.sendToIngest(formatted);
-          HotkeyService.getInstance().setRoundPhase(data.value);
-          this.roundPhase = data.value;
+        this.currScene = data.value;
 
-          if ((formatted.data as IFormattedRoundInfo).roundPhase === "game_end") {
-            this.isObserver = false;
-            this.connService.handleMatchEnd();
-          }
-
-          setGameStatus(`Round ${this.currRoundNumber}`, StatusTypes.GREEN);
-
-          break;
-
-        case "match_score":
-          toSend = {
-            type: DataTypes.SCORE,
-            data: JSON.parse(data.value) as IFormattedScore,
-          };
-          this.connService.sendToIngest(toSend);
-          break;
-
-        case "team":
-          if (data.value === "observer") {
-            this.isObserver = true;
-          }
-          break;
-
-        case "scene":
-          this.currScene = data.value;
-
-          switch (this.currScene) {
-            case "CharacterSelectPersistentLevel":
-              fireConnect();
-              setGameStatus("Agent Select", StatusTypes.GREEN);
-              break;
-
-            case "MainMenu":
-              setGameStatus("Main Menu", StatusTypes.NEUTRAL);
-              this.isObserver = false;
-              break;
-
-            case "Range":
-              setGameStatus("Practice Range", StatusTypes.NEUTRAL);
-              break;
-
-            default:
-              break;
-          }
-
-          break;
-
-        case "game_mode":
-          if (data.value == null) {
-            return;
-          }
-          const modeInfo = JSON.parse(data.value);
-          if (!modeInfo || !modeInfo.mode) {
+        switch (this.currScene) {
+          case "CharacterSelectPersistentLevel":
+            fireConnect();
+            setGameStatus("Agent Select", StatusTypes.GREEN);
             break;
-          }
-          toSend = {
-            type: DataTypes.GAME_MODE,
-            data: modeInfo.mode,
-          };
-          this.currGamemode = modeInfo.mode;
-          this.isCustomGame = modeInfo.custom;
 
-          if (this.connService.isConnected()) {
+          case "MainMenu":
+            setGameStatus("Main Menu", StatusTypes.NEUTRAL);
+            this.isObserver = false;
+            break;
+
+          case "Range":
+            setGameStatus("Practice Range", StatusTypes.NEUTRAL);
+            break;
+
+          default:
+            break;
+        }
+
+        break;
+
+      case "game_mode":
+        if (data.value == null) {
+          return;
+        }
+        const modeInfo = JSON.parse(data.value);
+        if (!modeInfo || !modeInfo.mode) {
+          break;
+        }
+        toSend = {
+          type: DataTypes.GAME_MODE,
+          data: modeInfo.mode,
+        };
+        this.currGamemode = modeInfo.mode;
+        this.isCustomGame = modeInfo.custom;
+
+        if (this.connService.isConnected()) {
+          this.connService.sendToIngest(toSend);
+        } else {
+          log.info("Delaying gamemode event by 5 seconds to wait out auto-connect");
+          setTimeout(() => {
             this.connService.sendToIngest(toSend);
-          } else {
-            log.info("Delaying gamemode event by 5 seconds to wait out auto-connect");
-            setTimeout(() => {
-              this.connService.sendToIngest(toSend);
-            }, 5000);
-          }
+          }, 5000);
+        }
 
-          break;
+        break;
 
-        case "map":
-          if (data.value == null) {
-            return;
-          }
-          // Why do we do this? The TS enum on the server side does not like "Infinity"
-          // as one of its members because it counts as a numeric name :)
-          if (data.value === "Infinity") {
-            data.value = "Infinityy";
-          }
+      case "map":
+        if (data.value == null) {
+          return;
+        }
+        // Why do we do this? The TS enum on the server side does not like "Infinity"
+        // as one of its members because it counts as a numeric name :)
+        if (data.value === "Infinity") {
+          data.value = "Infinityy";
+        }
 
-          this.currMap = data.value;
+        this.currMap = data.value;
 
-          toSend = { type: DataTypes.MAP, data: data.value };
+        toSend = { type: DataTypes.MAP, data: data.value };
 
-          if (this.connService.isConnected()) {
+        if (this.connService.isConnected()) {
+          this.connService.sendToIngest(toSend);
+        } else {
+          log.info("Delaying map event by 5 seconds to wait out auto-connect");
+          setTimeout(() => {
             this.connService.sendToIngest(toSend);
-          } else {
-            log.info("Delaying map event by 5 seconds to wait out auto-connect");
-            setTimeout(() => {
-              this.connService.sendToIngest(toSend);
-            }, 5000);
-          }
+          }, 5000);
+        }
 
-          break;
+        break;
 
-        case "match_id":
-          this.currMatchId = data.value;
-          break;
+      case "match_id":
+        if (data.value == null) {
+          return;
+        }
 
-        case "player_name":
-          log.info(`Detected player name: ${data.value}`);
-          setPlayerName(data.value);
-          break;
+        this.currMatchId = data.value;
+        break;
 
-        case "health":
-        case "abilities":
-          log.info(`Received HP/Ability event in observer mode!`);
-          break;
+      case "player_name":
+        if (data.value == null) {
+          return;
+        }
+        log.info(`Detected player name: ${data.value}`);
+        setPlayerName(data.value);
 
-        case "player_id":
-        case "state":
-        case "score":
-        case "agent":
-        case "match_outcome":
-        case "pseudo_match_id":
-        case "region":
-        case "planted_site":
-        case "is_pbe":
-        case "ui_team_order_allies":
-        case "ui_team_order_enemies":
-          // Irrelevant, ignore
-          break;
+        break;
 
-        default:
-          log.info("Unhandled info update:", data);
-          break;
-      }
+      case "health":
+      case "abilities":
+        log.info(`Received HP/Ability event in observer mode!`);
+        break;
+
+      case "player_id":
+      case "state":
+      case "score":
+      case "agent":
+      case "match_outcome":
+      case "pseudo_match_id":
+      case "region":
+      case "planted_site":
+      case "is_pbe":
+      case "ui_team_order_allies":
+      case "ui_team_order_enemies":
+        // Irrelevant, ignore
+        break;
+
+      default:
+        log.info("Unhandled info update:", data);
+        break;
     }
   }
 
@@ -407,171 +437,210 @@ export class GameEventsService {
   //#region Auxiliary updates
   processAuxUpdate(data: any) {
     if (data.key.includes("scoreboard")) {
-      if (data.value) {
-        if (data.value == "open" || data.value == "closed") return;
-        data = JSON.parse(data.value);
-        if (data.name == undefined || data.name == "") return;
-        if (data.is_local) {
-          const formatted: IFormattedData = this.formattingService.formatScoreboardData(data);
-          formatted.type = DataTypes.AUX_SCOREBOARD;
-          this.localPlayerId = (formatted.data as IFormattedScoreboard).playerId;
-          this.connService.setPlayerId(this.localPlayerId);
-          this.connService.sendToIngestAux(formatted);
-          return;
-        } else if (this.isAuxObserver) {
-          const formatted: IFormattedData = this.formattingService.formatScoreboardData(data);
-          formatted.type = DataTypes.AUX_SCOREBOARD;
-          this.connService.sendToIngestAux(formatted);
+      if (data.value == null) {
+        return;
+      }
+      if (data.value == "open" || data.value == "closed" || data.value == "close") return;
+      data = JSON.parse(data.value);
+      if (data.name == undefined || data.name == "") return;
+      if (data.is_local) {
+        const formatted: IFormattedData = this.formattingService.formatScoreboardData(data);
+        formatted.type = DataTypes.AUX_SCOREBOARD;
+        this.localPlayerId = (formatted.data as IFormattedScoreboard).playerId;
+        this.connService.setPlayerId(this.localPlayerId);
+        this.connService.sendToIngestAux(formatted);
+        return;
+      } else if (this.isAuxObserver) {
+        const formatted: IFormattedData = this.formattingService.formatScoreboardData(data);
+        formatted.type = DataTypes.AUX_SCOREBOARD;
+        this.connService.sendToIngestAux(formatted);
 
-          return;
-        } else if (data.teammate == true) {
-          this.processAuxScoreboardTeammates(data);
-          return;
-        } else if (data.key.includes("roster")) {
-          const value = JSON.parse(data.value);
-          if (value.local) {
-            this.localPlayerId = value.player_id;
-            this.connService.setAndSavePlayerId(this.localPlayerId);
-          }
-          return;
+        return;
+      } else if (data.teammate == true) {
+        this.processAuxScoreboardTeammates(data);
+        return;
+      } else if (data.key.includes("roster")) {
+        const value = JSON.parse(data.value);
+        if (value.local) {
+          this.localPlayerId = value.player_id;
+          this.connService.setAndSavePlayerId(this.localPlayerId);
         }
+        return;
       }
     }
 
     let formatted: IFormattedData;
-    if (data.value) {
-      switch (data.key) {
-        case "health":
-          //ignore event if we are aux_observer
-          if (this.isAuxObserver) return;
+    switch (data.key) {
+      case "health":
+        //ignore event if we are aux_observer
+        if (this.isAuxObserver) return;
+        if (data.value) this.connService.setPlayerHealth(+data.value);
+        break;
 
-          this.connService.setPlayerHealth(+data.value);
-          break;
+      case "abilities":
+        //ignore event if we are aux_observer
+        if (this.isAuxObserver) return;
 
-        case "abilities":
-          //ignore event if we are aux_observer
-          if (this.isAuxObserver) return;
+        if (data.value == null) {
+          return;
+        }
+        const valueObject = JSON.parse(data.value);
+        formatted = {
+          type: DataTypes.AUX_ABILITIES,
+          data: {
+            grenade: valueObject["C"],
+            ability_1: valueObject["Q"],
+            ability_2: valueObject["E"],
+          },
+        };
 
-          const valueObject = JSON.parse(data.value);
-          formatted = {
-            type: DataTypes.AUX_ABILITIES,
-            data: {
-              grenade: valueObject["C"],
-              ability_1: valueObject["Q"],
-              ability_2: valueObject["E"],
-            },
-          };
-
-          if (this.connService.isConnected()) {
+        if (this.connService.isConnected()) {
+          this.connService.sendToIngestAux(formatted);
+        } else {
+          log.info("Delaying ability event by 1.5 seconds to wait out auto-connect");
+          setTimeout(() => {
             this.connService.sendToIngestAux(formatted);
-          } else {
-            log.info("Delaying ability event by 1.5 seconds to wait out auto-connect");
-            setTimeout(() => {
-              this.connService.sendToIngestAux(formatted);
-            }, 1500);
-          }
-          break;
+          }, 1500);
+        }
+        break;
 
-        case "round_phase":
-          if (data.value === "end") {
-            if (
-              (this.currGamemode == "bomb" || this.currGamemode == "swift") &&
-              this.isCustomGame
-            ) {
-              // Try connecting on round end in case someone fixes their connection settings (or restarts)
-              fireConnect();
-            }
-          } else if (data.value === "game_end") {
-            this.isAuxObserver = false;
-            this.connService.savePlayerId();
-            this.connService.handleMatchEnd();
-          }
-          this.roundPhase = data.value;
-          break;
+      case "round_phase":
+        if (data.value == null) {
+          return;
+        }
 
-        // Astra "Ult" form is an actual agent change, so can be tracked
-        case "agent":
-          //ignore event if we are aux_observer
-          if (this.isAuxObserver) return;
-
-          // Check if it's Astra (Rift)
-          if (data.value.includes("Rift")) {
-            // Check if she entered targeting form (Rift_TargetingForm_PC_C)
-            const isTargeting = data.value.includes("Targeting");
-            this.connService.sendToIngestAux({
-              type: DataTypes.AUX_ASTRA_TARGETING,
-              data: isTargeting,
-            });
-            // Pawn_Gumshoe_Q_PossessableCamera_C = Cypher in Cam
-          } else if (data.value.includes("Gumshoe")) {
-            const isInCam = data.value.includes("PossessableCamera");
-            this.connService.sendToIngestAux({
-              type: DataTypes.AUX_CYPHER_CAM,
-              data: isInCam,
-            });
-          }
-          break;
-
-        case "match_start":
+        if (data.value === "end") {
           if ((this.currGamemode == "bomb" || this.currGamemode == "swift") && this.isCustomGame) {
-            // Wait 1 seconds before firing connect to give observer time to send match ID
-            setTimeout(() => {
-              fireConnect();
-            }, 1000);
+            // Try connecting on round end in case someone fixes their connection settings (or restarts)
+            fireConnect();
           }
-          break;
+        } else if (data.value === "game_end") {
+          this.isAuxObserver = false;
+          this.connService.savePlayerId();
+          this.connService.handleMatchEnd();
+        }
+        this.roundPhase = data.value;
 
-        case "map":
-          this.currMap = data.value;
-          break;
+        break;
 
-        case "game_mode":
-          const modeInfo = JSON.parse(data.value);
-          this.currGamemode = modeInfo.mode;
-          this.isCustomGame = modeInfo.custom;
-          break;
+      // Astra "Ult" form is an actual agent change, so can be tracked
+      case "agent":
+        //ignore event if we are aux_observer
+        if (this.isAuxObserver) return;
 
-        case "scene":
-          this.currScene = data.value;
+        if (data.value == null) {
+          return;
+        }
 
-          switch (this.currScene) {
-            case "MainMenu":
-              this.isAuxObserver = false;
-              break;
+        // Check if it's Astra (Rift)
+        if (data.value.includes("Rift")) {
+          // Check if she entered targeting form (Rift_TargetingForm_PC_C)
+          const isTargeting = data.value.includes("Targeting");
+          this.connService.sendToIngestAux({
+            type: DataTypes.AUX_ASTRA_TARGETING,
+            data: isTargeting,
+          });
+          // Pawn_Gumshoe_Q_PossessableCamera_C = Cypher in Cam
+        } else if (data.value.includes("Gumshoe")) {
+          const isInCam = data.value.includes("PossessableCamera");
+          this.connService.sendToIngestAux({
+            type: DataTypes.AUX_CYPHER_CAM,
+            data: isInCam,
+          });
+        }
+        break;
 
-            default:
-              break;
-          }
+      case "match_start":
+        if ((this.currGamemode == "bomb" || this.currGamemode == "swift") && this.isCustomGame) {
+          // Wait 1 seconds before firing connect to give observer time to send match ID
+          setTimeout(() => {
+            fireConnect();
+          }, 1000);
+        }
+        break;
 
-          break;
+      case "map":
+        if (data.value == null) {
+          return;
+        }
 
-        case "team":
-          if (data.value === "observer") {
-            this.isAuxObserver = true;
-          }
-          break;
-        case "observing":
+        this.currMap = data.value;
+        break;
+
+      case "game_mode":
+        if (data.value == null) {
+          return;
+        }
+
+        const modeInfo = JSON.parse(data.value);
+        this.currGamemode = modeInfo.mode;
+        this.isCustomGame = modeInfo.custom;
+
+        break;
+
+      case "scene":
+        if (data.value == null) {
+          return;
+        }
+
+        this.currScene = data.value;
+
+        switch (this.currScene) {
+          case "MainMenu":
+            this.isAuxObserver = false;
+            break;
+
+          default:
+            break;
+        }
+
+        break;
+
+      case "team":
+        if (data.value == null) {
+          return;
+        }
+
+        if (data.value === "observer") {
           this.isAuxObserver = true;
-          break;
+        }
 
-        case "player_id":
-          this.localPlayerId = data.value;
-          this.connService.setAndSavePlayerId(this.localPlayerId);
-          break;
+        break;
+      case "observing":
+        this.isAuxObserver = true;
+        break;
 
-        case "match_id":
-          this.currMatchId = data.value;
-          this.connService.setMatchId(this.currMatchId);
-          break;
+      case "player_id":
+        if (data.value == null) {
+          return;
+        }
 
-        case "player_name":
-          log.info(`Detected player name: ${data.value}`);
-          setPlayerName(data.value);
-          break;
+        this.localPlayerId = data.value;
+        this.connService.setAndSavePlayerId(this.localPlayerId);
 
-        default:
-          break;
-      }
+        break;
+
+      case "match_id":
+        if (data.value == null) {
+          return;
+        }
+
+        this.currMatchId = data.value;
+        this.connService.setMatchId(this.currMatchId);
+        break;
+
+      case "player_name":
+        if (data.value == null) {
+          return;
+        }
+
+        log.info(`Detected player name: ${data.value}`);
+        setPlayerName(data.value);
+
+        break;
+
+      default:
+        break;
     }
   }
 
