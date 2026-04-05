@@ -49,6 +49,12 @@ export default class HotkeyService {
       type: HotkeyType.SHOW_TOAST,
       enabled: true,
     };
+    this.hotkeys[HotkeyType.TOGGLE_AGENT_SELECT] = {
+      key: "",
+      action: this._toggleAgentSelectHotkeyAction.bind(this),
+      type: HotkeyType.TOGGLE_AGENT_SELECT,
+      enabled: false,
+    };
   }
 
   public static getInstance(): HotkeyService {
@@ -133,6 +139,11 @@ export default class HotkeyService {
   private _showToastHotkeyAction() {
     fireSendToast();
   }
+
+  private _toggleAgentSelectHotkeyAction() {
+    const toSend = { type: DataTypes.TOGGLE_AGENT_SELECT, data: true };
+    ConnectorService.getInstance().sendToIngest(toSend);
+  }
 }
 export enum HotkeyType {
   SPIKE_PLANTED,
@@ -141,6 +152,7 @@ export enum HotkeyType {
   RIGHT_TIMEOUT,
   SWITCH_KDA_CREDITS,
   SHOW_TOAST,
+  TOGGLE_AGENT_SELECT,
 }
 type Hotkey = {
   key: string;

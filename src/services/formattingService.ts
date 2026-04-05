@@ -269,6 +269,7 @@ export enum DataTypes {
   LEFT_TIMEOUT = "left_timeout",
   RIGHT_TIMEOUT = "right_timeout",
   SWITCH_KDA_CREDITS = "switch_kda_credits",
+  TOGGLE_AGENT_SELECT = "toggle_agent_select",
   // Mid-match update type
   TOAST = "toast",
   SWAP_L_R = "swap_left_right",
