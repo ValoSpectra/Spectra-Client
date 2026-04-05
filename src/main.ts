@@ -557,6 +557,7 @@ function processInputs(
     playercamsInfo,
     timeoutInfo,
     roundWinBox,
+    hotkeys.enabled.toggleAgentSelect,
     win,
   );
 }

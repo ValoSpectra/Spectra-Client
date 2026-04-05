@@ -299,6 +299,7 @@ export interface IToolsData {
   watermarkInfo: WatermarkInfo;
   playercamsInfo: PlayercamsInfo;
   roundWinBox: IRoundWinBox;
+  agentSelectHotkeyEnabled?: boolean;
 }
 
 export type ISeriesInfo = {

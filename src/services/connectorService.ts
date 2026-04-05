@@ -91,6 +91,7 @@ export class ConnectorService {
     playercamsInfo: PlayercamsInfo,
     timeoutInfo: ITimeoutInfo,
     roundWinBox: IRoundWinBox,
+    agentSelectHotkeyEnabled: boolean,
     win: Electron.Main.BrowserWindow,
   ) {
     if (RegExp("(http|https)://[^/]+:[0-9]+").test(ingestIp)) {
@@ -204,6 +205,7 @@ export class ConnectorService {
         watermarkInfo: watermarkInfo,
         playercamsInfo: playercamsInfo,
         roundWinBox: roundWinBox,
+        agentSelectHotkeyEnabled: agentSelectHotkeyEnabled,
       },
     };
     this.ws.emit(SocketChannels.OBSERVER_LOGON, JSON.stringify(logonData));
