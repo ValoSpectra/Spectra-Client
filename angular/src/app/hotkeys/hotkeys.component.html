@@ -202,4 +202,45 @@
     </p-inputgroup>
     <label for="showToastInput">Show Toast Message</label>
   </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <p-inputgroup>
+      <input
+        pInputText
+        fluid
+        [(ngModel)]="data.toggleAgentSelect"
+        (ngModelChange)="runValidation()"
+        type="text"
+        id="toggleAgentSelectInput"
+        disabled
+        [class.ng-dirty]="!valid.toggleAgentSelect"
+        [class.ng-invalid]="!valid.toggleAgentSelect"
+      />
+      <p-inputgroup-addon>
+        <p-togglebutton
+          onLabel="Enabled"
+          offLabel="Disabled"
+          [(ngModel)]="data.enabled.toggleAgentSelect"
+          (ngModelChange)="runValidation(); onToggleAgentSelectChange($event)"
+          styleClass="w-24 border-r-[var(--p-form-field-border-color)] rounded-none"
+        />
+        <p-button
+          label="Change"
+          severity="primary"
+          variant="text"
+          (onClick)="changeKeybind($event, 'toggleAgentSelect')"
+          [disabled]="isCapturing"
+        />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+    <label for="toggleAgentSelectInput">Toggle Agent Select</label>
+  </p-floatlabel>
 </div>
+
+@if (showAgentSelectWarning) {
+  <div class="agent-select-warning">
+    <div class="agent-select-warning-inner">
+      Enabling the hotkey for agent select will stop it from displaying automatically.
+    </div>
+  </div>
+}

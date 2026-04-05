@@ -259,6 +259,7 @@ export class ObserverComponent implements OnInit {
     rightTimeout: "P",
     switchKdaCredits: "I",
     showToast: "L",
+    toggleAgentSelect: "U",
     enabled: {
       spikePlanted: false,
       techPause: true,
@@ -266,6 +267,7 @@ export class ObserverComponent implements OnInit {
       rightTimeout: true,
       switchKdaCredits: true,
       showToast: false,
+      toggleAgentSelect: false,
     },
   };
 
@@ -347,6 +349,7 @@ export class ObserverComponent implements OnInit {
         rightTimeout: true,
         switchKdaCredits: true,
         showToast: true,
+        toggleAgentSelect: false,
       };
     }
     // Hotkey migration for switch KDA/Credits
@@ -959,6 +962,7 @@ export type Hotkeys = {
   rightTimeout: string;
   switchKdaCredits: string;
   showToast: string;
+  toggleAgentSelect: string;
   enabled: {
     spikePlanted: boolean;
     techPause: boolean;
@@ -966,6 +970,7 @@ export type Hotkeys = {
     rightTimeout: boolean;
     switchKdaCredits: boolean;
     showToast: boolean;
+    toggleAgentSelect: boolean;
   };
 };
 

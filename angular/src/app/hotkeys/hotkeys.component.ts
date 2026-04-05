@@ -4,6 +4,7 @@ import {
   EventEmitter,
   HostListener,
   Input,
+  OnDestroy,
   Output,
   ViewChild,
 } from "@angular/core";
@@ -37,7 +38,7 @@ import { ToggleSwitchModule } from "primeng/toggleswitch";
   templateUrl: "./hotkeys.component.html",
   styleUrl: "./hotkeys.component.css",
 })
-export class HotkeysComponent implements Validatable, AfterContentInit {
+export class HotkeysComponent implements Validatable, AfterContentInit, OnDestroy {
   @Input({ required: true })
   data!: Hotkeys;
 
@@ -48,10 +49,28 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
     rightTimeout: false,
     switchKdaCredits: false,
     showToast: false,
+    toggleAgentSelect: false,
   };
 
   @ViewChild("change_popover")
   changePopover!: Popover;
+
+  protected showAgentSelectWarning = false;
+  private warningTimer: ReturnType<typeof setTimeout> | null = null;
+
+  onToggleAgentSelectChange(enabled: boolean) {
+    if (!enabled) return;
+    if (this.warningTimer !== null) clearTimeout(this.warningTimer);
+    this.showAgentSelectWarning = true;
+    this.warningTimer = setTimeout(() => {
+      this.showAgentSelectWarning = false;
+      this.warningTimer = null;
+    }, 5000);
+  }
+
+  ngOnDestroy() {
+    if (this.warningTimer !== null) clearTimeout(this.warningTimer);
+  }
 
   ngAfterContentInit(): void {
     this.runValidation();
@@ -65,6 +84,7 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
     | "spike"
     | "switchKdaCredits"
     | "showToast"
+    | "toggleAgentSelect"
     | "" = "";
 
   @HostListener("window:keyup", ["$event"])
@@ -120,12 +140,23 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
         break;
       case "showToast":
         this.data.showToast = keyString;
+        break;
+      case "toggleAgentSelect":
+        this.data.toggleAgentSelect = keyString;
+        break;
     }
   }
 
   changeKeybind(
     event: any,
-    hotkey: "timeLeft" | "timeRight" | "techPause" | "spike" | "switchKdaCredits" | "showToast",
+    hotkey:
+      | "timeLeft"
+      | "timeRight"
+      | "techPause"
+      | "spike"
+      | "switchKdaCredits"
+      | "showToast"
+      | "toggleAgentSelect",
   ) {
     this.isCapturing = true;
     this.capturingHotkey = hotkey;
@@ -150,6 +181,9 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
       !this.data.enabled.switchKdaCredits || this.data.switchKdaCredits.match(hotkeyRegex) != null;
     this.valid.showToast =
       !this.data.enabled.showToast || this.data.showToast.match(hotkeyRegex) != null;
+    this.valid.toggleAgentSelect =
+      !this.data.enabled.toggleAgentSelect ||
+      this.data.toggleAgentSelect.match(hotkeyRegex) != null;
 
     valid =
       this.valid.spikePlanted &&
@@ -157,7 +191,8 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
       this.valid.leftTimeout &&
       this.valid.rightTimeout &&
       this.valid.switchKdaCredits &&
-      this.valid.showToast;
+      this.valid.showToast &&
+      this.valid.toggleAgentSelect;
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
   }
 }

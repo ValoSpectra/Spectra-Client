@@ -526,6 +526,11 @@ function processInputs(
       hotkeys.showToast,
       hotkeys.enabled.showToast,
     );
+    hotkeyService.setKeyForHotkey(
+      HotkeyType.TOGGLE_AGENT_SELECT,
+      hotkeys.toggleAgentSelect,
+      hotkeys.enabled.toggleAgentSelect,
+    );
   } catch (error: any) {
     messageBox("Spectra Client - Error", error.message, messageBoxType.ERROR);
     return;
@@ -557,6 +562,7 @@ function processInputs(
     playercamsInfo,
     timeoutInfo,
     roundWinBox,
+    hotkeys.enabled.toggleAgentSelect,
     win,
   );
 }
