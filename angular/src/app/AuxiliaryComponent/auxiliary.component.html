@@ -9,6 +9,7 @@
       <p-select
         fluid
         [(ngModel)]="ingestServerIp"
+        (ngModelChange)="save()"
         [options]="ingestServerOptions"
         [readonly]="!editable"
         [editable]="true"

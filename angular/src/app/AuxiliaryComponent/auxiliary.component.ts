@@ -92,6 +92,10 @@ export class AuxiliaryComponent implements OnInit {
 
   protected editable: boolean = true;
 
+  protected save() {
+    this.localStorageService.setItem("auxIngestServerIp", this.ingestServerIp);
+  }
+
   protected connect() {
     if (!this.ingestServerIp) {
       this.messageService.add({
