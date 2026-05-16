@@ -60,35 +60,38 @@ export class RoundwinboxComponent implements Validatable, AfterContentInit {
 
     this.sponsorTypeError = [];
 
-    for (let i = 0; i < this.data.sponsors.length; i++) {
-      const sponsor = this.data.sponsors[i];
-      for (let j = 0; j < this.data.sponsors.length; j++) {
-        if (i != j) {
-          const spons = this.data.sponsors[j];
-          if (
-            sponsor.wonTeam == spons.wonTeam ||
-            sponsor.wonTeam == "all" ||
-            spons.wonTeam == "all"
-          ) {
-            for (const ceremonie of sponsor.roundCeremony) {
-              if (
-                spons.roundCeremony.includes(ceremonie) ||
-                (ceremonie == "all" && spons.roundCeremony.length > 0)
-              ) {
-                this.sponsorTypeError[i] = true;
-                this.sponsorTypeError[j] = true;
+    if (this.isSupporter) {
+      for (let i = 0; i < this.data.sponsors.length; i++) {
+        const sponsor = this.data.sponsors[i];
+        for (let j = 0; j < this.data.sponsors.length; j++) {
+          if (i != j) {
+            const spons = this.data.sponsors[j];
+            if (
+              sponsor.wonTeam == spons.wonTeam ||
+              sponsor.wonTeam == "all" ||
+              spons.wonTeam == "all"
+            ) {
+              for (const ceremonie of sponsor.roundCeremony) {
+                if (
+                  spons.roundCeremony.includes(ceremonie) ||
+                  (ceremonie == "all" && spons.roundCeremony.length > 0)
+                ) {
+                  this.sponsorTypeError[i] = true;
+                  this.sponsorTypeError[j] = true;
+                }
               }
             }
           }
         }
       }
+      valid =
+        valid &&
+        !this.sponsorIconError.includes(true) &&
+        !this.sponsorBackdropError.includes(true) &&
+        !this.sponsorTypeError.includes(true);
+    } else {
+      valid = valid && !this.sponsorIconError[0] && !this.sponsorBackdropError[0];
     }
-
-    valid =
-      valid &&
-      !this.sponsorIconError.includes(true) &&
-      !this.sponsorBackdropError.includes(true) &&
-      !this.sponsorTypeError.includes(true);
 
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
   }
