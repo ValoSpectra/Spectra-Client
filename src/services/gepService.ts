@@ -144,6 +144,16 @@ export class GameEventsService {
       if (enabled) {
         for (const data of args) {
           try {
+            if (
+            data.key === "scene" ||
+            data.key === "state" ||
+            data.key === "map" ||
+            data.key === "round_phase" ||
+            data.key === "game_mode" ||
+            data.key === "match_id"
+            ) {
+            log.info(`[GEP INFO] ${data.key}: ${data.value}`);
+            }
             this.processInfoUpdate(data);
           } catch (e) {
             log.error("Info update error: ", e);
@@ -156,6 +166,7 @@ export class GameEventsService {
       if (enabled) {
         for (const data of args) {
           try {
+            log.info(`[GEP EVENT] ${data.key}: ${data.value ?? ""}`);
             this.processGameUpdate(data);
           } catch (e) {
             log.error("Game update error: ", e);
