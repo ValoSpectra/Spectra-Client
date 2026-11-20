@@ -497,11 +497,6 @@ function processInputs(
 
   try {
     hotkeyService.setKeyForHotkey(
-      HotkeyType.SPIKE_PLANTED,
-      hotkeys.spikePlanted,
-      hotkeys.enabled.spikePlanted,
-    );
-    hotkeyService.setKeyForHotkey(
       HotkeyType.TECH_PAUSE,
       hotkeys.techPause,
       hotkeys.enabled.techPause,
@@ -525,6 +520,16 @@ function processInputs(
       HotkeyType.SHOW_TOAST,
       hotkeys.showToast,
       hotkeys.enabled.showToast,
+    );
+    hotkeyService.setKeyForHotkey(
+      HotkeyType.LEFT_LISTENIN,
+      hotkeys.leftListenIn,
+      hotkeys.enabled.leftListenIn,
+    );
+    hotkeyService.setKeyForHotkey(
+      HotkeyType.RIGHT_LISTENIN,
+      hotkeys.rightListenIn,
+      hotkeys.enabled.rightListenIn,
     );
   } catch (error: any) {
     messageBox("Spectra Client - Error", error.message, messageBoxType.ERROR);

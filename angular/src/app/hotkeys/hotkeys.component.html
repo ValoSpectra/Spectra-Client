@@ -10,39 +10,6 @@
       <input
         pInputText
         fluid
-        [(ngModel)]="data.spikePlanted"
-        (ngModelChange)="runValidation()"
-        type="text"
-        id="HotkeySpikeInput"
-        disabled
-        [class.ng-dirty]="!valid.spikePlanted"
-        [class.ng-invalid]="!valid.spikePlanted"
-      />
-      <p-inputgroup-addon>
-        <p-togglebutton
-          onLabel="Enabled"
-          offLabel="Disabled"
-          [(ngModel)]="data.enabled.spikePlanted"
-          (ngModelChange)="runValidation()"
-          styleClass="w-24 border-r-[var(--p-form-field-border-color)] rounded-none"
-        />
-        <p-button
-          label="Change"
-          severity="primary"
-          variant="text"
-          (onClick)="changeKeybind($event, 'spike')"
-          [disabled]="isCapturing"
-        />
-      </p-inputgroup-addon>
-    </p-inputgroup>
-    <label for="HotkeySpikeInput">Spike planted</label>
-  </p-floatlabel>
-
-  <p-floatlabel variant="on">
-    <p-inputgroup>
-      <input
-        pInputText
-        fluid
         [(ngModel)]="data.techPause"
         (ngModelChange)="runValidation()"
         type="text"
@@ -201,5 +168,71 @@
       </p-inputgroup-addon>
     </p-inputgroup>
     <label for="showToastInput">Show Toast Message</label>
+  </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <p-inputgroup>
+      <input
+        pInputText
+        fluid
+        [(ngModel)]="data.leftListenIn"
+        (ngModelChange)="runValidation()"
+        type="text"
+        id="leftListenInInput"
+        disabled
+        [class.ng-dirty]="!valid.leftListenIn"
+        [class.ng-invalid]="!valid.leftListenIn"
+      />
+      <p-inputgroup-addon>
+        <p-togglebutton
+          onLabel="Enabled"
+          offLabel="Disabled"
+          [(ngModel)]="data.enabled.leftListenIn"
+          (ngModelChange)="runValidation()"
+          styleClass="w-24 border-r-[var(--p-form-field-border-color)] rounded-none"
+        />
+        <p-button
+          label="Change"
+          severity="primary"
+          variant="text"
+          (onClick)="changeKeybind($event, 'leftListenIn')"
+          [disabled]="isCapturing"
+        />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+    <label for="leftListenInInput">Left Team Listen in</label>
+  </p-floatlabel>
+
+  <p-floatlabel variant="on">
+    <p-inputgroup>
+      <input
+        pInputText
+        fluid
+        [(ngModel)]="data.rightListenIn"
+        (ngModelChange)="runValidation()"
+        type="text"
+        id="rightListenInInput"
+        disabled
+        [class.ng-dirty]="!valid.rightListenIn"
+        [class.ng-invalid]="!valid.rightListenIn"
+      />
+      <p-inputgroup-addon>
+        <p-togglebutton
+          onLabel="Enabled"
+          offLabel="Disabled"
+          [(ngModel)]="data.enabled.rightListenIn"
+          (ngModelChange)="runValidation()"
+          styleClass="w-24 border-r-[var(--p-form-field-border-color)] rounded-none"
+        />
+        <p-button
+          label="Change"
+          severity="primary"
+          variant="text"
+          (onClick)="changeKeybind($event, 'rightListenIn')"
+          [disabled]="isCapturing"
+        />
+      </p-inputgroup-addon>
+    </p-inputgroup>
+    <label for="rightListenInInput">Right Team Listen in</label>
   </p-floatlabel>
 </div>
