@@ -14,3 +14,5 @@ It is comprised of three parts:
 Further updates for new features, as well as a detailed setup guide and an easy to host docker container are in the pipeline!
 
 Spectra-Client isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing Riot Games properties. Riot Games, and all associated properties are trademarks or registered trademarks of Riot Games, Inc.
+
+Spectra is brought to you by Purple Shark UG (haftungsbeschränkt)
