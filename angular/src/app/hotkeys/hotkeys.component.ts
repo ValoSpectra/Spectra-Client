@@ -42,12 +42,13 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
   data!: Hotkeys;
 
   valid = {
-    spikePlanted: false,
     techPause: false,
     leftTimeout: false,
     rightTimeout: false,
     switchKdaCredits: false,
     showToast: false,
+    leftListenIn: false,
+    rightListenIn: false,
   };
 
   @ViewChild("change_popover")
@@ -62,9 +63,10 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
     | "timeLeft"
     | "timeRight"
     | "techPause"
-    | "spike"
     | "switchKdaCredits"
     | "showToast"
+    | "leftListenIn"
+    | "rightListenIn"
     | "" = "";
 
   @HostListener("window:keyup", ["$event"])
@@ -112,20 +114,30 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
       case "techPause":
         this.data.techPause = keyString;
         break;
-      case "spike":
-        this.data.spikePlanted = keyString;
-        break;
       case "switchKdaCredits":
         this.data.switchKdaCredits = keyString;
         break;
       case "showToast":
         this.data.showToast = keyString;
+        break;
+      case "leftListenIn":
+        this.data.leftListenIn = keyString;
+        break;
+      case "rightListenIn":
+        this.data.rightListenIn = keyString;
     }
   }
 
   changeKeybind(
     event: any,
-    hotkey: "timeLeft" | "timeRight" | "techPause" | "spike" | "switchKdaCredits" | "showToast",
+    hotkey:
+      | "timeLeft"
+      | "timeRight"
+      | "techPause"
+      | "switchKdaCredits"
+      | "showToast"
+      | "leftListenIn"
+      | "rightListenIn",
   ) {
     this.isCapturing = true;
     this.capturingHotkey = hotkey;
@@ -137,9 +149,6 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
   runValidation() {
     let valid: boolean = true;
     const hotkeyRegex = /^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$/g;
-
-    this.valid.spikePlanted =
-      !this.data.enabled.spikePlanted || this.data.spikePlanted.match(hotkeyRegex) != null;
     this.valid.techPause =
       !this.data.enabled.techPause || this.data.techPause.match(hotkeyRegex) != null;
     this.valid.leftTimeout =
@@ -150,14 +159,19 @@ export class HotkeysComponent implements Validatable, AfterContentInit {
       !this.data.enabled.switchKdaCredits || this.data.switchKdaCredits.match(hotkeyRegex) != null;
     this.valid.showToast =
       !this.data.enabled.showToast || this.data.showToast.match(hotkeyRegex) != null;
+    this.valid.leftListenIn =
+      !this.data.enabled.leftListenIn || this.data.leftListenIn.match(hotkeyRegex) != null;
+    this.valid.rightListenIn =
+      !this.data.enabled.rightListenIn || this.data.rightListenIn.match(hotkeyRegex) != null;
 
     valid =
-      this.valid.spikePlanted &&
       this.valid.techPause &&
       this.valid.leftTimeout &&
       this.valid.rightTimeout &&
       this.valid.switchKdaCredits &&
-      this.valid.showToast;
+      this.valid.showToast &&
+      this.valid.leftListenIn &&
+      this.valid.rightListenIn;
     this.validationChanged.emit(valid ? ValidationState.VALID : ValidationState.INVALID);
   }
 }

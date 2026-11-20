@@ -1,4 +1,3 @@
-import { overwolf } from "@overwolf/ow-electron";
 import { dialog, app as electronApp } from "electron";
 import log from "electron-log";
 import {
@@ -21,7 +20,6 @@ import {
   IFormattedScore,
   IFormattedScoreboard,
 } from "./formattingService";
-import HotkeyService from "./hotkeyService";
 
 const app = electronApp as overwolf.OverwolfApp;
 const VALORANT_ID = 21640;
@@ -29,7 +27,7 @@ let enabled = false;
 let auxiliary = false;
 
 export class GameEventsService {
-  private gepApi!: overwolf.packages.OverwolfGameEventPackage;
+  private gepApi!: typeof app.overwolf.packages.gep;
   private overwolfPackageListenerRegistered: boolean = false;
   private valorantId: number = VALORANT_ID;
   private isFirstDetection: boolean = true;
@@ -231,7 +229,6 @@ export class GameEventsService {
 
         formatted = this.formattingService.formatRoundData(data.value, this.currRoundNumber);
         this.connService.sendToIngest(formatted);
-        HotkeyService.getInstance().setRoundPhase(data.value);
         this.roundPhase = data.value;
 
         if ((formatted.data as IFormattedRoundInfo).roundPhase === "game_end") {

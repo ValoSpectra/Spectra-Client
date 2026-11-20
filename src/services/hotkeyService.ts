@@ -8,17 +8,10 @@ export default class HotkeyService {
   private static instance: HotkeyService;
 
   private hotkeys: Hotkey[] = [];
-  private currentRoundPhase: string = "";
 
   private techPause: boolean = false;
 
   private constructor() {
-    this.hotkeys[HotkeyType.SPIKE_PLANTED] = {
-      key: "",
-      action: this._spikePlantedHotkeyAction.bind(this),
-      type: HotkeyType.SPIKE_PLANTED,
-      enabled: false,
-    };
     this.hotkeys[HotkeyType.TECH_PAUSE] = {
       key: "",
       action: this._techPauseHotkeyAction.bind(this),
@@ -47,6 +40,18 @@ export default class HotkeyService {
       key: "",
       action: this._showToastHotkeyAction.bind(this),
       type: HotkeyType.SHOW_TOAST,
+      enabled: true,
+    };
+    this.hotkeys[HotkeyType.LEFT_LISTENIN] = {
+      key: "",
+      action: this._leftListenInHotkeyAction.bind(this),
+      type: HotkeyType.LEFT_LISTENIN,
+      enabled: true,
+    };
+    this.hotkeys[HotkeyType.RIGHT_LISTENIN] = {
+      key: "",
+      action: this._rightListenInHotkeyAction.bind(this),
+      type: HotkeyType.RIGHT_LISTENIN,
       enabled: true,
     };
   }
@@ -89,10 +94,6 @@ export default class HotkeyService {
     }
   }
 
-  public setRoundPhase(phase: string) {
-    this.currentRoundPhase = phase;
-  }
-
   public setKeyForHotkey(hotkey: HotkeyType, key: string, enabled: boolean = true) {
     const regex = /^(Ctrl\+|Alt\+|Shift\+)*(\D|F[1-9][0-1]?|\d)$/g;
     if (key.match(regex) || !enabled) {
@@ -101,12 +102,6 @@ export default class HotkeyService {
     } else {
       throw new Error(`The hotkey on ${key} is invalid!`);
     }
-  }
-
-  private _spikePlantedHotkeyAction() {
-    if (this.currentRoundPhase != "combat") return;
-    const toSend = { type: DataTypes.SPIKE_PLANTED, data: true };
-    ConnectorService.getInstance().sendToIngest(toSend);
   }
 
   private _techPauseHotkeyAction() {
@@ -133,14 +128,25 @@ export default class HotkeyService {
   private _showToastHotkeyAction() {
     fireSendToast();
   }
+
+  private _leftListenInHotkeyAction() {
+    const toSend = { type: DataTypes.PLAYERCAM_LISTENIN, data: "left" };
+    ConnectorService.getInstance().sendToIngest(toSend);
+  }
+
+  private _rightListenInHotkeyAction() {
+    const toSend = { type: DataTypes.PLAYERCAM_LISTENIN, data: "right" };
+    ConnectorService.getInstance().sendToIngest(toSend);
+  }
 }
 export enum HotkeyType {
-  SPIKE_PLANTED,
   TECH_PAUSE,
   LEFT_TIMEOUT,
   RIGHT_TIMEOUT,
   SWITCH_KDA_CREDITS,
   SHOW_TOAST,
+  LEFT_LISTENIN,
+  RIGHT_LISTENIN,
 }
 type Hotkey = {
   key: string;

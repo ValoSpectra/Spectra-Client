@@ -253,19 +253,21 @@ export class ObserverComponent implements OnInit {
   };
 
   protected hotkeys: Hotkeys = {
-    spikePlanted: "F9",
     techPause: "F10",
     leftTimeout: "O",
     rightTimeout: "P",
     switchKdaCredits: "I",
     showToast: "L",
+    leftListenIn: ",",
+    rightListenIn: ".",
     enabled: {
-      spikePlanted: false,
       techPause: true,
       leftTimeout: true,
       rightTimeout: true,
       switchKdaCredits: true,
       showToast: false,
+      leftListenIn: false,
+      rightListenIn: false,
     },
   };
 
@@ -341,12 +343,13 @@ export class ObserverComponent implements OnInit {
     this.hotkeys = this.localStorageService.getItem<Hotkeys>("hotkeys") || this.hotkeys;
     if (!this.hotkeys.enabled) {
       this.hotkeys.enabled = {
-        spikePlanted: false,
         techPause: true,
         leftTimeout: true,
         rightTimeout: true,
         switchKdaCredits: true,
         showToast: true,
+        leftListenIn: true,
+        rightListenIn: true,
       };
     }
     // Hotkey migration for switch KDA/Credits
@@ -358,6 +361,16 @@ export class ObserverComponent implements OnInit {
     if (!this.hotkeys.showToast || this.hotkeys.showToast === "") {
       this.hotkeys.showToast = "L"; // Default hotkey for show toast
       this.hotkeys.enabled.showToast = false; // Disable by default
+    }
+
+    if (!this.hotkeys.leftListenIn || this.hotkeys.leftListenIn === "") {
+      this.hotkeys.leftListenIn = ","; // Default hotkey for show toast
+      this.hotkeys.enabled.leftListenIn = false; // Disable by default
+    }
+
+    if (!this.hotkeys.rightListenIn || this.hotkeys.rightListenIn === "") {
+      this.hotkeys.rightListenIn = "."; // Default hotkey for show toast
+      this.hotkeys.enabled.rightListenIn = false; // Disable by default,.,.,.,.,.,.,.,.,.
     }
 
     this.sponsorInfo =
@@ -927,13 +940,7 @@ export type RoundWinBox = {
 
 export type RoundWinBoxWonTeam = "all" | "left" | "right";
 export type RoundWinBoxroundCeremony = (
-  | "all"
-  | "normal"
-  | "ace"
-  | "clutch"
-  | "teamAce"
-  | "flawless"
-  | "thrifty"
+  "all" | "normal" | "ace" | "clutch" | "teamAce" | "flawless" | "thrifty"
 )[];
 
 export type RoundWinBoxSponsors = {
@@ -953,19 +960,21 @@ export type SeriesInfo = {
 };
 
 export type Hotkeys = {
-  spikePlanted: string;
   techPause: string;
   leftTimeout: string;
   rightTimeout: string;
   switchKdaCredits: string;
   showToast: string;
+  leftListenIn: string;
+  rightListenIn: string;
   enabled: {
-    spikePlanted: boolean;
     techPause: boolean;
     leftTimeout: boolean;
     rightTimeout: boolean;
     switchKdaCredits: boolean;
     showToast: boolean;
+    leftListenIn: boolean;
+    rightListenIn: boolean;
   };
 };
 

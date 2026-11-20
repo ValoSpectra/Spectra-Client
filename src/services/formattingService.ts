@@ -252,6 +252,7 @@ export enum DataTypes {
   GAME_MODE = "game_mode",
   MAP = "map",
   OBSERVING = "observing",
+  SPIKE_PLANTED = "spike_planted",
   SPIKE_DETONATED = "spike_detonated",
   SPIKE_DEFUSED = "spike_defused",
   AUTH = "authenticate",
@@ -264,7 +265,6 @@ export enum DataTypes {
   AUX_ASTRA_TARGETING = "aux_astra_targeting",
   AUX_CYPHER_CAM = "aux_cypher_cam",
   // Hotkey data types
-  SPIKE_PLANTED = "spike_planted",
   TECH_PAUSE = "tech_pause",
   LEFT_TIMEOUT = "left_timeout",
   RIGHT_TIMEOUT = "right_timeout",
@@ -273,6 +273,7 @@ export enum DataTypes {
   TOAST = "toast",
   SWAP_L_R = "swap_left_right",
   SWAP_A_D = "swap_attacker_defender",
+  PLAYERCAM_LISTENIN = "playercam_listenin",
 }
 
 export enum SocketChannels {
@@ -342,7 +343,10 @@ export type PlayercamsInfo = {
   identifier: string;
   secret: string;
   endTime: number;
+  listenIn: IPlayercamsListenIn;
 };
+
+export type IPlayercamsListenIn = false | "left" | "right";
 
 export type IRoundWinBox = {
   type: "disabled" | "tournamentInfo" | "sponsors";
@@ -389,10 +393,7 @@ type ErrorMapPoolInfo = BaseMapPoolInfo & {
 };
 
 export type MapPoolInfo =
-  | PastMapPoolInfo
-  | PresentMapPoolInfo
-  | FutureMapPoolInfo
-  | ErrorMapPoolInfo;
+  PastMapPoolInfo | PresentMapPoolInfo | FutureMapPoolInfo | ErrorMapPoolInfo;
 
 export type IToastInfo = {
   duration: number | null;
@@ -418,9 +419,9 @@ export interface GEPStatus {
 }
 
 export enum GEPStates {
-  "unsupported" = 0,
-  "green" = 1,
-  "yellow" = 2,
-  "red" = 3,
-  "disabled" = 4,
+  unsupported = 0,
+  green = 1,
+  yellow = 2,
+  red = 3,
+  disabled = 4,
 }
